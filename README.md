@@ -15,8 +15,11 @@ The project will be built on Node.js and Expressjs
 
 <b>Installation
 ____
-First make sure to install Node.js on your machine, head over to http://nodejs.org for documentation on how to install node. Run the app using the following command:
+First make sure to install Node.js and the Node Package Manager on your machine, head over to http://nodejs.org for documentation on how to install node. Run the app using the following commands:
 <pre><code>
 >cd FinalYearProject
+>npm install
 >node app.js
 </code></pre>
+
+The app will now be accessible in your browser from http://localhost:3000
