@@ -2,10 +2,13 @@ Final Year Project
 ==================
 
 Author: Gerwin Glorieux
+
 Supervisor: Dr. Christian Urban
 
 King's College London
+
 Department of Informatics 
+
 2013-2014
 
 Student Voting System
