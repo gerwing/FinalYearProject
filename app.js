@@ -3,11 +3,11 @@
  * Module dependencies.
  */
 
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var mongoose = require('mongoose');
-var app = express();
+var express = require('express'),
+    http = require('http'),
+    path = require('path'),
+    mongoose = require('mongoose'),
+    app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -31,7 +31,6 @@ var dbUrl = 'mongodb://localhost/vote';
 var db = mongoose.connect(dbUrl);
 
 /** API Routes */
-
 var modules = require('./routes/modules')(app);
 var lectures = require('./routes/lectures')(app);
 var homework = require('./routes/homework')(app);
