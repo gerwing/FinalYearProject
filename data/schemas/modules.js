@@ -1,3 +1,7 @@
+/*
+ * Modules Data Schema
+ */
+
 var mongoose = require('mongoose');
 
 var ModuleSchema = mongoose.Schema({

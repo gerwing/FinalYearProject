@@ -1,3 +1,7 @@
+/*
+ * Modules Data Model
+ */
+
 var mongoose = require('mongoose');
 var ModuleSchema = require('../schemas/modules');
 

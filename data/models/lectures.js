@@ -1,3 +1,7 @@
+/*
+ * Lectures Data Model
+ */
+
 var mongoose = require('mongoose');
 var LectureSchema = require('../schemas/lectures');
 

@@ -34,6 +34,7 @@ var db = mongoose.connect(dbUrl);
 var modules = require('./routes/modules')(app);
 var lectures = require('./routes/lectures')(app);
 var homework = require('./routes/homework')(app);
+var users = require('./routes/users')(app);
 
 /** Page Routes */
 var pages = require('./routes/pages')(app);
