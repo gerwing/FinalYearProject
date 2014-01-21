@@ -9,6 +9,7 @@ var express = require('express'),
     mongoose = require('mongoose'),
     app = express();
 
+/** Express Configuration */
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -26,6 +27,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+/** MongoDB Database Connection */
 // connect to database with Mongoose
 var dbUrl = 'mongodb://localhost/vote';
 var db = mongoose.connect(dbUrl);
@@ -39,6 +41,7 @@ var users = require('./routes/users')(app);
 /** Page Routes */
 var pages = require('./routes/pages')(app);
 
+/** Server Startup */
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
