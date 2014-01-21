@@ -6,6 +6,7 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var mongoose = require('mongoose');
 var app = express();
 
 // all environments
@@ -24,6 +25,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+
+// connect to database with Mongoose
+var dbUrl = 'mongodb://localhost/vote';
+var db = mongoose.connect(dbUrl);
 
 /** API Routes */
 

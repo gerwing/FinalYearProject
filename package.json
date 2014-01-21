@@ -1,5 +1,5 @@
 {
-  "name": "Student Voting System",
+  "name": "vote",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "express": "3.4.4",
+    "mongoose": "3.8.4",
     "jade": "*"
   }
 }
