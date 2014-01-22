@@ -4,6 +4,9 @@
  */
 
 var Module = require('../data/models/modules');
+var Lecture = require('../data/models/lectures');
+var Homework = require('../data/models/homework');
+
 var basePathTeacher = '/api/teacher/modules';
 
 module.exports = function(app) {
@@ -64,16 +67,34 @@ module.exports = function(app) {
     });
 
     //TEACHER DELETE
-    //TODO Remove Lectures and Homework that were linked to Module
+    //TODO Verify remove queries
     app.delete(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
         var teacher = '1234'; //TODO set teacher id
         //Delete Module in database
-        Module.remove({_id:id, teacher:teacher}, function(err) {
+        Module.findOne({_id:id, teacher:teacher}, function(err, module) {
             if(err) {
                 return next(err);
             }
-            res.send('Success', 200);
+            //Remove Lectures
+            Lecture.remove({_id:{$in:module.lectures}}, function(err) {
+                if(err) {
+                    return next(err);
+                }
+            });
+            //Remove Homework
+            Homework.remove({_id:{$in:module.homework}}, function(err) {
+                if(err) {
+                    return next(err);
+                }
+            });
+            //Remove Module
+            module.remove(function(err) {
+                if(err) {
+                    return next(err);
+                }
+                res.send('Success',200);
+            })
         })
     });
 };
