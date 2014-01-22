@@ -16,24 +16,25 @@ module.exports = function(app) {
            if(err) {
                return next(err);
            }
-           else
-               res.send(results);
+           res.send(results);
         });
 	});
 
     //TEACHER GET ONE
-    //TODO populate homework and lectures with name and id
     app.get(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
         var teacher = '1234'; //Todo set teacher id
         //Get Module from Database
-        Module.findOne({_id:id, teacher:teacher}, function(err,result){
-           if(err) {
-               return next(err);
-           }
-           else
-               res.send(result);
-        });
+        Module
+            .findOne({_id:id, teacher:teacher})
+            .populate('lectures', 'name _id')
+            .populate('homework', 'name _id')
+            .exec(function(err, result) {
+                if(err) {
+                    return next(err);
+                }
+                res.send(result);
+            });
     });
 
     //TEACHER POST
@@ -45,8 +46,7 @@ module.exports = function(app) {
             if(err) {
                 return next(err);
             }
-            else
-                res.send('Success', 200);
+            res.send('Success', 200);
         });
     });
 
@@ -59,8 +59,7 @@ module.exports = function(app) {
            if(err) {
                return next(err);
            }
-           else
-               res.send('Success', 200);
+           res.send('Success', 200);
         });
     });
 
@@ -74,8 +73,7 @@ module.exports = function(app) {
             if(err) {
                 return next(err);
             }
-            else
-                res.send('Success', 200);
+            res.send('Success', 200);
         })
     });
 };

@@ -5,6 +5,7 @@
 
 var basePathTeacher = '/api/teacher/lectures';
 var Lecture = require('../data/models/lectures');
+var Module = require('../data/models/modules');
 
 module.exports = function(app) {
 
@@ -17,15 +18,35 @@ module.exports = function(app) {
            if(err) {
                return next(err);
            }
-           else
-               res.send(result);
+           res.send(result);
         });
     });
 
     //TEACHER POST
-    app.post(basePathTeacher, function(req, res) {
-        //Function Code
-        res.send('POST'); // example
+    app.post(basePathTeacher, function(req, res,next) {
+        var id = req.body.module;
+        var teacher = '1234'; //TODO set teacher id
+        //Get Module from DB
+        Module.findOne({_id:id, teacher:teacher}, function(err, module) {
+            if(err) {
+                return next(err);
+            }
+            //Create Lecture
+            Lecture.create({name:req.body.name, teacher:teacher}, function(err, lecture) {
+                if(err) {
+                    return next(err);
+                }
+                //Add Lecture to module and save module
+                module.lectures.push(lecture._id);
+                module.save(function(err) {
+                    if(err) {
+                        return next(err);
+                    }
+                    res.send('Success', 200);
+                })
+            })
+        });
+
     });
 
     //TEACHER PUT
@@ -42,8 +63,7 @@ module.exports = function(app) {
             if(err) {
                 return next(err);
             }
-            else
-                res.send('Success', 200);
+            res.send('Success', 200);
         });
     });
 

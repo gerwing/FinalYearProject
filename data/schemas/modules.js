@@ -16,16 +16,12 @@ var ModuleSchema = mongoose.Schema({
         ref: 'Users'
     },
     lectures: [{
-        lecture: {
-            type: Schema.ObjectId,
-            ref: 'Lectures'
-        }
+        type: Schema.ObjectId,
+        ref: 'Lectures'
     }],
     homework: [{
-        homework: {
-            type: Schema.ObjectId,
-            ref: 'Homework'
-        }
+        type: Schema.ObjectId,
+        ref: 'Homework'
     }]
 
 });
