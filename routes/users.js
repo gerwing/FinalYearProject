@@ -10,7 +10,7 @@ module.exports = function(app) {
     });
 
     //REGISTER TEACHER
-    app.post('/teacher', function(req,res) {
+    app.post('/teacher/register', function(req,res) {
         //Register Teacher
     });
 
