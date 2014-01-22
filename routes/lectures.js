@@ -3,38 +3,52 @@
  * Lectures API Routes.
  */
 
-var basePath = '/api/lectures';
+var basePathTeacher = '/api/teacher/lectures';
+var Lecture = require('../data/models/lectures');
 
 module.exports = function(app) {
 
-    //GET ALL
-    app.get(basePath, function(req, res) {
-        //Function Code
-        res.render('index', { title: 'Lectures Get' }); // example
-    });
-
-    //GET ONE
-    app.get(basePath + '/:id', function(req, res) {
+    //TEACHER GET ONE
+    app.get(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
-        //Function Code
-        res.render('index', { title: 'Lectures Get' + id }); // example
+        var teacher = '1234'; //TODO set teacher id
+        //Get Lecture from DB
+        Lecture.findOne({_id:id, teacher:teacher}, function(err,result) {
+           if(err) {
+               return next(err);
+           }
+           else
+               res.send(result);
+        });
     });
 
-    //POST
-    app.post(basePath, function(req, res) {
+    //TEACHER POST
+    app.post(basePathTeacher, function(req, res) {
         //Function Code
         res.send('POST'); // example
     });
 
-    //PUT
-    app.put(basePath + '/:id', function(req, res) {
+    //TEACHER PUT
+    app.put(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
-        //Function Code
-        res.send('PUT ' + id); // example
+        var teacher = '1234';//TODO set teacher id
+        //Check what to update; name or both name and questions
+        var update = {name:req.body.name};
+        if(req.body.questions) {
+            update.questions = req.body.questions;
+        }
+        //Update Lecture in DB
+        Lecture.update({_id:id, teacher:teacher}, update, function(err) {
+            if(err) {
+                return next(err);
+            }
+            else
+                res.send('Success', 200);
+        });
     });
 
-    //DELETE
-    app.delete(basePath + '/:id', function(req, res) {
+    //TEACHER DELETE
+    app.delete(basePathTeacher + '/:id', function(req, res) {
         var id = req.params.id;
         //Function Code
         res.send('DELETE ' + id); // example

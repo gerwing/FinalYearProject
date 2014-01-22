@@ -4,12 +4,12 @@
  */
 
 var Module = require('../data/models/modules');
-var basePath = '/api/modules';
+var basePathTeacher = '/api/teacher/modules';
 
 module.exports = function(app) {
 
-    //GET ALL
-	app.get(basePath, function(req, res, next) {
+    //TEACHER GET ALL
+	app.get(basePathTeacher, function(req, res, next) {
         var teacher = '1234'; //TODO set teacher id
         //Get Modules from Database, Include only name and id
         Module.find({teacher:teacher}, 'name _id', function(err, results) {
@@ -21,9 +21,9 @@ module.exports = function(app) {
         });
 	});
 
-    //GET ONE
+    //TEACHER GET ONE
     //TODO populate homework and lectures with name and id
-    app.get(basePath + '/:id', function(req, res, next) {
+    app.get(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
         var teacher = '1234'; //Todo set teacher id
         //Get Module from Database
@@ -36,8 +36,8 @@ module.exports = function(app) {
         });
     });
 
-    //POST
-    app.post(basePath, function(req, res, next) {
+    //TEACHER POST
+    app.post(basePathTeacher, function(req, res, next) {
         var module = req.body;
         module.teacher = '1234'; //TODO set teacher id
         //Save Module to DB
@@ -50,8 +50,8 @@ module.exports = function(app) {
         });
     });
 
-    //PUT
-    app.put(basePath + '/:id', function(req, res, next) {
+    //TEACHER PUT
+    app.put(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
         var teacher = '1234';//TODO set teacher id
         //Update Module in Database
@@ -64,9 +64,9 @@ module.exports = function(app) {
         });
     });
 
-    //DELETE
+    //TEACHER DELETE
     //TODO Remove Lectures and Homework that were linked to Module
-    app.delete(basePath + '/:id', function(req, res, next) {
+    app.delete(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
         var teacher = '1234'; //TODO set teacher id
         //Delete Module in database
