@@ -67,9 +67,28 @@ module.exports = function(app) {
     });
 
     //TEACHER DELETE
-    app.delete(basePathTeacher + '/:id', function(req, res) {
+    app.delete(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
-        //Function Code
-        res.send('DELETE ' + id); // example
+        var teacher = '1234'; //TODO set teacher id
+        //Find Module that contains Lecture
+        //TODO check wether query is correct
+        Module.findOne({homework:id, teacher:teacher}, function(err, module) {
+            if(err) {
+                return next(err);
+            }
+            //remove lecture from module
+            module.homework.splice(module.homework.indexOf(id));
+            module.save(function(err) {
+                if(err) {
+                    return next(err) ;
+                }
+                Homework.remove({_id:id, teacher:teacher}, function(err) {
+                    if(err) {
+                        return next(err);
+                    }
+                    res.send('Success', 200);
+                });
+            });
+        });
     });
 };
