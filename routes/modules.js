@@ -11,16 +11,18 @@ module.exports = function(app) {
     //GET ALL
 	app.get(basePath, function(req, res, next) {
         var teacher = '1234'; //TODO set teacher id
-        Module.find({teacher:teacher}, function(err, results) {
+        //Get Modules from Database, Include only name and id
+        Module.find({teacher:teacher}, 'name _id', function(err, results) {
            if(err) {
                return next(err);
            }
            else
-               return res.send(results);
+               res.send(results);
         });
 	});
 
     //GET ONE
+    //TODO populate homework and lectures with name and id
     app.get(basePath + '/:id', function(req, res, next) {
         var id = req.params.id;
         var teacher = '1234'; //Todo set teacher id
@@ -30,7 +32,7 @@ module.exports = function(app) {
                return next(err);
            }
            else
-               return res.send(result);
+               res.send(result);
         });
     });
 
@@ -44,7 +46,7 @@ module.exports = function(app) {
                 return next(err);
             }
             else
-                return res.send('Success', 200);
+                res.send('Success', 200);
         });
     });
 
@@ -58,11 +60,12 @@ module.exports = function(app) {
                return next(err);
            }
            else
-               return res.send('Success', 200);
+               res.send('Success', 200);
         });
     });
 
     //DELETE
+    //TODO Remove Lectures and Homework that were linked to Module
     app.delete(basePath + '/:id', function(req, res, next) {
         var id = req.params.id;
         var teacher = '1234'; //TODO set teacher id
@@ -72,7 +75,7 @@ module.exports = function(app) {
                 return next(err);
             }
             else
-                return res.send('Success', 200);
+                res.send('Success', 200);
         })
     });
 };
