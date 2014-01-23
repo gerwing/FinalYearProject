@@ -12,7 +12,7 @@ module.exports = function(app) {
         var newTeacher = req.body;
         newTeacher.isTeacher = true;
         //Register Teacher
-        User.create(newTeacher, function(err) {
+        User.create(newTeacher, function(err, user) {
             if(err) {
                 //Username already taken
                 if(err.code === 11000) {
@@ -28,7 +28,11 @@ module.exports = function(app) {
                 }
                 return;
             }
-            res.send('Success', 200);
+            //Login teacher and forward to his homepage
+            req.login(user, function(err) {
+                if (err) { return next(err); }
+                return res.redirect('/teacher');
+            });
         });
     });
 
