@@ -2,6 +2,8 @@
  * Pages routes serving Web App
  */
 
+var loggedInAsTeacher = require('../middleware/loggedInAsTeacher');
+
 module.exports = function(app) {
 
     //GET INDEX
@@ -10,8 +12,8 @@ module.exports = function(app) {
     });
 
     //GET INDEX
-    app.get('/teacher', function(req, res){
-        res.render('index', { title: 'Private Teacher Area' });
+    app.get('/teacher', loggedInAsTeacher, function(req, res){
+        res.render('index', { title: 'Private Teacher Area of ' + req.user.name});
     });
 
     //GET INDEX
