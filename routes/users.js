@@ -6,7 +6,6 @@ var User = require('../data/models/users');
 module.exports = function(app) {
 
     //REGISTER TEACHER
-    //TODO redirect to teacher page and login teacher
     app.post('/teacher/register', function(req,res,next) {
         //Mark as teacher
         var newTeacher = req.body;
