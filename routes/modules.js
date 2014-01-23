@@ -3,17 +3,18 @@
  * Module API Routes.
  */
 
-var Module = require('../data/models/modules');
-var Lecture = require('../data/models/lectures');
-var Homework = require('../data/models/homework');
+var basePathTeacher = '/api/teacher/modules',
+    Module = require('../data/models/modules'),
+    Lecture = require('../data/models/lectures'),
+    Homework = require('../data/models/homework'),
+    loggedInAsTeacher = require('../middleware/loggedInAsTeacher');
 
-var basePathTeacher = '/api/teacher/modules';
 
 module.exports = function(app) {
 
     //TEACHER GET ALL
-	app.get(basePathTeacher, function(req, res, next) {
-        var teacher = '52e02d338c03bb28389566c5'; //TODO set teacher id
+	app.get(basePathTeacher, loggedInAsTeacher, function(req, res, next) {
+        var teacher = req.user.id;
         //Get Modules from Database, Include only name and id
         Module.find({teacher:teacher}, 'name _id', function(err, results) {
            if(err) {
@@ -24,9 +25,9 @@ module.exports = function(app) {
 	});
 
     //TEACHER GET ONE
-    app.get(basePathTeacher + '/:id', function(req, res, next) {
+    app.get(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
         var id = req.params.id;
-        var teacher = '52e02d338c03bb28389566c5'; //Todo set teacher id
+        var teacher = req.user.id;
         //Get Module from Database
         Module
             .findOne({_id:id, teacher:teacher})
@@ -41,9 +42,9 @@ module.exports = function(app) {
     });
 
     //TEACHER POST
-    app.post(basePathTeacher, function(req, res, next) {
+    app.post(basePathTeacher, loggedInAsTeacher, function(req, res, next) {
         var module = req.body;
-        module.teacher = '52e02d338c03bb28389566c5'; //TODO set teacher id
+        module.teacher = req.user.id;
         //Save Module to DB
         Module.create(module, function(err) {
             if(err) {
@@ -54,9 +55,9 @@ module.exports = function(app) {
     });
 
     //TEACHER PUT
-    app.put(basePathTeacher + '/:id', function(req, res, next) {
+    app.put(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
         var id = req.params.id;
-        var teacher = '52e02d338c03bb28389566c5';//TODO set teacher id
+        var teacher = req.user.id;
         //Update Module in Database
         Module.update({_id:id, teacher:teacher}, {name:req.body.name}, function(err){
            if(err) {
@@ -68,9 +69,9 @@ module.exports = function(app) {
 
     //TEACHER DELETE
     //TODO Verify remove queries
-    app.delete(basePathTeacher + '/:id', function(req, res, next) {
+    app.delete(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
         var id = req.params.id;
-        var teacher = '52e02d338c03bb28389566c5'; //TODO set teacher id
+        var teacher = req.user.id;
         //Delete Module in database
         Module.findOne({_id:id, teacher:teacher}, function(err, module) {
             if(err) {

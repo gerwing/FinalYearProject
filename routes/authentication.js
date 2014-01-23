@@ -41,9 +41,8 @@ passport.deserializeUser(function(id, done) {
 //EXPORT ROUTES
 module.exports = function(app) {
     //LOGIN TEACHER
-    //TODO Test redirect to same page
     app.post('/teacher/login', passport.authenticate('local',
-        {successRedirect:'/teacher', failureRedirect:'/teacher'}
+        {successRedirect:'/teacher', failureRedirect:'/teacher/login'}
     ));
 
     //LOGOUT TEACHER

@@ -7,7 +7,7 @@ module.exports = function(req, res, next) {
         if(req.user.isTeacher)
             return next();
         else
-            res.redirect('/');
+            res.redirect('/teacher/login');
     }
-    else res.redirect('/'); //TODO change redirect location to correct one
+    else res.redirect('/teacher/login');
 };
