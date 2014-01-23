@@ -32,11 +32,13 @@ module.exports = function(app) {
     });
 
     //UPDATE TEACHER
+    //TODO complete
     app.put('/teacher/:id', function(req,res) {
         //Update Teacher Account
     });
 
     //DELETE TEACHER
+    //TODO complete
     app.delete('/teacher/:id', function(req,res) {
         //Delete Teacher Account
     });

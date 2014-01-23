@@ -4,7 +4,8 @@
 
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
-    User = require('../data/models/users');
+    User = require('../data/models/users'),
+    loggedInAsTeacher = require('../middleware/loggedInAsTeacher');
 
 //SETUP PASSPORT
 passport.use(new LocalStrategy(
@@ -46,7 +47,7 @@ module.exports = function(app) {
     ));
 
     //LOGOUT TEACHER
-    app.post('/teacher/logout', function(req,res) {
+    app.post('/teacher/logout', loggedInAsTeacher, function(req,res) {
         req.logout();
         res.redirect('/');
     });

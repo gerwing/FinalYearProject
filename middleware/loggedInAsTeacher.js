@@ -3,8 +3,11 @@
  */
 
 module.exports = function(req, res, next) {
-    if(req.user.isTeacher) {
-        return next();
+    if(req.user) {
+        if(req.user.isTeacher)
+            return next();
+        else
+            res.redirect('/');
     }
     else res.redirect('/'); //TODO change redirect location to correct one
 };
