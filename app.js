@@ -7,6 +7,7 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     mongoose = require('mongoose'),
+    passport = require('passport'),
     app = express();
 
 /** Express Configuration */
@@ -19,6 +20,7 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+app.use(passport.initialize()); //TODO add passport persistent session
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -37,6 +39,7 @@ var modules = require('./routes/modules')(app);
 var lectures = require('./routes/lectures')(app);
 var homework = require('./routes/homework')(app);
 var users = require('./routes/users')(app);
+var authentication = require('./routes/authentication')(app);
 
 /** Page Routes */
 var pages = require('./routes/pages')(app);

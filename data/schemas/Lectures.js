@@ -2,7 +2,8 @@
  * Lectures Data Schema
  */
 
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
 var LectureSchema = mongoose.Schema({
     name:String,

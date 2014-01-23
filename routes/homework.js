@@ -12,7 +12,7 @@ module.exports = function(app) {
     //TEACHER GET ONE
     app.get(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
-        var teacher = '1234'; //TODO set teacher id
+        var teacher = '52e02d338c03bb28389566c5'; //TODO set teacher id
         //Get Homework from DB
         Homework.findOne({_id:id, teacher:teacher}, function(err,result) {
            if(err) {
@@ -25,7 +25,7 @@ module.exports = function(app) {
     //TEACHER POST
     app.post(basePathTeacher, function(req, res, next) {
         var id = req.body.module;
-        var teacher = '1234'; //TODO set teacher id
+        var teacher = '52e02d338c03bb28389566c5'; //TODO set teacher id
         //Get Module from DB
         Module.findOne({_id:id, teacher:teacher}, function(err, module) {
             if(err) {
@@ -51,7 +51,7 @@ module.exports = function(app) {
     //TEACHER PUT
     app.put(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
-        var teacher = '1234';//TODO set teacher id
+        var teacher = '52e02d338c03bb28389566c5';//TODO set teacher id
         //Check what to update; name or both name and questions
         var update = {name:req.body.name};
         if(req.body.questions) {
@@ -69,7 +69,7 @@ module.exports = function(app) {
     //TEACHER DELETE
     app.delete(basePathTeacher + '/:id', function(req, res, next) {
         var id = req.params.id;
-        var teacher = '1234'; //TODO set teacher id
+        var teacher = '52e02d338c03bb28389566c5'; //TODO set teacher id
         //Find Module that contains Lecture
         //TODO check wether query is correct
         Module.findOne({homework:id, teacher:teacher}, function(err, module) {

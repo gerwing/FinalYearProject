@@ -4,11 +4,6 @@
 
 module.exports = function(app) {
 
-    //LOGIN TEACHER
-    app.post('/teacher/login', function(req,res) {
-        //Login Teacher
-    });
-
     //REGISTER TEACHER
     app.post('/teacher/register', function(req,res) {
         //Register Teacher
