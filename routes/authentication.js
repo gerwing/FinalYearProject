@@ -42,7 +42,7 @@ module.exports = function(app) {
     //LOGIN TEACHER
     //TODO Test redirect to same page
     app.post('/teacher/login', passport.authenticate('local',
-        {successRedirect:'/teacher/success', failureRedirect:'/teacher'}
+        {successRedirect:'/teacher', failureRedirect:'/teacher'}
     ));
 
     //LOGOUT TEACHER
