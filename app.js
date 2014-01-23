@@ -20,7 +20,13 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(passport.initialize()); //TODO add passport persistent session
+//Start Middleware needed for Authentication
+app.use(express.cookieParser());
+app.use(express.bodyParser());
+app.use(express.session({ secret: 'christmas hat' }));
+app.use(passport.initialize());
+app.use(passport.session());
+//Stop Middleware needed for Authentication
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 

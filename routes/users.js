@@ -13,7 +13,19 @@ module.exports = function(app) {
         //Register Teacher
         User.create(newTeacher, function(err) {
             if(err) {
-                return next(err);
+                //Username already taken
+                if(err.code === 11000) {
+                    res.send('Conflict', 409);
+                }
+                else if(err.name === 'ValidationError') {
+                    return res.send(Object.keys(err.errors).map(function(errField){
+                        return err.errors[errField].message;
+                    }).join('. '), 406);
+                }
+                else {
+                    next(err);
+                }
+                return;
             }
             res.send('Success', 200);
         });

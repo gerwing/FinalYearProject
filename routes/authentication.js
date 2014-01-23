@@ -26,12 +26,23 @@ passport.use(new LocalStrategy(
     }
 ));
 
+//Serialize, Deserialize methods
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+        done(err, user);
+    });
+});
+
 //EXPORT ROUTES
 module.exports = function(app) {
     //LOGIN TEACHER
     //TODO Test redirect to same page
     app.post('/teacher/login', passport.authenticate('local',
-        {successRedirect:'/teacher', failureRedirect:'/teacher'}
+        {successRedirect:'/teacher/success', failureRedirect:'/teacher'}
     ));
 
     //LOGOUT TEACHER
