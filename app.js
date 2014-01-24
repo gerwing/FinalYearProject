@@ -10,6 +10,14 @@ var express = require('express'),
     passport = require('passport'),
     app = express();
 
+/** MongoDB Database Connection */
+// connect to database with Mongoose
+var dbUrl = 'mongodb://localhost/vote';
+var db = mongoose.connect(dbUrl);
+
+/** Passport Configuration */
+require('./config/passport')(passport);
+
 /** Express Configuration */
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -35,17 +43,12 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-/** MongoDB Database Connection */
-// connect to database with Mongoose
-var dbUrl = 'mongodb://localhost/vote';
-var db = mongoose.connect(dbUrl);
-
 /** API Routes */
 var modules = require('./routes/modules')(app);
 var lectures = require('./routes/lectures')(app);
 var homework = require('./routes/homework')(app);
 var users = require('./routes/users')(app);
-var authentication = require('./routes/authentication')(app);
+var authentication = require('./routes/authentication')(app, passport);
 
 /** Page Routes */
 var pages = require('./routes/pages')(app);
