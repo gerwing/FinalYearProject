@@ -11,17 +11,24 @@ module.exports = function(passport) {
         function(username, password, done) {
             //Lookup User
             User.findOne({username:username}, function(err, user) {
-                if(err) {
+                if(err) { //Error Occured
                     return done(err);
                 }
-                if(!user) {
+                if(!user) { //Not a registered user
                     return done(null, false, {message: 'Incorrect Username'});
                 }
-                //TODO HASH PASSWORD
-                if(password != user.password) {
-                    return done(null, false, {message: 'Incorrect Password'});
-                }
-                return done(null, user);
+                //Check if password is correct
+                user.validPassword(password, function(err, isMatch) {
+                    if(err) {
+                        return done(err);
+                    }
+                    if(isMatch) { //Correct Password
+                        return done(null, user);
+                    }
+                    else { //Wrong Password
+                        return done(null, false, {message: 'Incorrect Password'});
+                    }
+                });
             });
         }
     ));

@@ -10,6 +10,7 @@
     "mongoose": "3.8.4",
     "passport": "*",
     "passport-local": "*",
+    "bcrypt-nodejs" : "latest",
     "jade": "*"
   }
 }
