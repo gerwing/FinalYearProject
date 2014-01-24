@@ -31,23 +31,20 @@ var UserSchema = mongoose.Schema({
 
 //Hash Password before saving to DB
 UserSchema.pre('save', function(next) {
-    bcrypt.genSalt(10, function(err, salt) {
+    var user = this;
+    bcrypt.hash(user.password, null, null, function(err, hash) {
         if(err) {
             return next(err);
         }
-        bcrypt.hash(this.password, salt, function(err, hash) {
-            if(err) {
-                return next(err);
-            }
-            this.password = hash;
-            next();
-        });
+        user.password = hash;
+        next();
     });
 });
 
 //Password Hash Verification
 UserSchema.methods.validPassword = function(password, done) {
-    bcrypt.compare(password, this.password, function(err, isMatch) {
+    var user = this;
+    bcrypt.compare(password, user.password, function(err, isMatch) {
         if(err) {
             return done(err);
         }
