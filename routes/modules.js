@@ -77,6 +77,9 @@ module.exports = function(app) {
             if(err) {
                 return next(err);
             }
+            if(!module) {
+                return res.send('Module does not exist', 404); //Module not found
+            }
             //Remove Lectures
             Lecture.remove({_id:{$in:module.lectures}}, function(err) {
                 if(err) {

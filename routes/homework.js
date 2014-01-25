@@ -27,10 +27,17 @@ module.exports = function(app) {
     app.post(basePathTeacher, loggedInAsTeacher, function(req, res, next) {
         var id = req.body.module;
         var teacher = req.user.id;
+        //Verify module id exists
+        if(!id) {
+            return res.send('It is required to include the module ID', 406); //no module ID
+        }
         //Get Module from DB
         Module.findOne({_id:id, teacher:teacher}, function(err, module) {
             if(err) {
                 return next(err);
+            }
+            if(!module) {
+                return res.send('Module does not exist', 404); //Module not found
             }
             //Create Lecture
             Homework.create({name:req.body.name, teacher:teacher}, function(err, homework) {
@@ -53,8 +60,11 @@ module.exports = function(app) {
     app.put(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
         var id = req.params.id;
         var teacher = req.user.id;
-        //Check what to update; name or both name and questions
-        var update = {name:req.body.name};
+        var update = {};
+        //Check what to update; name, update or both name and questions
+        if(req.body.name) {
+            update.name = req.body.name;
+        }
         if(req.body.questions) {
             update.questions = req.body.questions;
         }
@@ -76,6 +86,9 @@ module.exports = function(app) {
         Module.findOne({homework:id, teacher:teacher}, function(err, module) {
             if(err) {
                 return next(err);
+            }
+            if(!module) {
+                return res.send('Homework does not exist', 404); //Module not found
             }
             //remove lecture from module
             module.homework.splice(module.homework.indexOf(id));
