@@ -6,7 +6,11 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var LectureSchema = mongoose.Schema({
-    name:String,
+    name: {
+        type: String,
+        required:true,
+        default:'New Lecture'
+    },
     teacher: {
         type: Schema.ObjectId,
         ref: 'Users',

@@ -49,11 +49,11 @@ module.exports = function(app) {
             insert.name = req.body.name;
         insert.teacher = req.user.id;
         //Save Module to DB
-        Module.create(insert, function(err) {
+        Module.create(insert, function(err, module) {
             if(err) {
                 return next(err);
             }
-            res.send('Success', 200);
+            res.send(module);
         });
     });
 
@@ -62,11 +62,11 @@ module.exports = function(app) {
         var id = req.params.id;
         var teacher = req.user.id;
         //Update Module in Database
-        Module.update({_id:id, teacher:teacher}, {name:req.body.name}, function(err){
+        Module.update({_id:id, teacher:teacher}, {name:req.body.name}, function(err, module){
            if(err) {
                return next(err);
            }
-           res.send('Success', 200);
+           res.send(module);
         });
     });
 
@@ -100,7 +100,7 @@ module.exports = function(app) {
                 if(err) {
                     return next(err);
                 }
-                res.send('Success',200);
+                res.send(module);
             })
         })
     });

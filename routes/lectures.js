@@ -55,7 +55,7 @@ module.exports = function(app) {
                     if(err) {
                         return next(err);
                     }
-                    res.send('Success', 200);
+                    res.send(lecture);
                 })
             })
         });
@@ -75,11 +75,11 @@ module.exports = function(app) {
             update.questions = req.body.questions;
         }
         //Update Lecture in DB
-        Lecture.update({_id:id, teacher:teacher}, update, function(err) {
+        Lecture.update({_id:id, teacher:teacher}, update, function(err,lecture) {
             if(err) {
                 return next(err);
             }
-            res.send('Success', 200);
+            res.send(lecture);
         });
     });
 
@@ -102,11 +102,11 @@ module.exports = function(app) {
                if(err) {
                    return next(err) ;
                }
-               Lecture.remove({_id:id, teacher:teacher}, function(err) {
+               Lecture.remove({_id:id, teacher:teacher}, function(err, lecture) {
                     if(err) {
                         return next(err);
                     }
-                    res.send('Success', 200);
+                    res.send(lecture);
                });
             });
         });

@@ -6,7 +6,11 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var HomeworkSchema = mongoose.Schema({
-    name:String,
+    name: {
+        type: String,
+        required:true,
+        default:'New Homework'
+    },
     teacher: {
        type: Schema.ObjectId,
        ref: 'Users',
