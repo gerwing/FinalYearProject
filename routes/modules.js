@@ -71,7 +71,6 @@ module.exports = function(app) {
     });
 
     //TEACHER DELETE
-    //TODO Verify remove queries
     app.delete(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
         var id = req.params.id;
         var teacher = req.user.id;
