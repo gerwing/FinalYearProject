@@ -61,8 +61,13 @@ module.exports = function(app) {
     app.put(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
         var id = req.params.id;
         var teacher = req.user.id;
+        var name = req.body.name;
+        //Check if name is valid
+        if(!name) {
+            return res.send('Name is required', 406); //Name not found
+        }
         //Update Module in Database
-        Module.update({_id:id, teacher:teacher}, {name:req.body.name}, function(err){
+        Module.update({_id:id, teacher:teacher}, {name:name}, function(err){
            if(err) {
                return next(err);
            }
