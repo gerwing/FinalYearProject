@@ -39,8 +39,13 @@ module.exports = function(app) {
             if(!module) {
                 return res.send('Module does not exist', 404); //Module not found
             }
+            //Check what to insert
+            var insert = {};
+            if(req.body.name)
+                insert.name = req.body.name;
+            insert.teacher = teacher;
             //Create Lecture
-            Homework.create({name:req.body.name, teacher:teacher}, function(err, homework) {
+            Homework.create(insert, function(err, homework) {
                 if(err) {
                     return next(err);
                 }
@@ -91,7 +96,7 @@ module.exports = function(app) {
                 return res.send('Homework does not exist', 404); //Module not found
             }
             //remove lecture from module
-            module.homework.splice(module.homework.indexOf(id));
+            module.homework.splice(module.homework.indexOf(id),1);
             module.save(function(err) {
                 if(err) {
                     return next(err) ;

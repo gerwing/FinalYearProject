@@ -43,10 +43,13 @@ module.exports = function(app) {
 
     //TEACHER POST
     app.post(basePathTeacher, loggedInAsTeacher, function(req, res, next) {
-        var module = req.body;
-        module.teacher = req.user.id;
+        //Check what to insert
+        var insert = {};
+        if(req.body.name)
+            insert.name = req.body.name;
+        insert.teacher = req.user.id;
         //Save Module to DB
-        Module.create(module, function(err) {
+        Module.create(insert, function(err) {
             if(err) {
                 return next(err);
             }

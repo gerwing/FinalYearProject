@@ -39,8 +39,13 @@ module.exports = function(app) {
             if(!module) {
                 return res.send('Module does not exist', 404); //Module not found
             }
+            //Check what to insert
+            var insert = {};
+            if(req.body.name)
+                insert.name = req.body.name;
+            insert.teacher = teacher;
             //Create and save Lecture
-            Lecture.create({name:req.body.name, teacher:teacher}, function(err, lecture) {
+            Lecture.create(insert, function(err, lecture) {
                 if(err) {
                     return next(err);
                 }
@@ -92,7 +97,7 @@ module.exports = function(app) {
                 return res.send('Lecture does not exist', 404); //Module not found
             }
             //remove lecture from module
-            module.lectures.splice(module.lectures.indexOf(id));
+            module.lectures.splice(module.lectures.indexOf(id),1);
             module.save(function(err) {
                if(err) {
                    return next(err) ;
