@@ -62,11 +62,11 @@ module.exports = function(app) {
         var id = req.params.id;
         var teacher = req.user.id;
         //Update Module in Database
-        Module.update({_id:id, teacher:teacher}, {name:req.body.name}, function(err, module){
+        Module.update({_id:id, teacher:teacher}, {name:req.body.name}, function(err){
            if(err) {
                return next(err);
            }
-           res.send(module);
+           res.send('Success', 200);
         });
     });
 
@@ -100,7 +100,7 @@ module.exports = function(app) {
                 if(err) {
                     return next(err);
                 }
-                res.send(module);
+                res.send('Success', 200);
             })
         })
     });

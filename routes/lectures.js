@@ -75,11 +75,11 @@ module.exports = function(app) {
             update.questions = req.body.questions;
         }
         //Update Lecture in DB
-        Lecture.update({_id:id, teacher:teacher}, update, function(err,lecture) {
+        Lecture.update({_id:id, teacher:teacher}, update, function(err) {
             if(err) {
                 return next(err);
             }
-            res.send(lecture);
+            res.send('Success', 200);
         });
     });
 
@@ -88,7 +88,6 @@ module.exports = function(app) {
         var id = req.params.id;
         var teacher = req.user.id;
         //Find Module that contains Lecture
-        //TODO check wether query is correct
         Module.findOne({lectures:id, teacher:teacher}, function(err, module) {
             if(err) {
                 return next(err);
@@ -102,11 +101,11 @@ module.exports = function(app) {
                if(err) {
                    return next(err) ;
                }
-               Lecture.remove({_id:id, teacher:teacher}, function(err, lecture) {
+               Lecture.remove({_id:id, teacher:teacher}, function(err) {
                     if(err) {
                         return next(err);
                     }
-                    res.send(lecture);
+                    res.send('Success', 200);
                });
             });
         });
