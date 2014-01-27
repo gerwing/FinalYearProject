@@ -7,7 +7,7 @@ module.exports = function(req, res, next) {
         if(req.user.isTeacher)
             return next();
         else
-            res.redirect('/teacher/login');
+            res.send('User is not a teacher', 401);
     }
-    else res.redirect('/teacher/login');
+    else res.send('User not logged in', 401);
 };
