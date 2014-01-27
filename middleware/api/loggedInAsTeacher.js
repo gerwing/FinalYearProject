@@ -1,5 +1,5 @@
 /*
- * loggedInAsTeacher Middleware - Checks wether teacher is logged in
+ * loggedInAsTeacher Middleware API Version - Checks whether teacher is logged in, otherwise returns HTTP 401
  */
 
 module.exports = function(req, res, next) {

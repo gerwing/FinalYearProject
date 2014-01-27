@@ -6,7 +6,7 @@
 var basePathTeacher = '/api/teacher/lectures',
     Lecture = require('../data/models/lectures'),
     Module = require('../data/models/modules'),
-    loggedInAsTeacher = require('../middleware/loggedInAsTeacher');
+    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher');
 
 module.exports = function(app) {
 
