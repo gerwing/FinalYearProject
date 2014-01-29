@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('yoAngularApp')
+angular.module('vote')
   .controller('MainCtrl', function ($scope) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',

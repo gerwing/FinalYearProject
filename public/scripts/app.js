@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('yoAngularApp', [
+angular.module('vote', [
   'ngRoute'
 ])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
+        templateUrl: 'views/index.html',
         controller: 'MainCtrl'
       })
       .otherwise({
