@@ -8,11 +8,15 @@ angular.module('voteApp', ['ngRoute'])
         controller: 'HomeCtrl'
       })
       .when('/teacher', {
-          templateUrl: 'views/teacher.html',
+          templateUrl: 'views/teacher/index.html',
           controller: 'TeacherCtrl'
       })
+        .when('/teacher/login'  , {
+            templateUrl: 'views/teacher/login.html',
+            controller: 'TeacherCtrl'
+        })
       .otherwise({
         redirectTo: '/'
       });
-    $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(false);
   });
