@@ -7,7 +7,21 @@
 </head>
 <body ng-app="voteApp">
 
-    <div class="container" ng-view=""></div>
+    <div class="container">
+        <div class="header">
+            <ul class="nav nav-pills pull-right">
+                <li>
+                    <a href="/">
+                        <span class="glyphicon glyphicon-home"></span>
+                        Home
+                    </a>
+                </li>
+            </ul>
+            <h3 class="text-muted">Student Vote App</h3>
+        </div>
+        <hr/>
+        <div ng-view=""></div>
+    </div>
 
     <!--Vendor Scripts-->
     <script src="bower_components/jquery/jquery.js"></script>
