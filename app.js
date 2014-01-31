@@ -35,8 +35,8 @@ app.use(express.session({ secret: 'christmas hat' }));
 app.use(passport.initialize());
 app.use(passport.session());
 //Stop Middleware needed for Authentication
-app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(app.router);
 
 // development only
 if ('development' == app.get('env')) {

@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('vote')
-  .controller('MainCtrl', function ($scope) {
+angular.module('voteApp')
+  .controller('HomeCtrl', function ($scope) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
