@@ -1,6 +1,6 @@
 'use strict';
 
 angular.module('voteApp')
-  .controller('HomeCtrl', function ($scope) {
+  .controller('HomeCtrl', ['$scope', function ($scope) {
         //Add Logic here
-  });
+  }]);

@@ -1,6 +1,6 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('LoginCtrl', function($scope) {
+    .controller('LoginCtrl', ['$scope', function($scope) {
 
-    });
+    }]);

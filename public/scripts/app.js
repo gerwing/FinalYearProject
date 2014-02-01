@@ -2,7 +2,7 @@
 
 //Initialize App
 var app = angular.module('voteApp', ['ngRoute'])
-    .config(function ($routeProvider, $locationProvider) {
+    .config(['$routeProvider','$locationProvider', function ($routeProvider, $locationProvider) {
         //Set Routes
         $routeProvider
             .when('/', {
@@ -22,7 +22,7 @@ var app = angular.module('voteApp', ['ngRoute'])
             });
         //Set HTML5 Mode
         $locationProvider.html5Mode(true);
-    });
+    }]);
 
 //Get Current User
 app.run(['$http', '$rootScope', '$location', function($http,$rootScope,$location) {
