@@ -3,9 +3,16 @@
   <p class="lead">
     Please log in using your username and password
   </p>
-  <form method="post" action="/teacher/login">
-      <p>Username: <input type="text" name="username"/></p>
-      <p>Password: <input type="password" name="password"></p>
-      <button class="btn btn-lg btn-primary">Login</button>
+  <form name="loginForm" ng-submit="login()">
+      <div class="form-group has-feedback" ng-class="{'has-error':usernameError, 'has-success':passwordError}">
+          <label class="control-label" for="username">Username</label>
+          <input id="username" ng-model="username" class="form-control input-lg" type="text" placeholder="Username" required>
+      </div>
+      <div class="form-group has-feedback" ng-class="{'has-error':passwordError}">
+          <label class="control-label" for="password">Password</label>
+          <input id="password" ng-model="password" class="form-control input-lg" type="password" placeholder="Password" required>
+      </div>
+      <div ng-show="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
+      <button class="btn btn-lg btn-primary" ng-disabled="loginForm.$invalid">Login</button>
   </form>
 </div>

@@ -2,7 +2,8 @@
 
 //Initialize App
 var app = angular.module('voteApp', ['ngRoute'])
-    .config(['$routeProvider','$locationProvider', function ($routeProvider, $locationProvider) {
+    .config(['$routeProvider','$locationProvider',
+        function ($routeProvider, $locationProvider) {
         //Set Routes
         $routeProvider
             .when('/', {
@@ -25,27 +26,22 @@ var app = angular.module('voteApp', ['ngRoute'])
     }]);
 
 //Get Current User
-app.run(['$http', '$rootScope', '$location', function($http,$rootScope,$location) {
+app.run(['$http', '$rootScope', '$location',
+    function($http,$rootScope,$location) {
     //Try get user
     $http({method: 'GET', url: '/api/currentUser'}).
-        success(function(data, status, headers, config) {
+        success(function(data) {
             if(data) {
                 $rootScope.user = data;
             }
-        }).
-        error(function(data, status, headers, config) {
-            console.log(data);
         });
 
     //Set Logout function
     $rootScope.logout = function() {
-        $http({method: 'POST', url: '/api/teacher/logout'}).
-            success(function(data, status, headers, config) {
+        $http.post('/api/teacher/logout').
+            success(function() {
                 $location.path('/');
                 delete $rootScope.user;
-            }).
-            error(function(data, status, headers, config) {
-                console.log(data);
             });
     }
 }]);

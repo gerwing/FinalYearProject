@@ -15,7 +15,7 @@ module.exports = function(passport) {
                     return done(err);
                 }
                 if(!user) { //Not a registered user
-                    return done(null, false, {message: 'Incorrect Username'});
+                    return done(null, false, {message: 'Incorrect Username', problem:'username'});
                 }
                 //Check if password is correct
                 user.validPassword(password, function(err, isMatch) {
@@ -26,7 +26,7 @@ module.exports = function(passport) {
                         return done(null, user);
                     }
                     else { //Wrong Password
-                        return done(null, false, {message: 'Incorrect Password'});
+                        return done(null, false, {message: 'Incorrect Password', problem:'password'});
                     }
                 });
             });
