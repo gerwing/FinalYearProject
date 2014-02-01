@@ -17,6 +17,18 @@
                         Home
                     </a>
                 </li>
+                <li ng-show="user">
+                    <a href="/#/teacher">
+                        <span class="glyphicon glyphicon-user"></span>
+                        {{user.username}}
+                    </a>
+                </li>
+                <li ng-show="user">
+                    <a ng-click="logout()" class="btn">
+                        <span class="glyphicon glyphicon-log-out"></span>
+                        Logout
+                    </a>
+                </li>
             </ul>
             <h3 class="text-muted">Student Vote App</h3>
         </div>
@@ -33,5 +45,6 @@
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/home.js"></script>
     <script src="scripts/controllers/teacher.js"></script>
+    <script src="scripts/controllers/login.js"></script>
 </body>
 </html>
