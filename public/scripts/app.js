@@ -26,22 +26,11 @@ var app = angular.module('voteApp', ['ngRoute'])
     }]);
 
 //Get Current User
-app.run(['$http', '$rootScope', '$location',
-    function($http,$rootScope,$location) {
+app.run(['$http', '$rootScope', '$location', 'Authentication',
+    function($http,$rootScope,$location,authentication) {
     //Try get user
-    $http({method: 'GET', url: '/api/currentUser'}).
-        success(function(data) {
-            if(data) {
-                $rootScope.user = data;
-            }
-        });
+    authentication.getCurrentUser();
 
     //Set Logout function
-    $rootScope.logout = function() {
-        $http.post('/api/teacher/logout').
-            success(function() {
-                $location.path('/');
-                delete $rootScope.user;
-            });
-    }
+    $rootScope.logout = authentication.logoutTeacher;
 }]);
