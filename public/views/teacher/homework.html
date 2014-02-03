@@ -1,0 +1,9 @@
+<div>
+    <h1>{{homework.name}}</h1>
+    <p class="lead">
+        This Homework contains the following Questions
+    </p>
+    <div class="list-group">
+        <a ng-repeat="question in homework.questions" class="list-group-item" ng-href="">{{question.question}}</a>
+    </div>
+</div>

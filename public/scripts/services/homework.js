@@ -4,8 +4,8 @@ angular.module('voteApp')
     .factory('Homework', ['$resource',
         function($resource) {
             return $resource(
-                "/api/teacher/homework/:Id",
-                {Id: "@Id" },
+                "/api/teacher/homework/:id",
+                {id: "@id" },
                 {
                     "update": {method: "PUT"}
                 }

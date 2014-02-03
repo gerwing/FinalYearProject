@@ -1,16 +1,20 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('TeacherCtrl', ['$scope','$rootScope','$location', 'Module',
-        function($scope, $rootScope, $location, Module) {
-            //Check for logged in teacher
-            if(!$rootScope.user) {
-                $location.path('/teacher/login');
+    .controller('TeacherCtrl', ['$scope','$rootScope', 'Module', 'Authentication',
+        function($scope, $rootScope, Module, Authentication) {
+            //Check Wether User is logged in as teacher
+            if(!Authentication.verifyTeacher()){
+                return;
             }
-            else if(!$rootScope.user.isTeacher) {
-                $location.path('/teacher/login');
-            }
-            else {
-                $scope.modules = Module.query();
-            }
+            //Get Modules
+            $scope.modules = Module.query();
+            //Add New Module
+            $scope.addModule = function() {
+                //Save module
+                Module.save({},$scope.module, function(module) {
+                    $scope.modules.push(module);
+                    delete $scope.module;
+                });
+            };
     }]);

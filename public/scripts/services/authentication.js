@@ -41,6 +41,18 @@ angular.module('voteApp')
                                 $rootScope.user = data;
                             }
                         });
+                },
+                verifyTeacher: function() {
+                    //Check for logged in teacher
+                    if(!$rootScope.user) {
+                        $location.path('/teacher/login');
+                        return false;
+                    }
+                    else if(!$rootScope.user.isTeacher) {
+                        $location.path('/teacher/login');
+                        return false;
+                    }
+                    return true;
                 }
             };
     }]);

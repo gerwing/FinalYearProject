@@ -1,0 +1,30 @@
+<div>
+    <h1>{{module.name}}</h1>
+    <p class="lead">
+        This Module contains the following Lectures and Homework
+    </p>
+
+    <h2>Lectures:</h2>
+    <div class="list-group">
+        <a ng-repeat="lecture in module.lectures" class="list-group-item" ng-href="/#/teacher/lectures/{{lecture._id}}">{{lecture.name}}</a>
+    </div>
+    <form class="form-inline" ng-submit="addLecture()">
+        <h4>Add Lecture</h4>
+        <div class="form-group">
+            <input class="form-control" ng-model="lecture.name" type="text" name="name" placeholder="Lecture Name">
+        </div>
+        <button class="btn btn-primary">Add Lecture</button>
+    </form>
+
+    <h2>Homework:</h2>
+    <div class="list-group">
+        <a ng-repeat="homework in module.homework" class="list-group-item" ng-href="/#/teacher/homework/{{homework._id}}">{{homework.name}}</a>
+    </div>
+    <form class="form-inline" ng-submit="addHomework()">
+        <h4>Add Homework</h4>
+        <div class="form-group">
+            <input class="form-control" ng-model="homework.name" type="text" name="name" placeholder="Homework Name">
+        </div>
+        <button class="btn btn-primary">Add Homework</button>
+    </form>
+</div>

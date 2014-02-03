@@ -1,0 +1,9 @@
+<div>
+    <h1>{{lecture.name}}</h1>
+    <p class="lead">
+        This Lecture contains the following Questions
+    </p>
+    <div class="list-group">
+        <a ng-repeat="question in lecture.questions" class="list-group-item" ng-href="">{{question.question}}</a>
+    </div>
+</div>
