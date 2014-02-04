@@ -11,7 +11,13 @@ angular.module('voteApp')
                     $http.post('/api/teacher/login', data)
                         .success(function(data) {
                             $rootScope.user = data; //Add user to rootscope
-                            $location.path('/teacher'); //move to teacher home page
+                            if($rootScope.lastPath) {
+                                $location.path($rootScope.lastPath); //move to last page
+                                delete $rootScope.lastPath;
+                            }
+                            else {
+                                $location.path('/teacher'); //move to teacher home page
+                            }
                         })
                         .error(function(data, status) {
                             if(status === 401) {  //Login failed
@@ -44,15 +50,17 @@ angular.module('voteApp')
                 },
                 verifyTeacher: function() {
                     //Check for logged in teacher
-                    if(!$rootScope.user) {
-                        $location.path('/teacher/login');
-                        return false;
+                    if($rootScope.user) {
+                        if($rootScope.user.isTeacher) {
+                            return true;
+                        }
                     }
-                    else if(!$rootScope.user.isTeacher) {
-                        $location.path('/teacher/login');
-                        return false;
-                    }
-                    return true;
+                    //User needs to log in
+                    //Save current path
+                    $rootScope.lastPath = $location.path();
+                    //Redirect to login page
+                    $location.path('/teacher/login');
+                    return false;
                 }
             };
     }]);

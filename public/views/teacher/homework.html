@@ -1,9 +1,96 @@
 <div>
-    <h1>{{homework.name}}</h1>
-    <p class="lead">
-        This Homework contains the following Questions
-    </p>
-    <div class="list-group">
-        <a ng-repeat="question in homework.questions" class="list-group-item" ng-href="">{{question.question}}</a>
+    <header>
+        <h1>{{homework.name}}</h1>
+        <p class="lead">
+            This homework contains the following Questions
+        </p>
+    </header>
+
+    <!--Questions-->
+    <section class="panel panel-primary" ng-show="homework.questions.length>0">
+        <div class="panel-heading">
+            Questions
+            <a href="" class="white pull-right" ng-click="editing=true" ng-hide="editing">Edit</a>
+            <a href="" class="white pull-right" ng-click="editing=false" ng-show="editing">Done</a>
+        </div>
+
+        <div class="list-group" ng-hide="editing">
+            <a ng-repeat="question in homework.questions" href="" class="list-group-item" data-toggle="modal" data-target="#questionModal" ng-click="editQuestion($index)">
+                <h4 class="list-group-item-heading">Question{{$index+1}}</h4>
+                <p class="list-group-item-text">
+                    {{question.question}}
+                    <span class="glyphicon glyphicon-pencil pull-right"></span>
+                </p>
+            </a>
+        </div>
+
+        <ul class="list-group" ng-show="editing">
+            <li class="list-group-item" ng-repeat="question in homework.questions">
+                <h4 class="list-group-item-heading text-danger">
+                    Question{{$index+1}}
+                    <button class="btn btn-danger pull-right" ng-click="removeQuestion($index)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        delete
+                    </button>
+                </h4>
+                <p class="list-group-item-text text-danger">{{question.question}}</p>
+            </li>
+        </ul>
+    </section>
+
+    <!--Add Question Button-->
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#questionModal" ng-click="addQuestion()">
+        <span class="glyphicon glyphicon-plus"></span>
+        Add Question
+    </button>
+
+    <!--Add Question Modal-->
+    <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Edit Question</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form name="questionForm" role="form">
+                        <div class="form-group">
+                            <label class="control-label" for="question">Question</label>
+                            <textarea id="question" ng-model="question.question" rows="4" class="form-control" placeholder="Type your question..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="cAnswer">Correct Answer</label>
+                            <input id="cAnswer" ng-model="question.correctAnswer.answer" type="text" class="form-control" placeholder="Type your answer..." required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="oAnswer">Other Answers</label>
+                            <div class="input-group" ng-repeat="answer in question.otherAnswers">
+                                <input id="oAnswer" type="text" class="form-control" ng-model="answer.answer" placeholder="Type your answer...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-danger" ng-click="removeAnswer($index)" ng-disabled="question.otherAnswers.length===1">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                        delete
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-primary" ng-click="addAnswer()">Add Answer</button>
+                        </div>
+                    </form>
+
+                    <div ng-show="saveSuccess" class="alert alert-success">Question saved Successfully</div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="saveQuestion()" ng-disabled="questionForm.$invalid">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

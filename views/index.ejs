@@ -3,13 +3,13 @@
 <head>
     <base href="/">
     <title>Student Vote System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-
     <div class="container">
-        <div class="header">
+        <nav class="header">
             <ul class="nav nav-pills pull-right">
                 <li>
                     <a href="/">
@@ -31,25 +31,34 @@
                 </li>
             </ul>
             <h3 class="text-muted">Student Vote App</h3>
-        </div>
-        <hr/>
+        </nav>
+
+        <hr>
+
         <div ng-view=""></div>
+
+        <hr>
+
+        <footer>
+            <p class="text-center"><small class="text-muted">gerwin glorieux - king's college london 2013-2014</small></p>
+        </footer>
     </div>
 
     <!--Vendor Scripts-->
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/bootstrap/js/modal.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <!--Own Scripts-->
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/home.js"></script>
-    <script src="scripts/controllers/teacher.js"></script>
     <script src="scripts/controllers/login.js"></script>
-    <script src="scripts/controllers/module.js"></script>
-    <script src="scripts/controllers/lecture.js"></script>
-    <script src="scripts/controllers/homework.js"></script>
+    <script src="scripts/controllers/teacher/teacher.js"></script>
+    <script src="scripts/controllers/teacher/module.js"></script>
+    <script src="scripts/controllers/teacher/lecture.js"></script>
+    <script src="scripts/controllers/teacher/homework.js"></script>
     <script src="scripts/services/authentication.js"></script>
     <script src="scripts/services/modules.js"></script>
     <script src="scripts/services/lectures.js"></script>

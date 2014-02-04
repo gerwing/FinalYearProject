@@ -5,7 +5,7 @@ angular.module('voteApp')
         function($resource) {
           return $resource(
               "/api/teacher/modules/:id",
-              {id: "@id" },
+              {id: "@_id" },
               {
                   "update": {method: "PUT"}
               }

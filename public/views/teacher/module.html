@@ -1,30 +1,106 @@
 <div>
-    <h1>{{module.name}}</h1>
-    <p class="lead">
-        This Module contains the following Lectures and Homework
-    </p>
+    <header>
+        <h1>{{module.name}}</h1>
+        <p class="lead">
+            This Module contains the following Lectures and Homework
+        </p>
+    </header>
 
-    <h2>Lectures:</h2>
-    <div class="list-group">
-        <a ng-repeat="lecture in module.lectures" class="list-group-item" ng-href="/#/teacher/lectures/{{lecture._id}}">{{lecture.name}}</a>
-    </div>
-    <form class="form-inline" ng-submit="addLecture()">
-        <h4>Add Lecture</h4>
-        <div class="form-group">
-            <input class="form-control" ng-model="lecture.name" type="text" name="name" placeholder="Lecture Name">
+    <!--Lectures-->
+    <section class="panel panel-primary" ng-show="module.lectures.length>0">
+        <div class="panel-heading">
+            Lectures
+            <a href="" class="white pull-right" ng-click="editLectures=true" ng-hide="editLectures">Edit</a>
+            <a href="" class="white pull-right" ng-click="saveLectures()" ng-show="editLectures">Done</a>
         </div>
-        <button class="btn btn-primary">Add Lecture</button>
-    </form>
 
-    <h2>Homework:</h2>
-    <div class="list-group">
-        <a ng-repeat="homework in module.homework" class="list-group-item" ng-href="/#/teacher/homework/{{homework._id}}">{{homework.name}}</a>
-    </div>
-    <form class="form-inline" ng-submit="addHomework()">
-        <h4>Add Homework</h4>
-        <div class="form-group">
-            <input class="form-control" ng-model="homework.name" type="text" name="name" placeholder="Homework Name">
+        <div class="list-group" ng-hide="editLectures">
+            <a ng-repeat="lecture in module.lectures" class="list-group-item" ng-href="/#/teacher/lectures/{{lecture._id}}">
+                {{lecture.name}}
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </a>
         </div>
-        <button class="btn btn-primary">Add Homework</button>
-    </form>
+
+        <ul class="list-group" ng-show="editLectures">
+            <li class="list-group-item" ng-repeat="lecture in module.lectures">
+                <div class="input-group">
+                    <input type="text" class="form-control" ng-model="lecture.name" ng-change="saveLecture($index)">
+                    <span class="input-group-btn">
+                        <button class="btn btn-danger" ng-click="removeLecture($index)">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            delete
+                        </button>
+                    </span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!--Add Lecture-->
+    <section class="panel panel-info">
+        <div class="panel-heading">Add New Lecture</div>
+        <div class="panel-body">
+            <div class="row">
+                <form class="form-inline" role="form" ng-submit="addLecture()">
+                    <div class="form-group col-md-4">
+                        <label class="sr-only" for="newLectureName">New Lecture Name</label>
+                        <input class="form-control" id="newLectureName" ng-model="lecture.name" type="text" name="name" placeholder="Lecture Name">
+                    </div>
+                    <button class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Add Lecture
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!--Homework-->
+    <section class="panel panel-primary" ng-show="module.homework.length>0">
+        <div class="panel-heading">
+            Homework
+            <a href="" class="white pull-right" ng-click="editHomework=true" ng-hide="editHomework">Edit</a>
+            <a href="" class="white pull-right" ng-click="saveHomeworks()" ng-show="editHomework">Done</a>
+        </div>
+
+        <div class="list-group" ng-hide="editHomework">
+            <a ng-repeat="homework in module.homework" class="list-group-item" ng-href="/#/teacher/homework/{{homework._id}}">
+                {{homework.name}}
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </a>
+        </div>
+
+        <ul class="list-group" ng-show="editHomework">
+            <li class="list-group-item" ng-repeat="homework in module.homework">
+                <div class="input-group">
+                    <input type="text" class="form-control" ng-model="homework.name" ng-change="saveHomework($index)">
+                    <span class="input-group-btn">
+                        <button class="btn btn-danger" ng-click="removeHomework($index)">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            delete
+                        </button>
+                    </span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!--Add Homework-->
+    <section class="panel panel-info">
+        <div class="panel-heading">Add New Homework</div>
+        <div class="panel-body">
+            <div class="row">
+                <form class="form-inline" role="form" ng-submit="addHomework()">
+                    <div class="form-group col-md-4">
+                        <label class="sr-only" for="newHomeworkName">New Homework Name</label>
+                        <input class="form-control" id="newHomeworkName" ng-model="homework.name" type="text" name="name" placeholder="Homework Name">
+                    </div>
+                    <button class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Add Homework
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
 </div>
