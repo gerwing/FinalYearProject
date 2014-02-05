@@ -4,11 +4,14 @@
  */
 
 var basePathTeacher = '/api/teacher/homework',
+    basePathStudent = '/api/student/homework',
     Homework = require('../data/models/homework'),
     Module = require('../data/models/modules'),
     loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher');
 
 module.exports = function(app) {
+
+    /**TEACHER API*/
 
     //TEACHER GET ONE
     app.get(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
@@ -108,5 +111,34 @@ module.exports = function(app) {
                 });
             });
         });
+    });
+
+    /**STUDENT API*/
+
+    //STUDENT GET ONE
+    app.get(basePathStudent + '/:id', function(req, res, next) {
+        var id = req.params.id;
+        //Get Homework from DB
+        Homework
+            .findOne({_id:id})
+            .populate('teacher', 'name')
+            .exec(function(err,result) {
+                if(err) {
+                    return next(err);
+                }
+                var q = result.questions;
+                for(var i=0;i< q.length;i++) {
+                    var question = {
+                        question: q[i].question,
+                        answers: []
+                    };
+                    question.answers.push(q[i].correctAnswer.answer);
+                    for(var x=0;x<q[i].otherAnswers.length;x++) {
+                        question.answers.push(q[i].otherAnswers[x].answer);
+                    }
+                    q[i] = question;
+                }
+                res.send(result);
+            });
     });
 };
