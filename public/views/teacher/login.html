@@ -3,7 +3,7 @@
   <p class="lead">
     Please log in using your username and password
   </p>
-  <form name="loginForm" ng-submit="login()">
+  <form name="loginForm" role="form" ng-submit="login()">
       <div class="form-group has-feedback" ng-class="{'has-error':usernameError, 'has-success':passwordError}">
           <label class="control-label" for="username">Username</label>
           <input id="username" ng-model="username" class="form-control input-lg" type="text" placeholder="Username" required>

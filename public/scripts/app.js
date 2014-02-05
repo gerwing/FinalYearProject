@@ -30,6 +30,15 @@ var app = angular.module('voteApp', ['ngRoute','ngResource'])
                     templateUrl: 'views/teacher/homework.html',
                     controller: 'HomeworkCtrl'
                 })
+                .when('/student', {
+                    templateUrl: 'views/student/index.html'
+                })
+                .when('/student/lecture', {
+                    templateUrl: 'views/student/lecture.html'
+                })
+                .when('/student/homework', {
+                    templateUrl: 'views/student/homework.html'
+                })
                 .otherwise({
                     redirectTo: '/'
                 });
