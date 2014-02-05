@@ -1,0 +1,20 @@
+<div>
+    <header>
+        <h1>{{homework.name}}</h1>
+        <p class="lead">
+            Please solve all the questions.
+        </p>
+    </header>
+    <section ng-hide="finished">
+        <h2>{{question.question}}</h2>
+        <h3 ng-repeat="answer in question.answers">
+            <input type="radio" name="answer">
+            {{answer}}
+        </h3>
+        <button class="btn btn-primary btn-lg" ng-click="nextQuestion()">Next Question</button>
+    </section>
+    <section ng-show="finished">
+        <h2>Finished!</h2>
+        <h3>Thank you for solving {{homework.name}}</h3>
+    </section>
+</div>
