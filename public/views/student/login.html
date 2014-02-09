@@ -4,7 +4,7 @@
         Please login or register using your email. You don't have to use a password,
         we won't store any sensitive data about you so it's up to you whether you want to use a password or not.
     </p>
-    <form name="loginForm" role="form" ng-submit="login()">
+    <form name="loginForm" role="form">
         <div class="form-group">
             <label class="control-label" for="email">Email</label>
             <input id="email" ng-model="username" class="form-control input-lg" type="text" placeholder="Email" required>
@@ -13,7 +13,12 @@
             <label class="control-label" for="password">Password</label>
             <input id="password" ng-model="password" class="form-control input-lg" type="password" placeholder="Password">
         </div>
-        <div ng-show="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
-        <button class="btn btn-lg btn-primary" ng-disabled="loginForm.$invalid">Login</button>
+        <div ng-show="passwordError" class="alert alert-danger">{{errorMessage}}</div>
+        <div class="alert alert-info" ng-show="usernameError">
+            <h4>You aren't registered yet</h4>
+            <p>Would you like to register using the following email address: {{username}}?</p>
+            <button class="btn btn-primary" ng-disabled="loginForm.$invalid" ng-click="register()">Register</button>
+        </div>
+        <button class="btn btn-lg btn-primary" ng-disabled="loginForm.$invalid" ng-click="login()">Login</button>
     </form>
 </div>

@@ -32,7 +32,7 @@ var app = angular.module('voteApp', ['ngRoute','ngResource'])
                 })
                 .when('/student/login', {
                     templateUrl: 'views/student/login.html',
-                    controller: 'LoginCtrl'
+                    controller: 'StdLoginCtrl'
                 })
                 .when('/student', {
                     templateUrl: 'views/student/student.html',
