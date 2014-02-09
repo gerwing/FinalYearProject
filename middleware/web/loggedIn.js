@@ -8,3 +8,5 @@ module.exports = function(req, res, next) {
     }
     else res.redirect('/');
 };
+
+//TODO Rewrite using header information to distinguish between Web and API version

@@ -1,0 +1,19 @@
+<div>
+    <h1>Student Login</h1>
+    <p class="lead">
+        Please login or register using your email. You don't have to use a password,
+        we won't store any sensitive data about you so it's up to you whether you want to use a password or not.
+    </p>
+    <form name="loginForm" role="form" ng-submit="login()">
+        <div class="form-group">
+            <label class="control-label" for="email">Email</label>
+            <input id="email" ng-model="username" class="form-control input-lg" type="text" placeholder="Email" required>
+        </div>
+        <div class="form-group has-feedback" ng-class="{'has-error':passwordError}">
+            <label class="control-label" for="password">Password</label>
+            <input id="password" ng-model="password" class="form-control input-lg" type="password" placeholder="Password">
+        </div>
+        <div ng-show="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
+        <button class="btn btn-lg btn-primary" ng-disabled="loginForm.$invalid">Login</button>
+    </form>
+</div>

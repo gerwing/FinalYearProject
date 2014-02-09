@@ -11,7 +11,7 @@ var app = angular.module('voteApp', ['ngRoute','ngResource'])
                     controller: 'HomeCtrl'
                 })
                 .when('/teacher', {
-                    templateUrl: 'views/teacher/index.html',
+                    templateUrl: 'views/teacher/teacher.html',
                     controller: 'TeacherCtrl'
                 })
                 .when('/teacher/login', {
@@ -30,18 +30,21 @@ var app = angular.module('voteApp', ['ngRoute','ngResource'])
                     templateUrl: 'views/teacher/homework.html',
                     controller: 'HomeworkCtrl'
                 })
+                .when('/student/login', {
+                    templateUrl: 'views/student/login.html',
+                    controller: 'LoginCtrl'
+                })
                 .when('/student', {
-                    templateUrl: 'views/student/index.html'
+                    templateUrl: 'views/student/student.html',
+                    controller: 'StudentCtrl'
                 })
-                .when('/student/lecture', {
-                    templateUrl: 'views/student/lecture.html'
-                })
-                .when('/student/homework', {
-                    templateUrl: 'views/student/homework.html'
+                .when('/student/lectures/:id', {
+                    templateUrl: 'views/student/lecture.html',
+                    controller: 'StdLectureCtrl'
                 })
                 .when('/student/homework/:id', {
-                    templateUrl: 'views/student/dohomework.html',
-                    controller: 'DoHomeworkCtrl'
+                    templateUrl: 'views/student/homework.html',
+                    controller: 'StdHomeworkCtrl'
                 })
                 .otherwise({
                     redirectTo: '/'
@@ -56,5 +59,5 @@ app.run(['$http', '$rootScope', '$location', 'Authentication',
         //Try get user
         authentication.getCurrentUser();
         //Set Logout function
-        $rootScope.logout = authentication.logoutTeacher;
+        $rootScope.logout = authentication.logout;
 }]);

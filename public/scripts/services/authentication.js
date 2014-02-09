@@ -4,11 +4,11 @@ angular.module('voteApp')
     .factory('Authentication', ['$http','$rootScope','$location',
         function($http,$rootScope,$location) {
             return {
-                loginTeacher: function(scope) {
+                login: function(scope) {
                     //Prepare post data
                     var data = {username:scope.username, password:scope.password};
                     //Try logging in
-                    $http.post('/api/teacher/login', data)
+                    $http.post('/api/user/login', data)
                         .success(function(data) {
                             $rootScope.user = data; //Add user to rootscope
                             if($rootScope.lastPath) {
@@ -16,7 +16,12 @@ angular.module('voteApp')
                                 delete $rootScope.lastPath;
                             }
                             else {
-                                $location.path('/teacher'); //move to teacher home page
+                                if(data.isTeacher){
+                                    $location.path('/teacher'); //move to teacher home page
+                                }
+                                else {
+                                    $location.path('/student'); //move to student home page
+                                }
                             }
                         })
                         .error(function(data, status) {
@@ -33,8 +38,8 @@ angular.module('voteApp')
                             }
                         });
                 },
-                logoutTeacher: function() {
-                    $http.post('/api/teacher/logout').
+                logout: function() {
+                    $http.post('/api/user/logout').
                         success(function() {
                             $location.path('/');
                             delete $rootScope.user;
@@ -60,6 +65,18 @@ angular.module('voteApp')
                     $rootScope.lastPath = $location.path();
                     //Redirect to login page
                     $location.path('/teacher/login');
+                    return false;
+                },
+                verifyStudent: function() {
+                    //Check for logged in user
+                    if($rootScope.user) {
+                        return true;
+                    }
+                    //User needs to log in
+                    //Save current path
+                    $rootScope.lastPath = $location.path();
+                    //Redirect to login page
+                    $location.path('/student/login');
                     return false;
                 }
             };

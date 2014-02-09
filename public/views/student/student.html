@@ -1,0 +1,49 @@
+<div>
+    <header>
+        <h1>Hello {{user.name}}</h1>
+        <p class="lead">
+            You currently have the following lectures and homework:
+        </p>
+    </header>
+
+    <!--Live Lectures-->
+    <section class="panel panel-primary" ng-show="">
+        <div class="panel-heading">Live Lectures</div>
+
+        <div class="list-group">
+            <a class="list-group-item" ng-repeat="lecture in lectures" ng-href="/#/student/lectures/{{lecture._id}}">
+                {{lecture.name}}
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </a>
+        </div>
+    </section>
+
+    <!--Available Homework-->
+    <section class="panel panel-primary" ng-show="">
+        <div class="panel-heading">Available Homework</div>
+
+        <div class="list-group">
+            <a class="list-group-item" ng-repeat="work in homework" ng-href="/#/student/homework/{{work._id}}">
+                {{work.name}}
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </a>
+        </div>
+    </section>
+
+    <!--Subscribe Module-->
+    <section class="panel panel-info">
+        <div class="panel-heading">Subscribe to Module</div>
+        <div class="row panel-body">
+            <form class="form-inline" role="form" ng-submit="subscribeModule()">
+                <div class="form-group col-md-4">
+                    <label class="sr-only" for="subscribeModuleID">Subscribe Module ID Code</label>
+                    <input class="form-control" id="subscribeModuleID" ng-model="module.id" type="text" name="name" placeholder="Module ID Code">
+                </div>
+                <button class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </section>
+</div>

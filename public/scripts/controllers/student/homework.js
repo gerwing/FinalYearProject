@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('DoHomeworkCtrl',['$scope','$routeParams','Homework',
+    .controller('StdHomeworkCtrl',['$scope','$routeParams','Homework',
     function($scope,$routeParams,Homework) {
         $scope.homework = Homework.doHomework({id:$routeParams.id},function(){
             $scope.question = $scope.homework.questions[0];

@@ -114,6 +114,7 @@ module.exports = function(app) {
     });
 
     /**STUDENT API*/
+
     //STUDENT GET ONE
     app.get(basePathStudent + '/:id', function(req, res, next) {
         var id = req.params.id;
