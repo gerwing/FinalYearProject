@@ -3,40 +3,80 @@
 angular.module('voteApp')
     .factory('Authentication', ['$http','$rootScope','$location',
         function($http,$rootScope,$location) {
-            return {
-                login: function(scope) {
-                    //Prepare post data
-                    var data = {username:scope.username, password:scope.password};
-                    //Try logging in
-                    $http.post('/api/user/login', data)
-                        .success(function(data) {
-                            $rootScope.user = data; //Add user to rootscope
-                            if($rootScope.lastPath) {
-                                $location.path($rootScope.lastPath); //move to last page
-                                delete $rootScope.lastPath;
+            //General Login Function
+            var login = function(scope,path) {
+                //Prepare post data
+                var data = {username:scope.username, password:scope.password};
+                //Try logging in
+                $http.post(path, data)
+                    .success(function(data) {
+                        $rootScope.user = data; //Add user to rootscope
+                        if($rootScope.lastPath) {
+                            $location.path($rootScope.lastPath); //move to last page
+                            delete $rootScope.lastPath;
+                        }
+                        else {
+                            if(data.isTeacher){
+                                $location.path('/teacher'); //move to teacher home page
                             }
                             else {
-                                if(data.isTeacher){
-                                    $location.path('/teacher'); //move to teacher home page
-                                }
-                                else {
-                                    $location.path('/student'); //move to student home page
-                                }
+                                $location.path('/student'); //move to student home page
                             }
-                        })
-                        .error(function(data, status) {
-                            if(status === 401) {  //Login failed
-                                if(data.problem === 'username') { //wrong username
-                                    scope.usernameError = true;
-                                    scope.passwordError = false;
-                                }
-                                else if(data.problem === 'password') { //wrong password
-                                    scope.usernameError = false;
-                                    scope.passwordError = true;
-                                }
-                                scope.errorMessage = data.message; //set an error message
+                        }
+                    })
+                    .error(function(data, status) {
+                        if(status === 401) {  //Login failed
+                            if(data.problem === 'username') { //wrong username
+                                scope.usernameError = true;
+                                scope.passwordError = false;
                             }
-                        });
+                            else if(data.problem === 'password') { //wrong password
+                                scope.usernameError = false;
+                                scope.passwordError = true;
+                            }
+                            scope.errorMessage = data.message; //set an error message
+                        }
+                    });
+            };
+            var register = function(scope,path,data) {
+                $http.post(path, data)
+                    .success(function(data) {
+                        $rootScope.user = data; //Add user to rootscope
+                        if(data.isTeacher){
+                            $location.path('/teacher'); //move to teacher home page
+                        }
+                        else {
+                            $location.path('/student'); //move to student home page
+                        }
+                    })
+                    .error(function(data, status) {
+                        if(status === 409) {  //Username taken
+                            scope.usernameConflict = true;
+                            scope.errorMessage = data.message; //set an error message
+                        }
+                        else if(status === 406) {
+                            scope.missingFields = true;
+                            scope.errorMessage = data; //set an error message
+                        }
+                    });
+            };
+            return {
+                loginTeacher: function(scope) {
+                    login(scope,'/api/teacher/login');
+                },
+                loginStudent: function(scope) {
+                    login(scope,'/api/student/login');
+                },
+                registerStudent: function(scope) {
+                    //Prepare post data
+                    var data = {username:scope.username, password:scope.password};
+                    register(scope,'/api/student/register',data);
+                },
+                registerTeacher: function(scope) {
+                    //Prepare post data
+                    var data = {username:scope.username, password:scope.password,
+                                name:scope.name, email:scope.email};
+                    register(scope,'/api/teacher/register',data);
                 },
                 logout: function() {
                     $http.post('/api/user/logout').

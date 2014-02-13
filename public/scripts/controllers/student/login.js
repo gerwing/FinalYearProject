@@ -7,13 +7,16 @@ angular.module('voteApp')
             $scope.password = "";
             //Set login function
             $scope.login = function() {
-                //Hash username
-
-                //Set standard empty password
-                if($scope.password === "") {
-                    $scope.password = "student";
-                }
                 //Login
-                authentication.login($scope);
+                authentication.loginStudent($scope);
             };
+            $scope.register = function() {
+                //Register
+                authentication.registerStudent($scope);
+            }
+            $scope.reset = function() {
+                if($scope.usernameError) {
+                    delete $scope.usernameError;
+                }
+            }
     }]);

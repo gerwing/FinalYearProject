@@ -5,6 +5,10 @@ angular.module('voteApp')
         function($scope,authentication) {
             //Set login function
             $scope.login = function() {
-                authentication.login($scope);
+                authentication.loginTeacher($scope);
             };
+            //Set Register function
+            $scope.register = function() {
+                authentication.registerTeacher($scope);
+            }
     }]);

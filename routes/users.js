@@ -7,7 +7,7 @@ module.exports = function(app) {
 
     /**TEACHER API*/
     //REGISTER TEACHER
-    app.post('/teacher/register', function(req,res,next) {
+    app.post('/api/teacher/register', function(req,res,next) {
         //Mark as teacher
         var newTeacher = req.body;
         newTeacher.isTeacher = true;
@@ -16,7 +16,7 @@ module.exports = function(app) {
             if(err) {
                 //Username already taken
                 if(err.code === 11000) {
-                    res.send('Conflict', 409);
+                    res.send({message:'Your chosen username is already taken'}, 409);
                 }
                 else if(err.name === 'ValidationError') {
                     return res.send(Object.keys(err.errors).map(function(errField){
@@ -28,38 +28,40 @@ module.exports = function(app) {
                 }
                 return;
             }
-            //Login teacher and forward to his homepage
+            //Login teacher
             req.login(user, function(err) {
                 if (err) { return next(err); }
-                return res.redirect('/teacher');
+                return res.send(user, 201);
             });
         });
     });
 
     //UPDATE TEACHER
     //TODO complete
-    app.put('/teacher/:id', function(req,res) {
+    app.put('/api/teacher/:id', function(req,res) {
         //Update Teacher Account
     });
 
     //DELETE TEACHER
     //TODO complete
-    app.delete('/teacher/:id', function(req,res) {
+    app.delete('/api/teacher/:id', function(req,res) {
         //Delete Teacher Account
     });
 
     /**STUDENT API*/
     //REGISTER STUDENT
-    app.post('/student/register', function(req,res,next) {
-        //Mark as student
+    app.post('/api/student/register', function(req,res,next) {
         var newStudent = req.body;
+        //Mark as student
         newStudent.isTeacher = false;
+        newStudent.name = "Student";
+        newStudent.email = newStudent.username;
         //Register Student
         User.create(newStudent, function(err, user) {
             if(err) {
                 //Username already taken
                 if(err.code === 11000) {
-                    res.send('Conflict', 409);
+                    res.send({message:'You already registered with that email'}, 409);
                 }
                 else if(err.name === 'ValidationError') {
                     return res.send(Object.keys(err.errors).map(function(errField){
@@ -71,10 +73,10 @@ module.exports = function(app) {
                 }
                 return;
             }
-            //Login student and forward to his homepage
+            //Login student
             req.login(user, function(err) {
                 if (err) { return next(err); }
-                return res.redirect('/student');
+                return res.send(user, 201);
             });
         });
     });

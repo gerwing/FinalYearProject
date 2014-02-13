@@ -3,39 +3,30 @@
  */
 
 var loggedInAsTeacher = require('../middleware/web/loggedInAsTeacher');
-var loggedIn = require('../middleware/web/loggedIn');
 
 module.exports = function(app, passport) {
 
     //TODO make safer method or use https
-
-    /**TEACHER SPECIFIC AUTHENTICATION*/
-    //LOGIN TEACHER
-    app.post('/teacher/login', passport.authenticate('local',
-        {successRedirect:'/teacher', failureRedirect:'/teacher/login'}
-    ));
-
-    //LOGOUT TEACHER
-    app.post('/teacher/logout', loggedInAsTeacher, function(req,res) {
-        req.logout();
-        res.redirect('/teacher/login');
-    });
-
-    /**STUDENT SPECIFIC AUTHENTICATION*/
-    //LOGIN STUDENT
-    app.post('/student/login', passport.authenticate('local',
-        {successRedirect:'/student', failureRedirect:'/student/login'}
-    ));
-
-    //LOGOUT STUDENT
-    app.post('/student/logout', loggedIn, function(req,res) {
-        req.logout();
-        res.redirect('/student/login');
-    });
-
     /**API USER AUTHENTICATION*/
     //LOGIN USER USING API
-    app.post('/api/user/login', function(req, res, next) {
+    app.post('/api/teacher/login', function(req, res, next) {
+        passport.authenticate('local', function(err, user, info) {
+            if (err) { return next(err) }
+            if (!user) {
+                return res.send(info, 401);
+            }
+            if(!user.isTeacher) {
+                return res.send({message:"You're not a Teacher"}, 401);
+            }
+            req.logIn(user, function(err) {
+                if (err) { return next(err); }
+                return res.send(user);
+            });
+        })(req, res, next);
+    });
+
+    //LOGIN USER USING API
+    app.post('/api/student/login', function(req, res, next) {
         passport.authenticate('local', function(err, user, info) {
             if (err) { return next(err) }
             if (!user) {

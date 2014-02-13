@@ -17,10 +17,16 @@
                         Home
                     </a>
                 </li>
-                <li ng-show="user">
+                <li ng-show="(user) && user.isTeacher">
                     <a href="/#/teacher">
                         <span class="glyphicon glyphicon-user"></span>
                         {{user.username}}
+                    </a>
+                </li>
+                <li ng-show="(user) && !user.isTeacher">
+                    <a href="/#/student">
+                        <span class="glyphicon glyphicon-user"></span>
+                        Student
                     </a>
                 </li>
                 <li ng-show="user">
