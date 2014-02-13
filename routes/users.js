@@ -81,4 +81,10 @@ module.exports = function(app) {
         });
     });
 
+    //DELETE Student
+    //TODO complete
+    app.delete('/api/student/:id', function(req,res) {
+        //Delete Student Account
+    });
+
 };

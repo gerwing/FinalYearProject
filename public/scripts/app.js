@@ -50,7 +50,7 @@ var app = angular.module('voteApp', ['ngRoute','ngResource'])
                     redirectTo: '/'
                 });
             //Set HTML5 Mode
-            $locationProvider.html5Mode(false);
+            $locationProvider.html5Mode(true);
     }]);
 
 //Get Current User
