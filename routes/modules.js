@@ -4,6 +4,7 @@
  */
 
 var basePathTeacher = '/api/teacher/modules',
+    basePathStudent = '/api/student/modules',
     Module = require('../data/models/modules'),
     Lecture = require('../data/models/lectures'),
     Homework = require('../data/models/homework'),
@@ -108,4 +109,6 @@ module.exports = function(app) {
             })
         })
     });
+
+
 };

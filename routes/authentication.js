@@ -2,7 +2,8 @@
  * Authentication routes serving Web App
  */
 
-var loggedInAsTeacher = require('../middleware/web/loggedInAsTeacher');
+var loggedInAsTeacher = require('../middleware/web/loggedInAsTeacher'),
+    loggedIn = require('../middleware/web/loggedIn');
 
 module.exports = function(app, passport) {
 
@@ -40,7 +41,7 @@ module.exports = function(app, passport) {
     });
 
     //LOGOUT USER USING API
-    app.post('/api/user/logout', loggedInAsTeacher, function(req,res) {
+    app.post('/api/user/logout', loggedIn, function(req,res) {
         req.logout();
         res.send({message:'Successfully Logged out'} , 200);
     });
