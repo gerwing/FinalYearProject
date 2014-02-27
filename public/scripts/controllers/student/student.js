@@ -1,12 +1,13 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('StudentCtrl', ['$scope', '$http', 'Authentication', 'Module',
-    function($scope,$http,Authentication,Module){
+    .controller('StudentCtrl', ['$scope', '$http', 'Authentication', 'Module', 'Homework',
+    function($scope,$http,Authentication,Module,Homework){
         //Check Whether User is logged in as teacher
         if(!Authentication.verifyStudent()){
             return;
         }
+        $scope.homework = Homework.getHomework();
         $scope.subscribeModule = function() {
             $scope.moduleNotFound = false; //Set Module error to default (hidden)
             $http.post('/api/student/subscribe', {id:$scope.module.id})

@@ -36,6 +36,10 @@ var UserSchema = mongoose.Schema({
 
 //Hash Password before saving to DB
 UserSchema.pre('save', function(next) {
+    if(!this.isNew) {
+        //Only hash password when creating new user
+        return next();
+    }
     var user = this;
     bcrypt.hash(user.password, null, null, function(err, hash) {
         if(err) {

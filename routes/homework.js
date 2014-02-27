@@ -7,7 +7,8 @@ var basePathTeacher = '/api/teacher/homework',
     basePathStudent = '/api/student/homework',
     Homework = require('../data/models/homework'),
     Module = require('../data/models/modules'),
-    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher');
+    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
+    loggedIn = require('../middleware/api/loggedIn');
 
 module.exports = function(app) {
 
@@ -117,7 +118,18 @@ module.exports = function(app) {
     });
 
     /**STUDENT API*/
-
+    //STUDENT GET ALL LIVE HOMEWORK
+    app.get(basePathStudent, loggedIn, function(req,res,next) {
+        Module
+            .find({_id:{$in:req.user.subscribedTo}})
+            .populate({ path: 'homework', match: { isLive: true }, select: 'name _id' })
+            .exec(function(err, result) {
+                if(err) {
+                    return next(err);
+                }
+                res.send(result.homework);
+            });
+    });
     //STUDENT GET ONE
     app.get(basePathStudent + '/:id', function(req, res, next) {
         var id = req.params.id;

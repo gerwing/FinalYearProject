@@ -3,7 +3,7 @@
 angular.module('voteApp')
     .controller('StdHomeworkCtrl',['$scope','$routeParams','Homework',
     function($scope,$routeParams,Homework) {
-        $scope.homework = Homework.doHomework({id:$routeParams.id},function(){
+        $scope.homework = Homework.getHomework({id:$routeParams.id},function(){
             $scope.question = $scope.homework.questions[0];
             $scope.currentQuestion = 0;
         });
