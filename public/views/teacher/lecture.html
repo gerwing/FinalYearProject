@@ -44,6 +44,17 @@
         Add Question
     </button>
 
+    <!--Make Live Button-->
+    <button class="btn btn-success btn-lg" ng-click="makeLive()" ng-hide="lecture.isLive">
+        <span class="glyphicon glyphicon-ok"></span>
+        Make Lecture Live
+    </button>
+    <!--Make Live Button-->
+    <button class="btn btn-danger btn-lg" ng-click="stopLecture()" ng-show="lecture.isLive">
+        <span class="glyphicon glyphicon-remove"></span>
+        Stop Lecture
+    </button>
+
     <!--Add Question Modal-->
     <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">

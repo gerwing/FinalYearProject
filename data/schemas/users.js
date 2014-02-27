@@ -3,7 +3,8 @@
  */
 
 var mongoose = require('mongoose'),
-    bcrypt = require('bcrypt-nodejs');
+    bcrypt = require('bcrypt-nodejs'),
+    Schema = mongoose.Schema;
 
 var UserSchema = mongoose.Schema({
     name: {
@@ -26,7 +27,11 @@ var UserSchema = mongoose.Schema({
     isTeacher: {
         type: Boolean,
         default: false
-    }
+    },
+    subscribedTo: [{
+        type: Schema.ObjectId,
+        ref: 'Modules'
+    }]
 });
 
 //Hash Password before saving to DB

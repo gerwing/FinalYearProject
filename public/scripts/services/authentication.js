@@ -93,6 +93,9 @@ angular.module('voteApp')
                             }
                         });
                 },
+                setCurrentUser: function(user) {
+                    $rootScope.user = user;
+                },
                 verifyTeacher: function() {
                     //Check for logged in teacher
                     if($rootScope.user) {

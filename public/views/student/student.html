@@ -31,7 +31,7 @@
     </section>
 
     <!--Subscribe Module-->
-    <section class="panel panel-info">
+    <section class="panel" ng-class="{'panel-danger':moduleNotFound, 'panel-info':!moduleNotFound}">
         <div class="panel-heading">Subscribe to Module</div>
         <div class="row panel-body">
             <form class="form-inline" role="form" ng-submit="subscribeModule()">

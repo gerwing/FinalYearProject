@@ -1,7 +1,9 @@
 /*
  * User routes
  */
-var User = require('../data/models/users');
+var User = require('../data/models/users'),
+    Module = require('../data/models/modules'),
+    loggedIn = require('../middleware/api/loggedIn');
 
 module.exports = function(app) {
 
@@ -85,6 +87,31 @@ module.exports = function(app) {
     //TODO complete
     app.delete('/api/student/:id', function(req,res) {
         //Delete Student Account
+    });
+
+    //SUBSCRIBE TO MODULE
+    app.post('/api/student/subscribe', loggedIn, function(req,res, next) {
+        var id = req.body.id;
+        var user = req.user;
+        //Lookup module and if it exists, add it to user subscriptions
+        Module.findOne({_id:id}, function(err, module) {
+            if(err) {
+                return next(err);
+            }
+            if(!module) {
+                return res.send({message:'Module does not exist'}, 404); //Module not found
+            }
+            if(user.subscribedTo) {
+                user.subscribedTo = new Array();
+            }
+            user.subscribedTo.push(id);
+            user.save(function(err) {
+                if(err) {
+                    return next(err);
+                }
+                res.send(user, 200);
+            });
+        })
     });
 
 };

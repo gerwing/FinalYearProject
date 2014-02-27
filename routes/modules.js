@@ -8,7 +8,9 @@ var basePathTeacher = '/api/teacher/modules',
     Module = require('../data/models/modules'),
     Lecture = require('../data/models/lectures'),
     Homework = require('../data/models/homework'),
-    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher');
+    User = require('../data/models/users'),
+    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
+    loggedIn = require('../middleware/api/loggedIn');
 
 
 module.exports = function(app) {
@@ -109,6 +111,5 @@ module.exports = function(app) {
             })
         })
     });
-
 
 };

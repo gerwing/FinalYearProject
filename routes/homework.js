@@ -76,6 +76,9 @@ module.exports = function(app) {
         if(req.body.questions) {
             update.questions = req.body.questions;
         }
+        if(req.body.isLive === false || req.body.isLive === true) {
+            update.isLive = req.body.isLive;
+        }
         //Update Lecture in DB
         Homework.update({_id:id, teacher:teacher}, update, function(err) {
             if(err) {

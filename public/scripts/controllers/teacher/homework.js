@@ -58,4 +58,12 @@ angular.module('voteApp')
             $scope.removeAnswer = function(index) {
                 $scope.question.otherAnswers.splice(index,1);
             };
+            $scope.makeLive = function() {
+                $scope.homework.isLive = true;
+                Homework.update({id:$scope.homework._id},$scope.homework);
+            };
+            $scope.stopHomework = function() {
+                $scope.homework.isLive = false;
+                Homework.update({id:$scope.homework._id},$scope.homework);
+            };
     }]);

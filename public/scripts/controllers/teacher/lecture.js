@@ -58,4 +58,22 @@ angular.module('voteApp')
             $scope.removeAnswer = function(index) {
                 $scope.question.otherAnswers.splice(index,1);
             };
+
+            $scope.makeLive = function() {
+                $scope.lecture.isLive = true;
+                Lecture.update({id:$scope.lecture._id},$scope.lecture,
+                    function(){
+                        $scope.saveSuccess = true;
+                        $timeout(function(){$scope.saveSuccess=false;},3000);
+                    });
+            };
+
+            $scope.stopLecture = function() {
+                $scope.lecture.isLive = false;
+                Lecture.update({id:$scope.lecture._id},$scope.lecture,
+                    function(){
+                        $scope.saveSuccess = true;
+                        $timeout(function(){$scope.saveSuccess=false;},3000);
+                    });
+            };
     }]);

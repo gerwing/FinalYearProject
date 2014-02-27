@@ -7,7 +7,7 @@ angular.module('voteApp')
               "/api/teacher/modules/:id",
               {id: "@_id" },
               {
-                  "update": {method: "PUT"}
+                  "update": {method: "PUT"},
               }
           );
         }
