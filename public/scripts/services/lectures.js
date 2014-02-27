@@ -7,7 +7,8 @@ angular.module('voteApp')
               "/api/teacher/lectures/:id",
               {id: "@_id" },
               {
-                  "update": {method: "PUT"}
+                  "update": {method: "PUT"},
+                  "getAllLectures" : {method:"GET", url:"/api/student/lectures", isArray:true}
               }
           );
         }

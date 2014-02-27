@@ -4,9 +4,11 @@
  */
 
 var basePathTeacher = '/api/teacher/lectures',
+    basePathStudent = '/api/student/lectures',
     Lecture = require('../data/models/lectures'),
     Module = require('../data/models/modules'),
-    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher');
+    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
+    loggedIn = require('../middleware/api/loggedIn');
 
 module.exports = function(app) {
 
@@ -112,5 +114,26 @@ module.exports = function(app) {
                });
             });
         });
+    });
+
+    /**STUDENT API*/
+    //STUDENT GET ALL LIVE LECTURES
+    app.get(basePathStudent, loggedIn, function(req,res,next) {
+        Module
+            .find({_id:{$in:req.user.subscribedTo}})
+            .distinct('lectures')
+            .exec(function(err, result) {
+                if(err) {
+                    return next(err);
+                }
+                Lecture
+                    .find({_id:{$in:result},isLive:true})
+                    .exec(function(err, results) {
+                        if(err) {
+                            return next(err);
+                        }
+                        res.send(results);
+                    })
+            });
     });
 };

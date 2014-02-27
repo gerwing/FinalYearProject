@@ -101,7 +101,7 @@ module.exports = function(app) {
             if(!module) {
                 return res.send({message:'Module does not exist'}, 404); //Module not found
             }
-            if(user.subscribedTo) {
+            if(!user.subscribedTo) {
                 user.subscribedTo = new Array();
             }
             user.subscribedTo.push(id);

@@ -122,14 +122,22 @@ module.exports = function(app) {
     app.get(basePathStudent, loggedIn, function(req,res,next) {
         Module
             .find({_id:{$in:req.user.subscribedTo}})
-            .populate({ path: 'homework', match: { isLive: true }, select: 'name _id' })
+            .distinct('homework')
             .exec(function(err, result) {
                 if(err) {
                     return next(err);
                 }
-                res.send(result.homework);
+                Homework
+                    .find({_id:{$in:result},isLive:true})
+                    .exec(function(err, results) {
+                        if(err) {
+                            return next(err);
+                        }
+                        res.send(results);
+                    })
             });
     });
+
     //STUDENT GET ONE
     app.get(basePathStudent + '/:id', function(req, res, next) {
         var id = req.params.id;
