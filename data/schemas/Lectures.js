@@ -20,7 +20,11 @@ var LectureSchema = mongoose.Schema({
         question: String,
         correctAnswer: {answer: String},
         otherAnswers: [{answer: String}]
-    }]
+    }],
+    isLive: {
+        type: Boolean,
+        default: false
+    }
 });
 
 module.exports = LectureSchema;

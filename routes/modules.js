@@ -34,8 +34,8 @@ module.exports = function(app) {
         //Get Module from Database
         Module
             .findOne({_id:id, teacher:teacher})
-            .populate('lectures', 'name _id')
-            .populate('homework', 'name _id')
+            .populate('lectures', 'name _id isLive')
+            .populate('homework', 'name _id isLive')
             .exec(function(err, result) {
                 if(err) {
                     return next(err);

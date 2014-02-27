@@ -21,7 +21,11 @@ var HomeworkSchema = mongoose.Schema({
        question: String,
        correctAnswer: {answer: String, timesAnswered: {type: Number, default:0}},
        otherAnswers: [{answer: String, timesAnswered: {type: Number, default:0}}]
-    }]
+    }],
+    isLive: {
+        type: Boolean,
+        default: false
+    }
 });
 
 module.exports = HomeworkSchema;
