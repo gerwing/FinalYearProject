@@ -93,7 +93,8 @@ module.exports = function(app) {
     app.get('/api/student/subscribed', loggedIn, function(req,res,next) {
         Module
             .find({_id:{$in:req.user.subscribedTo}})
-            .select('name')
+            .populate('teacher','name')
+            .select('name teacher')
             .exec(function(err,modules) {
                 if(err) {
                     return next(err);

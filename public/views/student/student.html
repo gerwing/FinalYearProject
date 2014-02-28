@@ -39,13 +39,13 @@
         </div>
         <div class="list-group" ng-hide="editing">
             <a class="list-group-item" ng-repeat="module in modules" ng-href="">
-                {{module.name}}
+                {{module.name}} by {{module.teacher.name}}
             </a>
         </div>
         <ul class="list-group" ng-show="editing">
             <li class="list-group-item" ng-repeat="module in modules">
                 <p class="list-group-item-heading text-danger">
-                    {{module.name}}
+                    {{module.name}} by {{module.teacher.name}}
                     <button class="btn btn-danger btn-sm pull-right" ng-click="unsubscribeModule(module._id)">
                         <span class="glyphicon glyphicon-trash"></span>
                         unsubscribe
