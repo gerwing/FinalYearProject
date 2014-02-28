@@ -16,6 +16,11 @@ var LectureSchema = mongoose.Schema({
         ref: 'Users',
         required: true
     },
+    module: {
+        type: Schema.ObjectId,
+        ref: 'Modules',
+        required: true
+    },
     questions: [{
         question: String,
         correctAnswer: {answer: String},

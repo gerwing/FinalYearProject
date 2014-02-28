@@ -16,6 +16,11 @@ var HomeworkSchema = mongoose.Schema({
        ref: 'Users',
        required: true
     },
+    module: {
+        type: Schema.ObjectId,
+        ref: 'Modules',
+        required: true
+    },
     timesDone: {type: Number, default: 0},
     questions: [{
        question: String,

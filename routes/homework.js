@@ -131,6 +131,7 @@ module.exports = function(app) {
                 Homework
                     .find({_id:{$in:result},isLive:true})
                     .populate('module','name')
+                    .sort('+module.name')
                     .exec(function(err, results) {
                         if(err) {
                             return next(err);

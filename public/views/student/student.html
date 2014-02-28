@@ -12,7 +12,7 @@
 
         <div class="list-group">
             <a class="list-group-item" ng-repeat="lecture in lectures" ng-href="/#/student/lectures/{{lecture._id}}">
-                {{lecture.name}}
+                {{lecture.module.name}} - {{lecture.name}}
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </a>
         </div>
@@ -24,7 +24,7 @@
 
         <div class="list-group">
             <a class="list-group-item" ng-repeat="work in homework" ng-href="/#/student/homework/{{work._id}}">
-                {{work.name}}
+                {{work.module.name}} - {{work.name}}
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </a>
         </div>
