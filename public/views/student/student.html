@@ -30,7 +30,32 @@
         </div>
     </section>
 
-    <!--Subscribe Module-->
+    <!--Subscribed Modules-->
+    <section class="panel panel-info" ng-show="modules.length>0">
+        <div class="panel-heading">
+            Subscribed Modules
+            <a href="" class="pull-right" ng-click="editing=true" ng-hide="editing">Edit</a>
+            <a href="" class="pull-right" ng-click="editing=false" ng-show="editing">Done</a>
+        </div>
+        <div class="list-group" ng-hide="editing">
+            <a class="list-group-item" ng-repeat="module in modules" ng-href="">
+                {{module.name}}
+            </a>
+        </div>
+        <ul class="list-group" ng-show="editing">
+            <li class="list-group-item" ng-repeat="module in modules">
+                <p class="list-group-item-heading text-danger">
+                    {{module.name}}
+                    <button class="btn btn-danger btn-sm pull-right" ng-click="unsubscribeModule(module._id)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        unsubscribe
+                    </button>
+                </p>
+            </li>
+        </ul>
+    </section>
+
+    <!--Subscribe to Module-->
     <section class="panel" ng-class="{'panel-danger':subscribeError, 'panel-info':!subscribeError}">
         <div class="panel-heading">Subscribe to Module</div>
         <div class="row panel-body">

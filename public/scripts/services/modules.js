@@ -8,6 +8,7 @@ angular.module('voteApp')
               {id: "@_id" },
               {
                   "update": {method: "PUT"},
+                  "getSubscribed": {method:"GET", url:"/api/student/subscribed", isArray:true}
               }
           );
         }

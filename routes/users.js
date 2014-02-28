@@ -89,8 +89,21 @@ module.exports = function(app) {
         //Delete Student Account
     });
 
+    //GET ALL MODULES SUBSCRIBED TO
+    app.get('/api/student/subscribed', loggedIn, function(req,res,next) {
+        Module
+            .find({_id:{$in:req.user.subscribedTo}})
+            .select('name')
+            .exec(function(err,modules) {
+                if(err) {
+                    return next(err);
+                }
+                res.send(modules);
+            });
+    });
+
     //SUBSCRIBE TO MODULE
-    app.post('/api/student/subscribe', loggedIn, function(req,res, next) {
+    app.post('/api/student/subscribe', loggedIn, function(req,res,next) {
         var id = req.body.id;
         var user = req.user;
         //Lookup module and if it exists, add it to user subscriptions
@@ -114,6 +127,20 @@ module.exports = function(app) {
                 }
                 res.send(user, 200);
             });
+        })
+    });
+
+    //UNSUBSCRIBE TO MODULE
+    app.post('/api/student/unsubscribe', loggedIn, function(req,res,next) {
+        var id = req.body.id;
+        var user = req.user;
+        //Remove Module from user object
+        user.subscribedTo.splice(user.subscribedTo.indexOf(id),1);
+        user.save(function(err) {
+            if(err) {
+                return next(err);
+            }
+            res.send(user, 200);
         })
     });
 

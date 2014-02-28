@@ -8,14 +8,19 @@ angular.module('voteApp')
             return;
         }
 
-        $scope.homework = Homework.getAllHomework();
-        $scope.lectures = Lecture.getAllLectures();
+        var refresh = function() {
+            $scope.homework = Homework.getAllHomework();
+            $scope.lectures = Lecture.getAllLectures();
+            $scope.modules = Module.getSubscribed();
+        }
+        refresh();
 
         $scope.subscribeModule = function() {
             $scope.subscribeError = false; //Set Module error to default (hidden)
             $http.post('/api/student/subscribe', {id:$scope.module.id})
                 .success(function(data) {
                     Authentication.setCurrentUser(data);
+                    refresh();
                 })
                 .error(function(data,status) {
                     if(status === 404) {  //Module not found
@@ -27,5 +32,15 @@ angular.module('voteApp')
                         $scope.errorMessage = data.message; //set an error message
                     }
                 });
+            delete $scope.module.id;
+        }
+
+        $scope.unsubscribeModule = function(id) {
+            $http.post('/api/student/unsubscribe', {id:id})
+                .success(function(data) {
+                    Authentication.setCurrentUser(data);
+                    refresh();
+                })
+            delete $scope.editing;
         }
     }]);
