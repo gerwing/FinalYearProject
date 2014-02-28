@@ -104,6 +104,9 @@ module.exports = function(app) {
             if(!user.subscribedTo) {
                 user.subscribedTo = new Array();
             }
+            if(user.subscribedTo.indexOf(id)>=0) {
+                return res.send({message:'You are already subscribed to that module'}, 409); //Module already subscribed
+            }
             user.subscribedTo.push(id);
             user.save(function(err) {
                 if(err) {

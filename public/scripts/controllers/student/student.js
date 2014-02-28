@@ -12,14 +12,18 @@ angular.module('voteApp')
         $scope.lectures = Lecture.getAllLectures();
 
         $scope.subscribeModule = function() {
-            $scope.moduleNotFound = false; //Set Module error to default (hidden)
+            $scope.subscribeError = false; //Set Module error to default (hidden)
             $http.post('/api/student/subscribe', {id:$scope.module.id})
                 .success(function(data) {
                     Authentication.setCurrentUser(data);
                 })
                 .error(function(data,status) {
-                    if(status === 404) {  //Username taken
-                        $scope.moduleNotFound = true;
+                    if(status === 404) {  //Module not found
+                        $scope.subscribeError = true;
+                        $scope.errorMessage = data.message; //set an error message
+                    }
+                    if(status === 409) {  //Already Subscribed
+                        $scope.subscribeError = true;
                         $scope.errorMessage = data.message; //set an error message
                     }
                 });
