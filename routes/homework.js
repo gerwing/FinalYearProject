@@ -48,6 +48,7 @@ module.exports = function(app) {
             if(req.body.name)
                 insert.name = req.body.name;
             insert.teacher = teacher;
+            insert.module = id;
             //Create Lecture
             Homework.create(insert, function(err, homework) {
                 if(err) {
@@ -129,6 +130,7 @@ module.exports = function(app) {
                 }
                 Homework
                     .find({_id:{$in:result},isLive:true})
+                    .populate('module','name')
                     .exec(function(err, results) {
                         if(err) {
                             return next(err);

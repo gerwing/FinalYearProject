@@ -43,9 +43,11 @@ module.exports = function(app) {
             }
             //Check what to insert
             var insert = {};
-            if(req.body.name)
+            if(req.body.name) {
                 insert.name = req.body.name;
+            }
             insert.teacher = teacher;
+            insert.module = id;
             //Create and save Lecture
             Lecture.create(insert, function(err, lecture) {
                 if(err) {
