@@ -2,8 +2,7 @@
  * Authentication routes serving Web App
  */
 
-var loggedInAsTeacher = require('../middleware/web/loggedInAsTeacher'),
-    loggedIn = require('../middleware/web/loggedIn');
+var loggedIn = require('../middleware/web/loggedIn');
 
 module.exports = function(app, passport) {
 

@@ -95,27 +95,28 @@ module.exports = function(app) {
         var id = req.params.id;
         var teacher = req.user.id;
         //Find Module that contains Lecture
-        Module.findOne({lectures:id, teacher:teacher}, function(err, module) {
-            if(err) {
-                return next(err);
-            }
-            if(!module) {
-                return res.send('Lecture does not exist', 404); //Module not found
-            }
-            //remove lecture from module
-            module.lectures.splice(module.lectures.indexOf(id),1);
-            module.save(function(err) {
-               if(err) {
-                   return next(err) ;
-               }
-               Lecture.remove({_id:id, teacher:teacher}, function(err) {
+        Module
+            .findOne({lectures:id, teacher:teacher})
+            .populate({
+                path: 'lectures',
+                match: { _id: id}
+            })
+            .exec( function(err, module) {
+                if(err) {
+                    return next(err);
+                }
+                if(!module) {
+                    return res.send('Lecture does not exist', 404); //Module not found
+                }
+                //remove lecture from module
+                var lecture = module.lectures[0];
+                lecture.remove(function(err) {
                     if(err) {
                         return next(err);
                     }
                     res.send('Success', 200);
-               });
+                })
             });
-        });
     });
 
     /**STUDENT API*/

@@ -94,28 +94,29 @@ module.exports = function(app) {
     app.delete(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
         var id = req.params.id;
         var teacher = req.user.id;
-        //Find Module that contains Lecture
-        Module.findOne({homework:id, teacher:teacher}, function(err, module) {
-            if(err) {
-                return next(err);
-            }
-            if(!module) {
-                return res.send('Homework does not exist', 404); //Module not found
-            }
-            //remove lecture from module
-            module.homework.splice(module.homework.indexOf(id),1);
-            module.save(function(err) {
+        //Find Module that contains Homework
+        Module
+            .findOne({homework:id, teacher:teacher})
+            .populate({
+                path: 'homework',
+                match: {_id:id}
+            })
+            .exec(function(err, module) {
                 if(err) {
-                    return next(err) ;
+                    return next(err);
                 }
-                Homework.remove({_id:id, teacher:teacher}, function(err) {
+                if(!module) {
+                    return res.send('Homework does not exist', 404); //Module not found
+                }
+                //remove homework from module
+                var homework = module.homework[0];
+                homework.remove(function(err) {
                     if(err) {
                         return next(err);
                     }
-                    res.send('Success', 200);
-                });
+                    res.send('Success', 200)
+                })
             });
-        });
     });
 
     /**STUDENT API*/
