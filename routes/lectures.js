@@ -132,6 +132,7 @@ module.exports = function(app) {
                 Lecture
                     .find({_id:{$in:result},isLive:true})
                     .select('name teacher module')
+                    .populate('teacher','name')
                     .populate('module','name')
                     .sort('+module.name')
                     .exec(function(err, results) {

@@ -132,6 +132,7 @@ module.exports = function(app) {
                 Homework
                     .find({_id:{$in:result},isLive:true})
                     .select('name teacher module')
+                    .populate('teacher','name')
                     .populate('module','name')
                     .sort('+module.name')
                     .exec(function(err, results) {
@@ -144,29 +145,19 @@ module.exports = function(app) {
     });
 
     //STUDENT GET ONE
-    app.get(basePathStudent + '/:id', function(req, res, next) {
+    app.get(basePathStudent + '/:id', loggedIn, function(req, res, next) {
         var id = req.params.id;
         //Get Homework from DB
         Homework
             .findOne({_id:id})
             .populate('teacher', 'name')
-            .exec(function(err,result) {
+            .populate('module', 'name')
+            .select('module teacher questions.question questions.answers.answer name') //Avoid sending correct answer info
+            .exec(function(err,homework) {
                 if(err) {
                     return next(err);
                 }
-                var q = result.questions;
-                for(var i=0;i< q.length;i++) {
-                    var question = {
-                        question: q[i].question,
-                        answers: []
-                    };
-                    question.answers.push(q[i].correctAnswer.answer);
-                    for(var x=0;x<q[i].otherAnswers.length;x++) {
-                        question.answers.push(q[i].otherAnswers[x].answer);
-                    }
-                    q[i] = question;
-                }
-                res.send(result);
+                res.send(homework);
             });
     });
 };

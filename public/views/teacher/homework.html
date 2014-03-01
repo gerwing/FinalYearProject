@@ -45,12 +45,12 @@
     </button>
 
     <!--Make Live Button-->
-    <button class="btn btn-success btn-lg" ng-click="makeLive()" ng-hide="homework.isLive">
+    <button class="btn btn-success btn-lg" ng-click="makeLive()" ng-hide="homework.isLive" ng-disabled="homework.questions.length===0">
         <span class="glyphicon glyphicon-ok"></span>
         Make Homework Live
     </button>
     <!--Take Offline Button-->
-    <button class="btn btn-danger btn-lg" ng-click="stopHomework()" ng-show="homework.isLive" ng-disabled="homework.questions.length===0">
+    <button class="btn btn-danger btn-lg" ng-click="stopHomework()" ng-show="homework.isLive">
         <span class="glyphicon glyphicon-remove"></span>
         Take Homework Offline
     </button>
