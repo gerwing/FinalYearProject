@@ -24,8 +24,11 @@ var HomeworkSchema = mongoose.Schema({
     timesDone: {type: Number, default: 0},
     questions: [{
        question: String,
-       correctAnswer: {answer: String, timesAnswered: {type: Number, default:0}},
-       otherAnswers: [{answer: String, timesAnswered: {type: Number, default:0}}]
+       answers: [{
+           answer: String,
+           timesAnswered: {type: Number, default:0},
+           correct: Boolean
+       }]
     }],
     isLive: {
         type: Boolean,

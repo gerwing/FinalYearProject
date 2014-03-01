@@ -4,14 +4,11 @@
  */
 
 var basePathTeacher = '/api/teacher/modules',
-    basePathStudent = '/api/student/modules',
     Module = require('../data/models/modules'),
     Lecture = require('../data/models/lectures'),
     Homework = require('../data/models/homework'),
     User = require('../data/models/users'),
-    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
-    loggedIn = require('../middleware/api/loggedIn');
-
+    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher');
 
 module.exports = function(app) {
 

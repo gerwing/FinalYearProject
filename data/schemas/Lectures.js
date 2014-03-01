@@ -23,8 +23,10 @@ var LectureSchema = mongoose.Schema({
     },
     questions: [{
         question: String,
-        correctAnswer: {answer: String},
-        otherAnswers: [{answer: String}]
+        answers: [{
+            answer: String,
+            correct: Boolean
+        }]
     }],
     isLive: {
         type: Boolean,
