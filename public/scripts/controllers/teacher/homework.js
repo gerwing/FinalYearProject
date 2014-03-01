@@ -15,15 +15,14 @@ angular.module('voteApp')
             //Get Homework Data
             $scope.homework = Homework.get({id: $routeParams.id});
 
-            //Variable set when addign new question
+            //Variable set when adding new question
             var addingQuestion = false;
 
             //Set Methods
             $scope.addQuestion = function() {
                 //Set Blank Question
                 $scope.question = {
-                    otherAnswers:[{}],
-                    correctAnswer:{}
+                    answers:[{}]
                 };
                 //Indicate Adding Question
                 addingQuestion = true;
@@ -53,10 +52,10 @@ angular.module('voteApp')
             };
             $scope.addAnswer = function () {
                 var a = {};
-                $scope.question.otherAnswers.push(a);
+                $scope.question.answers.push(a);
             };
             $scope.removeAnswer = function(index) {
-                $scope.question.otherAnswers.splice(index,1);
+                $scope.question.answers.splice(index,1);
             };
             $scope.makeLive = function() {
                 $scope.homework.isLive = true;

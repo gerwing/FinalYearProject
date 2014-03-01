@@ -50,7 +50,7 @@
         Make Homework Live
     </button>
     <!--Take Offline Button-->
-    <button class="btn btn-danger btn-lg" ng-click="stopHomework()" ng-show="homework.isLive">
+    <button class="btn btn-danger btn-lg" ng-click="stopHomework()" ng-show="homework.isLive" ng-disabled="homework.questions.length===0">
         <span class="glyphicon glyphicon-remove"></span>
         Take Homework Offline
     </button>
@@ -72,16 +72,15 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label" for="cAnswer">Correct Answer</label>
-                            <input id="cAnswer" ng-model="question.correctAnswer.answer" type="text" class="form-control" placeholder="Type your answer..." required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label" for="oAnswer">Other Answers</label>
-                            <div class="input-group" ng-repeat="answer in question.otherAnswers">
-                                <input id="oAnswer" type="text" class="form-control" ng-model="answer.answer" placeholder="Type your answer...">
+                            <label class="control-label" for="answer">Answers</label>
+                            <div class="input-group" ng-repeat="answer in question.answers">
+                                <input id="answer" type="text" class="form-control" ng-model="answer.answer" placeholder="Type your answer...">
+                                <span class="input-group-addon">
+                                    correct
+                                    <input type="checkbox" ng-model="answer.correct">
+                                </span>
                                 <span class="input-group-btn">
-                                    <button class="btn btn-danger" ng-click="removeAnswer($index)" ng-disabled="question.otherAnswers.length===1">
+                                    <button class="btn btn-danger" ng-click="removeAnswer($index)" ng-disabled="question.answers.length===1">
                                         <span class="glyphicon glyphicon-trash"></span>
                                         delete
                                     </button>
