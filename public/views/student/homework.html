@@ -6,10 +6,10 @@
         </p>
     </header>
     <section ng-hide="finished">
-        <button class="btn link-lrg" ng-disabled="$index>lastAnswered" ng-class="{'link-active':currentQuestion===$index}" ng-click="gotoQuestion($index)" ng-repeat="question in homework.questions">{{$index+1}}</button>
+        <button class="btn btn-default link-lrg" ng-disabled="$index>lastAnswered" ng-class="{'link-active':currentQuestion===$index}" ng-click="gotoQuestion($index)" ng-repeat="question in homework.questions">{{$index+1}}</button>
         <h2>{{question.question}}</h2>
         <h3 ng-repeat="answer in question.answers">
-            <input type="radio" name="answer" ng-model="answer.correct" value="true" ng-change="setAnswered()">
+            <input type="radio" name="answer" ng-model="answers[currentQuestion].answer" value="{{answer.answer}}" ng-change="setAnswered()">
             {{answer.answer}}
         </h3>
         <button class="btn btn-primary btn-lg" ng-click="nextQuestion()" ng-hide="currentQuestion===homework.questions.length-1" ng-disabled="!answered[currentQuestion]">Next Question</button>
@@ -17,6 +17,16 @@
     </section>
     <section ng-show="finished">
         <h2>Finished!</h2>
-        <h3>Thank you for solving {{homework.name}}</h3>
+        <p>Thank you for solving {{homework.name}}</p>
+        <h3>Your Results:</h3>
+        <div ng-repeat="result in results">
+            <h4>{{result.question}}</h4>
+            <p ng-class="{'text-success':result.correct,'text-danger':!result.correct}">
+                {{result.answer}}
+                <span class="glyphicon glyphicon-ok text-success" ng-show="result.correct"></span>
+                <span class="glyphicon glyphicon-remove text-danger" ng-hide="result.correct"></span>
+            </p>
+        </div>
+        <a class="btn btn-primary btn-lg" ng-href="/#/student">Back to home</a>
     </section>
 </div>

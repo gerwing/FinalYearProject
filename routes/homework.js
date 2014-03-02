@@ -160,4 +160,50 @@ module.exports = function(app) {
                 res.send(homework);
             });
     });
+
+    //STUDENT SUBMIT HOMEWORK
+    app.post(basePathStudent + '/:id', loggedIn, function(req,res,next) {
+        var id = req.params.id;
+        var answers = req.body;
+        //Get Homework from DB
+        Homework.findOne({_id:id}, function(err,homework) {
+            if(err) {
+                return next(err);
+            }
+
+            var questions = homework.questions; //questions array
+            var results = []; //result array
+            //Check which questions were correct and which were false
+            for(var i=0;i<questions.length;i++) {
+                for(var y=0;y<answers.length;y++) {
+                    if(questions[i].question === answers[y].question) {
+                        //Check result
+                        for(var x=0;x<questions[i].answers.length;x++) {
+                            if(questions[i].answers[x].answer === answers[y].answer){
+                                if(questions[i].answers[x].correct) {
+                                    answers[y].correct = true;
+                                }
+                                else {
+                                    answers[y].correct = false;
+                                }
+                                //Set times answered
+                                questions[i].answers[x].timesAnswered += 1;
+                                break;
+                            }
+                        }
+                        //Remove answer from array and into result array
+                        results.push(answers.splice(y,1)[0]);
+                        break;
+                    }
+                }
+            }
+            homework.timesDone +=1; //Set homework as done one more time
+            homework.save(function(err) {
+                if(err) {
+                    return next(err);
+                }
+                res.send(results, 200);
+            });
+        });
+    });
 };

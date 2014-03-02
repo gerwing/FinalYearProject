@@ -8,26 +8,28 @@ angular.module('voteApp')
             $scope.currentQuestion = 0; //Index of current question being shown
             $scope.lastAnswered=0; //Question that was last answered
             $scope.answered = []; //Array that will indicate which questions have been answered
-            for(var i=0;i<$scope.homework.questions.length;i++) { //Fill array with 'not answered'
+            $scope.answers = []; //Array with final answers
+            //Fill array with 'not answered' and add question to answers array
+            for(var i=0;i<$scope.homework.questions.length;i++) {
                 $scope.answered[i] = false;
+                $scope.answers[i] = {question:$scope.homework.questions[i].question};
             }
         });
 
         $scope.nextQuestion = function() {
             $scope.currentQuestion += 1;
-            if($scope.homework.questions.length>$scope.currentQuestion) {
-                $scope.question = $scope.homework.questions[$scope.currentQuestion];
-                if($scope.lastAnswered<$scope.currentQuestion) {
-                    $scope.lastAnswered = $scope.currentQuestion; //Set new last answered question
-                }
-            }
-            else {
-                $scope.finished = true;
+            $scope.question = $scope.homework.questions[$scope.currentQuestion];
+            if($scope.lastAnswered<$scope.currentQuestion) {
+                $scope.lastAnswered = $scope.currentQuestion; //Set new last answered question
             }
         };
 
         $scope.submitHomework = function() {
             //Submit Question
+            Homework.submit({id:$scope.homework._id}, $scope.answers ,function(results) {
+                $scope.finished = true;
+                $scope.results = results;
+            });
         }
 
         $scope.setAnswered = function() {
