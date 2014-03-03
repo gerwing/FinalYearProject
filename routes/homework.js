@@ -9,7 +9,8 @@ var basePathTeacher = '/api/teacher/homework',
     hSubmissions = require('../data/models/hSubmissions'),
     Module = require('../data/models/modules'),
     loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
-    loggedIn = require('../middleware/api/loggedIn');
+    loggedIn = require('../middleware/api/loggedIn'),
+    async = require('async');
 
 module.exports = function(app) {
 
@@ -121,27 +122,50 @@ module.exports = function(app) {
     });
 
     /**STUDENT API*/
-    //STUDENT GET ALL LIVE HOMEWORK
+    //STUDENT GET ALL LIVE OR SUBMITTED HOMEWORK
     app.get(basePathStudent, loggedIn, function(req,res,next) {
-        Module
-            .find({_id:{$in:req.user.subscribedTo}})
+        //TODO Rewrite with promise
+        //Find Submitted Homework
+        hSubmissions
+            .find({user:req.user.id})
             .distinct('homework')
-            .exec(function(err, result) {
+            .exec(function(err,submissions) {
                 if(err) {
                     return next(err);
                 }
                 Homework
-                    .find({_id:{$in:result},isLive:true})
+                    .find({_id:{$in:submissions}})
                     .select('name teacher module')
                     .populate('teacher','name')
                     .populate('module','name')
                     .sort('+module.name')
-                    .exec(function(err, results) {
+                    .exec(function(err, completed) {
                         if(err) {
                             return next(err);
                         }
-                        res.send(results);
-                    })
+                        //Find non submitted homework
+                        Module
+                            .find({_id:{$in:req.user.subscribedTo}})
+                            .distinct('homework')
+                            .exec(function(err, result) {
+                                if(err) {
+                                    return next(err);
+                                }
+                                Homework
+                                    .find({_id:{$in:result,$nin:submissions},isLive:true})
+                                    .select('name teacher module')
+                                    .populate('teacher','name')
+                                    .populate('module','name')
+                                    .sort('+module.name')
+                                    .exec(function(err, available) {
+                                        if(err) {
+                                            return next(err);
+                                        }
+                                        //Send both available and completed homework
+                                        res.send({completed:completed,available:available});
+                                    })
+                            });
+                    });
             });
     });
 
@@ -158,7 +182,17 @@ module.exports = function(app) {
                 if(err) {
                     return next(err);
                 }
-                res.send(homework);
+                //Lookup whether this homework has already been submitted by the student
+                hSubmissions.findOne({homework:id,user:req.user.id}, function(err,submission) {
+                    if(err) {
+                        return next(err);
+                    }
+                    if(submission) {
+                        homework = homework.toObject();
+                        homework.submission = submission;
+                    }
+                    res.send(homework);
+                })
             });
     });
 
@@ -166,52 +200,79 @@ module.exports = function(app) {
     app.post(basePathStudent + '/:id', loggedIn, function(req,res,next) {
         var id = req.params.id;
         var answers = req.body;
-        //Get Homework from DB
-        Homework.findOne({_id:id}, function(err,homework) {
-            if(err) {
-                return next(err);
-            }
-            var questions = homework.questions; //questions array
-            var results = []; //result array
-            //Check which questions were correct and which were false
-            for(var i=0;i<questions.length;i++) {
-                for(var y=0;y<answers.length;y++) {
-                    if(questions[i].question === answers[y].question) {
-                        //Check result
-                        for(var x=0;x<questions[i].answers.length;x++) {
-                            if(questions[i].answers[x].answer === answers[y].answer){
-                                if(questions[i].answers[x].correct) {
-                                    answers[y].correct = true;
+        async.series([
+            function(done) {
+                //Check whether homework has already been submitted
+                hSubmissions.findOne({user:req.user,homework:id}, function(err,submission) {
+                    if(err) {
+                        return done(err);
+                    }
+                    if(submission) {
+                        return done(409);
+                    }
+                    else {
+                        done();
+                    }
+                });
+            },
+            function(done) {
+                //Get Homework from DB
+                Homework.findOne({_id:id}, function(err,homework) {
+                    if(err) {
+                        return done(err);
+                    }
+                    var questions = homework.questions; //questions array
+                    var results = []; //result array
+                    //Check which questions were correct and which were false
+                    for(var i=0;i<questions.length;i++) {
+                        for(var y=0;y<answers.length;y++) {
+                            if(questions[i].question === answers[y].question) {
+                                //Check result
+                                for(var x=0;x<questions[i].answers.length;x++) {
+                                    if(questions[i].answers[x].answer === answers[y].answer){
+                                        if(questions[i].answers[x].correct) {
+                                            answers[y].correct = true;
+                                        }
+                                        else {
+                                            answers[y].correct = false;
+                                        }
+                                        //Set times answered
+                                        questions[i].answers[x].timesAnswered += 1;
+                                        break;
+                                    }
                                 }
-                                else {
-                                    answers[y].correct = false;
-                                }
-                                //Set times answered
-                                questions[i].answers[x].timesAnswered += 1;
+                                //Remove answer from array and into result array
+                                results.push(answers.splice(y,1)[0]);
                                 break;
                             }
                         }
-                        //Remove answer from array and into result array
-                        results.push(answers.splice(y,1)[0]);
-                        break;
                     }
-                }
-            }
-            homework.timesDone +=1; //Set homework as done one more time
-            homework.save(function(err) {
-                if(err) {
-                    return next(err);
-                }
-                //Save Submission
-                hSubmissions.create({user:req.user.id,homework:homework.id,results:results},
-                    function(err) {
+                    homework.timesDone +=1; //Set homework as done one more time
+                    homework.save(function(err) {
                         if(err) {
-                            return next(err);
+                            return done(err);
                         }
-                        //Send Results
-                        res.send(results, 200);
+                        //Save Submission
+                        hSubmissions.create({user:req.user.id,homework:homework.id,results:results},
+                            function(err) {
+                                if(err) {
+                                    return done(err);
+                                }
+                                //Send Results
+                                done(null,results);
+                            });
                     });
-            });
+                });
+            }
+        ],
+        function(err,results) {
+            if(err === 409) {
+                return res.send({message:'Homework has already been submitted'}, 409);
+            }
+            else if(err) {
+                return next(err);
+            }
+            res.send(results[1]);
         });
     });
 };

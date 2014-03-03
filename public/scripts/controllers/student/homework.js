@@ -4,15 +4,22 @@ angular.module('voteApp')
     .controller('StdHomeworkCtrl',['$scope','$routeParams','Homework',
     function($scope,$routeParams,Homework) {
         $scope.homework = Homework.getHomework({id:$routeParams.id},function(){
-            $scope.question = $scope.homework.questions[0];
-            $scope.currentQuestion = 0; //Index of current question being shown
-            $scope.lastAnswered=0; //Question that was last answered
-            $scope.answered = []; //Array that will indicate which questions have been answered
-            $scope.answers = []; //Array with final answers
-            //Fill array with 'not answered' and add question to answers array
-            for(var i=0;i<$scope.homework.questions.length;i++) {
-                $scope.answered[i] = false;
-                $scope.answers[i] = {question:$scope.homework.questions[i].question};
+            //Homework completed
+            if($scope.homework.submission) {
+                $scope.results = $scope.homework.submission.results;
+                $scope.finished = true;
+            }
+            else { //Homework has yet to be done
+                $scope.question = $scope.homework.questions[0];
+                $scope.currentQuestion = 0; //Index of current question being shown
+                $scope.lastAnswered=0; //Question that was last answered
+                $scope.answered = []; //Array that will indicate which questions have been answered
+                $scope.answers = []; //Array with final answers
+                //Fill array with 'not answered' and add question to answers array
+                for(var i=0;i<$scope.homework.questions.length;i++) {
+                    $scope.answered[i] = false;
+                    $scope.answers[i] = {question:$scope.homework.questions[i].question};
+                }
             }
         });
 

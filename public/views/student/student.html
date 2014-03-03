@@ -19,11 +19,23 @@
     </section>
 
     <!--Available Homework-->
-    <section class="panel panel-primary" ng-show="homework.length>0">
+    <section class="panel panel-primary" ng-show="homework.available.length>0">
         <div class="panel-heading">Available Homework</div>
 
         <div class="list-group">
-            <a class="list-group-item" ng-repeat="work in homework" ng-href="/#/student/homework/{{work._id}}">
+            <a class="list-group-item" ng-repeat="work in homework.available" ng-href="/#/student/homework/{{work._id}}">
+                {{work.module.name}} - {{work.name}}
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </a>
+        </div>
+    </section>
+
+    <!--Completed Homework-->
+    <section class="panel panel-primary" ng-show="homework.completed.length>0">
+        <div class="panel-heading">Completed Homework</div>
+
+        <div class="list-group">
+            <a class="list-group-item" ng-repeat="work in homework.completed" ng-href="/#/student/homework/{{work._id}}">
                 {{work.module.name}} - {{work.name}}
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </a>
