@@ -26,6 +26,10 @@ var app = angular.module('voteApp', ['ngRoute','ngResource'])
                     templateUrl: 'views/teacher/lecture.html',
                     controller: 'LectureCtrl'
                 })
+                .when('/teacher/lectures/live/:id', {
+                    templateUrl: 'views/teacher/liveLecture.html',
+                    controller: 'LiveLectureCtrl'
+                })
                 .when('/teacher/homework/:id', {
                     templateUrl: 'views/teacher/homework.html',
                     controller: 'HomeworkCtrl'

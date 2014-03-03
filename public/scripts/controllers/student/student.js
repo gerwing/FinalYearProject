@@ -44,6 +44,7 @@ angular.module('voteApp')
             delete $scope.editing;
         }
 
+        //TOGGLE FUNCTIONALITY
         $scope.CH = false;
         $scope.LL = false;
         $scope.SM = false;

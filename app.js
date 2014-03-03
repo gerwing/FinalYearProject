@@ -54,6 +54,10 @@ var authentication = require('./routes/authentication')(app, passport);
 var pages = require('./routes/pages')(app);
 
 /** Server Startup */
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+var server = app.listen(app.get('port'),function() {
+    console.log('Express server listening on port ' + app.get('port'));
 });
+
+/** SOCKET IO Lecture API and Configuration*/
+var io = require('socket.io').listen(server);
+require('./config/socketio')(io);

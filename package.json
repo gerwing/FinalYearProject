@@ -12,6 +12,7 @@
     "passport": "*",
     "passport-local": "*",
     "bcrypt-nodejs" : "latest",
-    "async" : "*"
+    "async" : "*",
+    "socket.io": "0.9"
   }
 }
