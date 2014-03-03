@@ -6,6 +6,7 @@
 var basePathTeacher = '/api/teacher/homework',
     basePathStudent = '/api/student/homework',
     Homework = require('../data/models/homework'),
+    hSubmissions = require('../data/models/hSubmissions'),
     Module = require('../data/models/modules'),
     loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
     loggedIn = require('../middleware/api/loggedIn');
@@ -170,7 +171,6 @@ module.exports = function(app) {
             if(err) {
                 return next(err);
             }
-
             var questions = homework.questions; //questions array
             var results = []; //result array
             //Check which questions were correct and which were false
@@ -202,7 +202,15 @@ module.exports = function(app) {
                 if(err) {
                     return next(err);
                 }
-                res.send(results, 200);
+                //Save Submission
+                hSubmissions.create({user:req.user.id,homework:homework.id,results:results},
+                    function(err) {
+                        if(err) {
+                            return next(err);
+                        }
+                        //Send Results
+                        res.send(results, 200);
+                    });
             });
         });
     });
