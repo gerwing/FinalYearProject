@@ -124,82 +124,100 @@ module.exports = function(app) {
     /**STUDENT API*/
     //STUDENT GET ALL LIVE OR SUBMITTED HOMEWORK
     app.get(basePathStudent, loggedIn, function(req,res,next) {
-        //TODO Rewrite with promise
-        //Find Submitted Homework
-        hSubmissions
-            .find({user:req.user.id})
-            .distinct('homework')
-            .exec(function(err,submissions) {
-                if(err) {
-                    return next(err);
-                }
+        var submissions;
+        var subscribed;
+        async.series([
+            function(done) {
+                //Find Submitted Homework
+                hSubmissions
+                    .find({user:req.user.id})
+                    .distinct('homework')
+                    .exec(function(err,results) {
+                        if(err) {
+                            return done(err);
+                        }
+                        submissions = results;
+                        done();
+                    });
+            },
+            function(done) {
                 Homework
                     .find({_id:{$in:submissions}})
                     .select('name teacher module')
                     .populate('teacher','name')
                     .populate('module','name')
                     .sort('+module.name')
-                    .exec(function(err, completed) {
+                    .exec(done);
+            },
+            function(done) {
+                //Find non submitted homework
+                Module
+                    .find({_id:{$in:req.user.subscribedTo}})
+                    .distinct('homework')
+                    .exec(function(err, results) {
                         if(err) {
-                            return next(err);
+                            return done(err);
                         }
-                        //Find non submitted homework
-                        Module
-                            .find({_id:{$in:req.user.subscribedTo}})
-                            .distinct('homework')
-                            .exec(function(err, result) {
-                                if(err) {
-                                    return next(err);
-                                }
-                                Homework
-                                    .find({_id:{$in:result,$nin:submissions},isLive:true})
-                                    .select('name teacher module')
-                                    .populate('teacher','name')
-                                    .populate('module','name')
-                                    .sort('+module.name')
-                                    .exec(function(err, available) {
-                                        if(err) {
-                                            return next(err);
-                                        }
-                                        //Send both available and completed homework
-                                        res.send({completed:completed,available:available});
-                                    })
-                            });
+                        subscribed = results;
+                        done();
                     });
-            });
+            },
+            function(done) {
+                Homework
+                    .find({_id:{$in:subscribed,$nin:submissions},isLive:true})
+                    .select('name teacher module')
+                    .populate('teacher','name')
+                    .populate('module','name')
+                    .sort('+module.name')
+                    .exec(done);
+            }
+        ],
+        function(err,results) {
+            if(err) {
+                return next(err);
+            }
+            //Send both available and completed homework
+            res.send({completed:results[1],available:results[3]});
+        });
     });
 
     //STUDENT GET ONE
     app.get(basePathStudent + '/:id', loggedIn, function(req, res, next) {
         var id = req.params.id;
-        //Get Homework from DB
-        Homework
-            .findOne({_id:id})
-            .populate('teacher', 'name')
-            .populate('module', 'name')
-            .select('module teacher questions.question questions.answers.answer name') //Avoid sending correct answer info
-            .exec(function(err,homework) {
-                if(err) {
-                    return next(err);
-                }
+        async.parallel([
+            function(done) {
+                //Get Homework from DB
+                Homework
+                    .findOne({_id:id})
+                    .populate('teacher', 'name')
+                    .populate('module', 'name')
+                    .select('module teacher questions.question questions.answers.answer name') //Avoid sending correct answer info
+                    .exec(done);
+            },
+            function(done) {
                 //Lookup whether this homework has already been submitted by the student
-                hSubmissions.findOne({homework:id,user:req.user.id}, function(err,submission) {
-                    if(err) {
-                        return next(err);
-                    }
-                    if(submission) {
-                        homework = homework.toObject();
-                        homework.submission = submission;
-                    }
-                    res.send(homework);
-                })
-            });
+                hSubmissions.findOne({homework:id,user:req.user.id}, done);
+            }
+        ],
+        function(err,results) {
+            if(err) {
+                return next(err);
+            }
+            //Homework has already been submitted
+            if(results[1]) {
+                results[0] = results[0].toObject();
+                results[0].submission = results[1];
+            }
+            //Send results
+            res.send(results[0]);
+        });
     });
 
     //STUDENT SUBMIT HOMEWORK
     app.post(basePathStudent + '/:id', loggedIn, function(req,res,next) {
         var id = req.params.id;
         var answers = req.body;
+        var resultList = [];
         async.series([
             function(done) {
                 //Check whether homework has already been submitted
@@ -222,7 +240,6 @@ module.exports = function(app) {
                         return done(err);
                     }
                     var questions = homework.questions; //questions array
-                    var results = []; //result array
                     //Check which questions were correct and which were false
                     for(var i=0;i<questions.length;i++) {
                         for(var y=0;y<answers.length;y++) {
@@ -242,7 +259,7 @@ module.exports = function(app) {
                                     }
                                 }
                                 //Remove answer from array and into result array
-                                results.push(answers.splice(y,1)[0]);
+                                resultList.push(answers.splice(y,1)[0]);
                                 break;
                             }
                         }
@@ -253,14 +270,7 @@ module.exports = function(app) {
                             return done(err);
                         }
                         //Save Submission
-                        hSubmissions.create({user:req.user.id,homework:homework.id,results:results},
-                            function(err) {
-                                if(err) {
-                                    return done(err);
-                                }
-                                //Send Results
-                                done(null,results);
-                            });
+                        hSubmissions.create({user:req.user.id,homework:homework.id,results:resultList},done);
                     });
                 });
             }
@@ -272,7 +282,7 @@ module.exports = function(app) {
             else if(err) {
                 return next(err);
             }
-            res.send(results[1]);
+            res.send(resultList);
         });
     });
 };
