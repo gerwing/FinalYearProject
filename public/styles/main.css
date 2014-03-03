@@ -10,3 +10,6 @@
     text-decoration: underline;
     font-weight: 600;
 }
+.margin-sm {
+    margin-left:1em;
+}
