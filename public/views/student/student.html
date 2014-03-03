@@ -8,9 +8,9 @@
 
     <!--Live Lectures-->
     <section class="panel panel-primary" ng-show="lectures.length>0">
-        <div class="panel-heading">Live Lectures</div>
+        <div class="panel-heading" ng-click="toggleLL()">Live Lectures</div>
 
-        <div class="list-group">
+        <div class="list-group" ng-hide="LL">
             <a class="list-group-item" ng-repeat="lecture in lectures" ng-href="/#/student/lectures/{{lecture._id}}">
                 {{lecture.module.name}} - {{lecture.name}}
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
@@ -20,9 +20,9 @@
 
     <!--Available Homework-->
     <section class="panel panel-primary" ng-show="homework.available.length>0">
-        <div class="panel-heading">Available Homework</div>
+        <div class="panel-heading" ng-click="toggleAH()">Available Homework</div>
 
-        <div class="list-group">
+        <div class="list-group" ng-hide="AH">
             <a class="list-group-item" ng-repeat="work in homework.available" ng-href="/#/student/homework/{{work._id}}">
                 {{work.module.name}} - {{work.name}}
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
@@ -32,9 +32,9 @@
 
     <!--Completed Homework-->
     <section class="panel panel-primary" ng-show="homework.completed.length>0">
-        <div class="panel-heading">Completed Homework</div>
+        <div class="panel-heading" ng-click="toggleCH()">Completed Homework</div>
 
-        <div class="list-group">
+        <div class="list-group" ng-hide="CH">
             <a class="list-group-item" ng-repeat="work in homework.completed" ng-href="/#/student/homework/{{work._id}}">
                 {{work.module.name}} - {{work.name}}
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
@@ -44,12 +44,12 @@
 
     <!--Subscribed Modules-->
     <section class="panel panel-info" ng-show="modules.length>0">
-        <div class="panel-heading">
+        <div class="panel-heading" ng-click="toggleSM()">
             Subscribed Modules
             <a href="" class="pull-right" ng-click="editing=true" ng-hide="editing">Edit</a>
             <a href="" class="pull-right" ng-click="editing=false" ng-show="editing">Done</a>
         </div>
-        <div class="list-group" ng-hide="editing">
+        <div class="list-group" ng-hide="editing||SM">
             <a class="list-group-item" ng-repeat="module in modules" ng-href="">
                 {{module.name}} by {{module.teacher.name}}
             </a>
@@ -69,8 +69,8 @@
 
     <!--Subscribe to Module-->
     <section class="panel" ng-class="{'panel-danger':subscribeError, 'panel-info':!subscribeError}">
-        <div class="panel-heading">Subscribe to Module</div>
-        <div class="row panel-body">
+        <div class="panel-heading" ng-click="toggleMS()">Subscribe to Module</div>
+        <div class="row panel-body" ng-hide="MS">
             <form class="form-inline" role="form" ng-submit="subscribeModule()">
                 <div class="form-group col-md-4">
                     <label class="sr-only" for="subscribeModuleID">Subscribe Module ID Code</label>

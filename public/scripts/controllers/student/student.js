@@ -43,4 +43,25 @@ angular.module('voteApp')
                 })
             delete $scope.editing;
         }
+
+        $scope.CH = false;
+        $scope.LL = false;
+        $scope.SM = false;
+        $scope.MS = false;
+        $scope.AH = false;
+        $scope.toggleCH = function() {
+            $scope.CH = !$scope.CH;
+        }
+        $scope.toggleAH = function() {
+            $scope.AH = !$scope.AH;
+        }
+        $scope.toggleLL = function() {
+            $scope.LL = !$scope.LL;
+        }
+        $scope.toggleSM = function() {
+            $scope.SM = !$scope.SM;
+        }
+        $scope.toggleMS = function() {
+            $scope.MS = !$scope.MS;
+        }
     }]);
