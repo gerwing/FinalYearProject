@@ -143,4 +143,21 @@ module.exports = function(app) {
                     })
             });
     });
+
+    //STUDENT GET ONE LIVE LECTURE
+    app.get(basePathStudent + '/:id', loggedIn, function(req,res,next) {
+        var id = req.params.id;
+        //Get Homework from DB
+        Lecture
+            .findOne({_id:id})
+            .populate('teacher', 'name')
+            .populate('module', 'name')
+            .select('module teacher questions.question questions.answers.answer name') //Avoid sending correct answer info
+            .exec(function(err,lecture) {
+                if(err){
+                    return next(err);
+                }
+                res.send(lecture);
+            });
+    });
 };

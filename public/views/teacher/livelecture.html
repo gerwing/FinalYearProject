@@ -2,7 +2,7 @@
     <header>
         <h1>{{lecture.name}}</h1>
         <p class="lead">
-            This lecture contains the following Questions
+            This lecture is followed by {{participators}} people.
         </p>
     </header>
 
@@ -13,6 +13,7 @@
         <h3 ng-repeat="answer in question.answers" class="margin-sm">
             {{$index+1}}. {{answer.answer}}
         </h3>
+        <p>{{answered}} answers collected out of {{participators}}</p>
         <button class="btn btn-primary btn-lg" ng-click="showResults()">See Results</button>
     </section>
 
@@ -20,7 +21,7 @@
     <section ng-show="resultview&&!finished">
         <button class="btn btn-default link-lrg" ng-disabled="$index>lastAnswered" ng-class="{'link-active':currentQuestion===$index}" ng-click="gotoQuestion($index)" ng-repeat="question in lecture.questions">{{$index+1}}</button>
         <h2>{{question.question}}</h2>
-        <h3 ng-repeat="answer in question.answers" class="margin-sm">
+        <h3 ng-repeat="answer in question.answers" class="margin-sm" ng-class="{'text-success':answer.correct,'text-danger':!answer.correct}">
             {{$index+1}}. {{answer.answer}}
         </h3>
         <button class="btn btn-primary btn-lg" ng-click="nextQuestion()" ng-hide="currentQuestion===lecture.questions.length-1">Next Question</button>

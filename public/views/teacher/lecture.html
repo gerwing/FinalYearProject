@@ -45,15 +45,10 @@
     </button>
 
     <!--Make Live Button-->
-    <a ng-href="/#/teacher/lectures/live/{{lecture._id}}" class="btn btn-success btn-lg" ng-click="makeLive()" ng-hide="lecture.isLive" ng-disabled="lecture.questions.length===0">
+    <a ng-href="/#/teacher/lectures/live/{{lecture._id}}" class="btn btn-success btn-lg" ng-click="makeLive()" ng-disabled="lecture.questions.length===0">
         <span class="glyphicon glyphicon-ok"></span>
         Make Lecture Live
     </a>
-    <!--Take Offline Button-->
-    <button class="btn btn-danger btn-lg" ng-click="stopLecture()" ng-show="lecture.isLive">
-        <span class="glyphicon glyphicon-remove"></span>
-        Take Lecture Offline
-    </button>
 
     <!--Add Question Modal-->
     <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
