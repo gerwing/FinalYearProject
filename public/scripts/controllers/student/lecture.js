@@ -1,10 +1,16 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('StdLectureCtrl', ['$scope','$routeParams','Lecture','SocketIO',
-        function($scope,$routeParams,Lecture,socket){
+    .controller('StdLectureCtrl', ['$scope','$routeParams','Lecture','SocketIO','Authentication',
+        function($scope,$routeParams,Lecture,socket,Authentication){
+            //Check Whether User is logged in as teacher
+            if(!Authentication.verifyStudent()){
+                return;
+            }
             //Reconnect socket in case student had left the lecture
             socket.socket.connect();
+            //Join lecture room
+            socket.emit('join', $routeParams.id);
 
             //SOCKETIO
             //Results for one question

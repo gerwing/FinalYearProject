@@ -3,13 +3,14 @@
 angular.module('voteApp')
     .controller('LiveLectureCtrl', ['$scope', '$routeParams','Lecture','Authentication','SocketIO',
         function($scope,$routeParams,Lecture,Authentication,socket) {
-            //Reconnect socket in case teacher had left the lecture
-            socket.socket.connect();
-
             //Check Whether User is logged in as teacher
             if(!Authentication.verifyTeacher()){
                 return;
             }
+            //Reconnect socket in case teacher had left the lecture
+            socket.socket.connect();
+            //Join lecture room
+            socket.emit('join', $routeParams.id);
             //SOCKET IO
             $scope.participators = 0;
             $scope.answered = 0;
