@@ -62,7 +62,7 @@ var pages = require('./routes/pages')(app);
 
 /** Server Startup */
 var server = app.listen(port,ipaddr,function() {
-    console.log('Express server listening on port ' + app.get('port'));
+    console.log('Express server listening on port ' + port);
 });
 
 /** SOCKET IO Lecture API and Configuration*/

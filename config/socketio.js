@@ -49,7 +49,7 @@ module.exports = function(io) {
         //Join Lecture room
         socket.on('join', function(room) {
             socket.join(room);
-            if(!currentQuestion[room]) {
+            if(!currentQuestion[room] && currentQuestion[room] != 0) {
                 currentQuestion[room] = 0;
             }
             //First person to connect is teacher, store his id
@@ -76,7 +76,8 @@ module.exports = function(io) {
                     throw err;
                 }
                 if(socket.id === teacher[room]) {
-                    teacher[room] = null;
+                    teacher[room] = null; //Clear teacher for lecture
+                    currentQuestion[room] = null; //Clear currentQuestion for lecture
                 }
                 else {
                     io.sockets.socket(teacher[room]).emit('studentDisconnect'); //Send disconnect notice to lecturer
