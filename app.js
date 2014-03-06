@@ -1,7 +1,16 @@
+#!/bin/env node
+//Get the environment variables we need.
+var ipaddr  = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var port    = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+var dbUser  = process.env.OPENSHIFT_MONGODB_DB_USERNAME;
+var dbPass  = process.env.OPENSHIFT_MONGODB_DB_PASSWORD;
+var dbHost  = process.env.OPENSHIFT_MONGODB_DB_HOST || "localhost";
+var dbPort  = parseInt(process.env.OPENSHIFT_MONGODB_DB_PORT) || "27017";
 
 /**
  * Module dependencies.
  */
+
 
 var express = require('express'),
     http = require('http'),
@@ -12,7 +21,13 @@ var express = require('express'),
 
 /** MongoDB Database Connection */
 // connect to database with Mongoose
-var dbUrl = 'mongodb://localhost/vote';
+var dbUrl;
+if(dbPass && dbUser) {
+    dbUrl = "mongodb://"+dbUser+":"+dbPass+"@"+dbHost+":"+dbPort+"/vote"
+}
+else {
+    dbUrl = 'mongodb://' + dbHost + '/vote';
+}
 var db = mongoose.connect(dbUrl);
 
 /** Passport Configuration */
@@ -20,7 +35,7 @@ require('./config/passport')(passport);
 
 /** Express Configuration */
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.favicon());
@@ -54,7 +69,7 @@ var authentication = require('./routes/authentication')(app, passport);
 var pages = require('./routes/pages')(app);
 
 /** Server Startup */
-var server = app.listen(app.get('port'),function() {
+var server = app.listen(port,ipaddr,function() {
     console.log('Express server listening on port ' + app.get('port'));
 });
 
