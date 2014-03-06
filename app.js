@@ -2,16 +2,11 @@
 //Get the environment variables we need.
 var ipaddr  = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port    = process.env.OPENSHIFT_NODEJS_PORT || 3000;
-var dbUser  = process.env.OPENSHIFT_MONGODB_DB_USERNAME;
-var dbPass  = process.env.OPENSHIFT_MONGODB_DB_PASSWORD;
-var dbHost  = process.env.OPENSHIFT_MONGODB_DB_HOST || "localhost";
-var dbPort  = parseInt(process.env.OPENSHIFT_MONGODB_DB_PORT) || "27017";
+var dbName =  "vote";
 
 /**
  * Module dependencies.
  */
-
-
 var express = require('express'),
     http = require('http'),
     path = require('path'),
@@ -21,12 +16,10 @@ var express = require('express'),
 
 /** MongoDB Database Connection */
 // connect to database with Mongoose
-var dbUrl;
-if(dbPass && dbUser) {
-    dbUrl = "mongodb://"+dbUser+":"+dbPass+"@"+dbHost+":"+dbPort+"/vote"
-}
-else {
-    dbUrl = 'mongodb://' + dbHost + '/vote';
+var dbUrl = 'mongodb://localhost:27017/' + dbName; //Default location
+//take advantage of openshift env vars when available:
+if(process.env.OPENSHIFT_MONGODB_DB_URL){
+    var dbUrl = process.env.OPENSHIFT_MONGODB_DB_URL + dbName;
 }
 var db = mongoose.connect(dbUrl);
 
@@ -35,7 +28,6 @@ require('./config/passport')(passport);
 
 /** Express Configuration */
 // all environments
-app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.favicon());
