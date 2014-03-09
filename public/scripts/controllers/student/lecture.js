@@ -9,10 +9,16 @@ angular.module('voteApp')
             }
             //Reconnect socket in case student had left the lecture
             socket.socket.connect();
-            //Join lecture room
-            socket.emit('join', $routeParams.id);
 
             //SOCKETIO
+            //Goto given question
+            socket.on('gotoQuestion',function(data) {
+                $scope.question = $scope.lecture.questions[data];
+                $scope.currentQuestion = data;
+                $scope.resultview = false;
+                $scope.waiting = false;
+                $scope.$apply();
+            });
             //Results for one question
             socket.on('showResults',function(data) {
                 if($scope.answers[$scope.currentQuestion].answer === data) {
@@ -47,13 +53,8 @@ angular.module('voteApp')
                 for(var i=0;i<$scope.lecture.questions.length;i++) {
                     $scope.answers[i] = {question:$scope.lecture.questions[i].question};
                 }
-                socket.on('gotoQuestion',function(data) {
-                    $scope.question = $scope.lecture.questions[data];
-                    $scope.currentQuestion = data;
-                    $scope.resultview = false;
-                    $scope.waiting = false;
-                    $scope.$apply();
-                });
+                //Join lecture room
+                socket.emit('join', $routeParams.id);
             });
             $scope.setAnswered = function() {
                 $scope.answered = true;

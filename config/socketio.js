@@ -46,6 +46,7 @@ module.exports = function(io) {
                 console.log('Lecture Finished');
             });
         });
+
         //Join Lecture room
         socket.on('join', function(room) {
             socket.join(room);
