@@ -8,8 +8,9 @@ angular.module('voteApp')
               {id: "@_id" },
               {
                   "update": {method: "PUT"},
-                  "getAllLectures" : {method:"GET", url:"/api/student/lectures", isArray:true},
-                  "getLecture": {method:"GET", url:"/api/student/lectures/:id"}
+                  "getAllLectures" : {method:"GET", url:"/api/student/lectures"},
+                  "getLecture": {method:"GET", url:"/api/student/lectures/:id"},
+                  "submit" : {method:"POST", url:"/api/student/lectures/:id"}
               }
           );
         }

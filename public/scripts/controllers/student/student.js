@@ -50,6 +50,7 @@ angular.module('voteApp')
         $scope.SM = false;
         $scope.MS = false;
         $scope.AH = false;
+        $scope.CL = false;
         $scope.toggleCH = function() {
             $scope.CH = !$scope.CH;
         }
@@ -64,5 +65,8 @@ angular.module('voteApp')
         }
         $scope.toggleMS = function() {
             $scope.MS = !$scope.MS;
+        }
+        $scope.toggleCL = function() {
+            $scope.CL = !$scope.CL;
         }
     }]);

@@ -7,11 +7,23 @@
     </header>
 
     <!--Live Lectures-->
-    <section class="panel panel-primary" ng-show="lectures.length>0">
+    <section class="panel panel-primary" ng-show="lectures.available.length>0">
         <div class="panel-heading" ng-click="toggleLL()">Live Lectures</div>
 
         <div class="list-group" ng-hide="LL">
-            <a class="list-group-item" ng-repeat="lecture in lectures" ng-href="/#/student/lectures/{{lecture._id}}">
+            <a class="list-group-item" ng-repeat="lecture in lectures.available" ng-href="/#/student/lectures/{{lecture._id}}">
+                {{lecture.module.name}} - {{lecture.name}}
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </a>
+        </div>
+    </section>
+
+    <!--Completed Lectures-->
+    <section class="panel panel-primary" ng-show="lectures.completed.length>0">
+        <div class="panel-heading" ng-click="toggleCL()">Completed Lectures</div>
+
+        <div class="list-group" ng-hide="CL">
+            <a class="list-group-item" ng-repeat="lecture in lectures.completed" ng-href="/#/student/lectures/{{lecture._id}}">
                 {{lecture.module.name}} - {{lecture.name}}
                 <span class="glyphicon glyphicon-chevron-right pull-right"></span>
             </a>

@@ -7,8 +7,10 @@ var basePathTeacher = '/api/teacher/lectures',
     basePathStudent = '/api/student/lectures',
     Lecture = require('../data/models/lectures'),
     Module = require('../data/models/modules'),
+    lSubmissions = require('../data/models/lSubmissions'),
     loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
-    loggedIn = require('../middleware/api/loggedIn');
+    loggedIn = require('../middleware/api/loggedIn'),
+    async = require('async');
 
 module.exports = function(app) {
 
@@ -122,42 +124,107 @@ module.exports = function(app) {
     /**STUDENT API*/
     //STUDENT GET ALL LIVE LECTURES
     app.get(basePathStudent, loggedIn, function(req,res,next) {
-        Module
-            .find({_id:{$in:req.user.subscribedTo}})
-            .distinct('lectures')
-            .exec(function(err, result) {
-                if(err) {
-                    return next(err);
-                }
+        var submissions;
+        var subscribed;
+        async.series([
+            function(done) {
+                //Find Submitted Homework
+                lSubmissions
+                    .find({user:req.user.id})
+                    .distinct('lecture')
+                    .exec(function(err,results) {
+                        if(err) {
+                            return done(err);
+                        }
+                        submissions = results;
+                        done();
+                    });
+            },
+            function(done) {
                 Lecture
-                    .find({_id:{$in:result},isLive:true})
+                    .find({_id:{$in:submissions}})
                     .select('name teacher module')
                     .populate('teacher','name')
                     .populate('module','name')
                     .sort('+module.name')
+                    .exec(done);
+            },
+            function(done) {
+                //Find live lectures
+                Module
+                    .find({_id:{$in:req.user.subscribedTo}})
+                    .distinct('lectures')
                     .exec(function(err, results) {
                         if(err) {
-                            return next(err);
+                            return done(err);
                         }
-                        res.send(results);
-                    })
-            });
+                        subscribed = results;
+                        done();
+                    });
+            },
+            function(done) {
+                Lecture
+                    .find({_id:{$in:subscribed},isLive:true})
+                    .select('name teacher module')
+                    .populate('teacher','name')
+                    .populate('module','name')
+                    .sort('+module.name')
+                    .exec(done);
+            }
+        ],
+        function(err,results) {
+            if(err) {
+                return next(err);
+            }
+            //Send both available and completed lectures
+            res.send({completed:results[1],available:results[3]});
+        });
     });
 
     //STUDENT GET ONE LIVE LECTURE
     app.get(basePathStudent + '/:id', loggedIn, function(req,res,next) {
         var id = req.params.id;
-        //Get Homework from DB
-        Lecture
-            .findOne({_id:id})
-            .populate('teacher', 'name')
-            .populate('module', 'name')
-            .select('module teacher questions.question questions.answers.answer name') //Avoid sending correct answer info
-            .exec(function(err,lecture) {
-                if(err){
+        async.parallel([
+            function(done) {
+                //Get Lecture from DB
+                Lecture
+                    .findOne({_id:id})
+                    .populate('teacher', 'name')
+                    .populate('module', 'name')
+                    .select('module teacher questions.question questions.answers.answer name') //Avoid sending correct answer info
+                    .exec(done);
+            },
+            function(done) {
+                //Lookup whether this homework has already been submitted by the student
+                lSubmissions.findOne({lecture:id,user:req.user.id}, done);
+            }
+        ],
+        function(err,results) {
+            if(err) {
+                return next(err);
+            }
+            //Lecture has already been submitted
+            if(results[1]) {
+                results[0] = results[0].toObject();
+                results[0].submission = results[1];
+            }
+            //Send results
+            res.send(results[0]);
+        });
+    });
+
+    //Save Lecture Results
+    app.post(basePathStudent + '/:id', loggedIn, function(req,res,next) {
+        var id = req.params.id;
+        var answers = req.body;
+        //Save Lecture Results to Database
+        lSubmissions.create({user:req.user.id,lecture:id,results:answers},
+            function(err,submission) {
+                if(err) {
                     return next(err);
                 }
-                res.send(lecture);
+                res.send(submission, 200);
             });
+
     });
 };

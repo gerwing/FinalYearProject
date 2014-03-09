@@ -34,6 +34,8 @@ angular.module('voteApp')
             });
             //Lecture Finished
             socket.on('finish',function() {
+                //Upload results to server
+                Lecture.submit({id:$scope.lecture._id}, $scope.answers);
                 $scope.finished = true;
                 $scope.$apply();
             });
@@ -44,17 +46,25 @@ angular.module('voteApp')
 
             //Get Lecture Data
             $scope.lecture = Lecture.getLecture({id:$routeParams.id},function() {
-                $scope.question = $scope.lecture.questions[0];
-                $scope.currentQuestion = 0;
-                $scope.answered = false; //Boolean to check whether question been answered
-                $scope.resultview = false;
-                $scope.answers = []; //Array with final answers
-                //Fill array with 'not answered' and add question to answers array
-                for(var i=0;i<$scope.lecture.questions.length;i++) {
-                    $scope.answers[i] = {question:$scope.lecture.questions[i].question};
+                //Lecture completed
+                if($scope.lecture.submission) {
+                    $scope.answers = $scope.lecture.submission.results;
+                    $scope.finished = true;
                 }
-                //Join lecture room
-                socket.emit('join', $routeParams.id);
+                //Following Live Lecture
+                else {
+                    $scope.question = $scope.lecture.questions[0];
+                    $scope.currentQuestion = 0;
+                    $scope.answered = false; //Boolean to check whether question been answered
+                    $scope.resultview = false;
+                    $scope.answers = []; //Array with final answers
+                    //Fill array with 'not answered' and add question to answers array
+                    for(var i=0;i<$scope.lecture.questions.length;i++) {
+                        $scope.answers[i] = {question:$scope.lecture.questions[i].question};
+                    }
+                    //Join lecture room
+                    socket.emit('join', $routeParams.id);
+                }
             });
             $scope.setAnswered = function() {
                 $scope.answered = true;

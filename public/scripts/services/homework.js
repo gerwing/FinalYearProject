@@ -9,7 +9,7 @@ angular.module('voteApp')
                 {
                     "update": {method: "PUT"},
                     "getHomework": {method:"GET", url:"/api/student/homework/:id"},
-                    "getAllHomework" : {method:"GET", url:"/api/student/homework",isArray:false},
+                    "getAllHomework" : {method:"GET", url:"/api/student/homework"},
                     "submit" : {method:"POST", url:"/api/student/homework/:id",isArray:true}
                 }
             );
