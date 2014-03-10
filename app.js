@@ -11,7 +11,7 @@ var express = require('express'),
 
 /** MongoDB Database Connection */
 // connect to database with Mongoose
-var dbUrl = config.dbUrl;
+var dbUrl = config.dbUrl + config.dbName;
 var db = mongoose.connect(dbUrl);
 
 /** Passport Configuration */
