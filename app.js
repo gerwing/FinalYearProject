@@ -1,9 +1,3 @@
-#!/bin/env node
-//Get the environment variables we need.
-var ipaddr  = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var port    = process.env.OPENSHIFT_NODEJS_PORT || 3000;
-var dbName =  "vote";
-
 /**
  * Module dependencies.
  */
@@ -12,15 +6,12 @@ var express = require('express'),
     path = require('path'),
     mongoose = require('mongoose'),
     passport = require('passport'),
-    app = express();
+    app = express(),
+    config = require('config').Server;
 
 /** MongoDB Database Connection */
 // connect to database with Mongoose
-var dbUrl = 'mongodb://localhost:27017/' + dbName; //Default location
-//take advantage of openshift env vars when available:
-if(process.env.OPENSHIFT_MONGODB_DB_URL){
-    var dbUrl = process.env.OPENSHIFT_MONGODB_DB_URL + dbName;
-}
+var dbUrl = config.dbUrl;
 var db = mongoose.connect(dbUrl);
 
 /** Passport Configuration */
@@ -61,8 +52,8 @@ var authentication = require('./routes/authentication')(app, passport);
 var pages = require('./routes/pages')(app);
 
 /** Server Startup */
-var server = app.listen(port,ipaddr,function() {
-    console.log('Express server listening on port ' + port);
+var server = app.listen(config.port,config.host,function() {
+    console.log('Express server listening on port ' + config.port);
 });
 
 /** SOCKET IO Lecture API and Configuration*/
