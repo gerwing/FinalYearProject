@@ -81,7 +81,7 @@
 
     <!--Subscribe to Module-->
     <section class="panel" ng-class="{'panel-danger':subscribeError, 'panel-info':!subscribeError}">
-        <div class="panel-heading" ng-click="toggleMS()">Subscribe to Module</div>
+        <div class="panel-heading" ng-click="toggleMS()">Subscribe to Module <span class="text-danger error" ng-hide="!errorMessage">- {{errorMessage}}</span></div>
         <div class="row panel-body" ng-hide="MS">
             <form class="form-inline" role="form" ng-submit="subscribeModule()">
                 <div class="form-group col-md-4">
@@ -93,6 +93,33 @@
                     Subscribe
                 </button>
             </form>
+            <form class="form-inline" role="form" ng-submit="searchModules()">
+                <div class="form-group col-md-4">
+                    <label class="sr-only" for="searchModuleName">Search Modules by Name</label>
+                    <input class="form-control" id="searchModuleName" ng-model="module.name" type="text" name="name" placeholder="Module Name">
+                </div>
+                <button class="btn btn-default">
+                    <span class="glyphicon glyphicon-search"></span>
+                    Search
+                </button>
+                <span class="text-info error" ng-hide="!searchError">&nbsp;No search results</span>
+            </form>
         </div>
+    </section>
+
+    <!--Search Results-->
+    <section class="panel panel-info" ng-show="searchResults.length>0">
+        <div class="panel-heading" ng-click="toggleSR()">Search Results</div>
+        <ul class="list-group" ng-hide="SR">
+            <li class="list-group-item" ng-repeat="module in searchResults">
+                <p class="list-group-item-heading">
+                    {{module.name}} by {{module.teacher.name}}
+                    <button class="btn btn-success btn-sm pull-right" ng-click="subscribeModule(module.shortId)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        subscribe
+                    </button>
+                </p>
+            </li>
+        </ul>
     </section>
 </div>

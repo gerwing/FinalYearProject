@@ -4,14 +4,17 @@
  */
 
 var basePathTeacher = '/api/teacher/modules',
+    basePathStudent = '/api/student/modules',
     Module = require('../data/models/modules'),
     Lecture = require('../data/models/lectures'),
     Homework = require('../data/models/homework'),
     User = require('../data/models/users'),
-    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher');
+    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
+    loggedIn = require('../middleware/api/loggedIn');
 
 module.exports = function(app) {
 
+    /** TEACHER API */
     //TEACHER GET ALL
 	app.get(basePathTeacher, loggedInAsTeacher, function(req, res, next) {
         var teacher = req.user.id;
@@ -109,4 +112,24 @@ module.exports = function(app) {
         })
     });
 
+    /** STUDENT API */
+    app.get(basePathStudent + '/search', loggedIn, function(req,res,next) {
+        var name = req.query.name;
+        var query = { name: { $regex: '.*'+ name +'.*', $options: 'i' } };
+        if(name) {
+            Module
+                .find(query)
+                .select('name teacher shortId')
+                .populate('teacher','name')
+                .exec(function(err, results) {
+                    if(err) {
+                        return next(err);
+                    }
+                    res.send(results);
+                });
+        }
+        else {
+            res.send('Success', 200);
+        }
+    });
 };

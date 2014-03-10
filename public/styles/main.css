@@ -13,3 +13,7 @@
 .margin-sm {
     margin-left:1em;
 }
+.error {
+    font-style: italic;
+    opacity:0.8;
+}
