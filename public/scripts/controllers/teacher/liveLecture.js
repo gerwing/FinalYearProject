@@ -38,6 +38,11 @@ angular.module('voteApp')
                         socket.disconnect(); //Disconnect Teacher
                     });
             });
+            window.onbeforeunload = function(){
+                //Mark lecture as offline
+                $scope.lecture.isLive = false;
+                Lecture.update({id:$scope.lecture._id}, $scope.lecture);
+            }
 
             //Get Lecture Data
             $scope.lecture = Lecture.get({id: $routeParams.id}, function(){

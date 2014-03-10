@@ -108,7 +108,7 @@ module.exports = function(app) {
         var id = req.body.id;
         var user = req.user;
         //Lookup module and if it exists, add it to user subscriptions
-        Module.findOne({_id:id}, function(err, module) {
+        Module.findOne({shortId:id}, function(err, module) {
             if(err) {
                 return next(err);
             }
@@ -118,10 +118,10 @@ module.exports = function(app) {
             if(!user.subscribedTo) {
                 user.subscribedTo = new Array();
             }
-            if(user.subscribedTo.indexOf(id)>=0) {
+            if(user.subscribedTo.indexOf(module.id)>=0) {
                 return res.send({message:'You are already subscribed to that module'}, 409); //Module already subscribed
             }
-            user.subscribedTo.push(id);
+            user.subscribedTo.push(module.id);
             user.save(function(err) {
                 if(err) {
                     return next(err);

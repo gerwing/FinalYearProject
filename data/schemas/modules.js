@@ -3,13 +3,17 @@
  */
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    shortId = require('shortid');
 
 var ModuleSchema = mongoose.Schema({
     name: {
         type: String,
         required: true,
         default:'New Module'
+    },
+    shortId: {
+        type: String
     },
     teacher: {
         type: Schema.ObjectId,
@@ -25,6 +29,17 @@ var ModuleSchema = mongoose.Schema({
         ref: 'Homework'
     }]
 
+});
+
+//Add Short id to module
+ModuleSchema.pre('save', function(next) {
+    if(!this.isNew) {
+        //Only add short id when creating new module
+        return next();
+    }
+    var module = this;
+    module.shortId = shortId.generate();
+    next();
 });
 
 module.exports = ModuleSchema;
