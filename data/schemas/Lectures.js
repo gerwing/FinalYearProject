@@ -3,7 +3,8 @@
  */
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    shortId = require('shortid');
 
 var LectureSchema = mongoose.Schema({
     name: {
@@ -21,6 +22,9 @@ var LectureSchema = mongoose.Schema({
         ref: 'Modules',
         required: true
     },
+    accessID: {
+        type: String
+    },
     timesDone: {type: Number, default: 0},
     questions: [{
         question: String,
@@ -35,6 +39,17 @@ var LectureSchema = mongoose.Schema({
         default: false
     }
 });
+
+LectureSchema.methods.generateAccessID = function(next) {
+    var lecture = this;
+    lecture.accessID = shortId.generate();
+    return this.save(next);
+};
+LectureSchema.methods.removeAccessID = function(next) {
+    var lecture = this;
+    lecture.accessID = null;
+    return this.save(next);
+};
 
 module.exports = LectureSchema;
 

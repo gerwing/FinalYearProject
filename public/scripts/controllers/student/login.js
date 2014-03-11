@@ -1,8 +1,8 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('StdLoginCtrl', ['$scope', 'Authentication',
-        function($scope,authentication) {
+    .controller('StdLoginCtrl', ['$scope', '$location', 'Authentication', 'Lecture',
+        function($scope,$location,authentication,Lecture) {
             //Set Default password
             $scope.password = "";
             //Set login function
@@ -18,5 +18,14 @@ angular.module('voteApp')
                 if($scope.usernameError) {
                     delete $scope.usernameError;
                 }
+            }
+            $scope.joinLecture = function() {
+                $scope.lectureError = false;
+                $scope.aidLecture = Lecture.getAccessIDLecture({accessID:$scope.accessID}, function() {
+                    $location.path('/student/joinLecture/' + $scope.accessID);
+                }, function(result) {
+                    $scope.lectureError = true;
+                    $scope.errorMessage = result.data.message;
+                });
             }
     }]);

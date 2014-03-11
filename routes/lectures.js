@@ -92,6 +92,36 @@ module.exports = function(app) {
         });
     });
 
+    //TEACHER GENERATE ACCESS ID
+    app.put(basePathTeacher + '/:id/accessID', loggedInAsTeacher, function(req,res,next) {
+        var id = req.params.id;
+        var teacher = req.user.id;
+        //Find Lecture
+        Lecture.findOne({_id:id,teacher:teacher}, function(err,lecture) {
+            if(err) {
+                return next(err);
+            }
+            lecture.generateAccessID(function() {
+                res.send('Success',200);
+            });
+        })
+    });
+
+    //TEACHER GENERATE ACCESS ID
+    app.delete(basePathTeacher + '/:id/accessID', loggedInAsTeacher, function(req,res,next) {
+        var id = req.params.id;
+        var teacher = req.user.id;
+        //Find Lecture
+        Lecture.findOne({_id:id,teacher:teacher}, function(err,lecture) {
+            if(err) {
+                return next(err);
+            }
+            lecture.removeAccessID(function() {
+                res.send('Success',200);
+            });
+        })
+    });
+
     //TEACHER DELETE
     app.delete(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
         var id = req.params.id;
@@ -213,7 +243,27 @@ module.exports = function(app) {
         });
     });
 
-    //Save Lecture Results
+    //STUDENT GET A LIVE LECTURE USING ACCESS ID
+    app.get(basePathStudent + '/aid/:id', function(req,res,next) {
+        var id = req.params.id;
+        //Lookup lecture
+        Lecture
+            .findOne({accessID:id, isLive:true})
+            .populate('teacher', 'name')
+            .populate('module', 'name')
+            .select('module teacher questions.question questions.answers.answer name') //Avoid sending correct answer info
+            .exec(function(err, lecture) {
+                if(err) {
+                    return next(err);
+                }
+                if(!lecture) {
+                    return res.send({message: 'The lecture you were trying to find does not exist'}, 404);
+                }
+                res.send(lecture);
+            });
+    });
+
+    //SAVE LECTURE RESULTS
     app.post(basePathStudent + '/:id', loggedIn, function(req,res,next) {
         var id = req.params.id;
         var answers = req.body;
@@ -224,6 +274,9 @@ module.exports = function(app) {
             },
             function(done) {
                 Lecture.findOne({_id:id}, function(err, lecture) {
+                    if(err) {
+                        return done(err);
+                    }
                     lecture.timesDone +=1;
                     var questions = lecture.questions;
                     //Check which questions were answered
@@ -243,7 +296,6 @@ module.exports = function(app) {
                             }
                         }
                     }
-                    console.log(lecture);
                     lecture.save(function(err) {
                         if(err) {
                             return done(err);
@@ -258,6 +310,47 @@ module.exports = function(app) {
                 return next(err);
             }
             res.send(results[0], 200); //Send back submission result
+        });
+    });
+
+    //SAVE LECTURE RESULTS USING ACCESS ID
+    app.post(basePathStudent + '/aid/:id', function(req,res,next) {
+        var id = req.params.id;
+        var answers = req.body;
+        //Lookup lecture and add results
+        //Only allow live lectures to be updated
+        Lecture.findOne({accessID:id,isLive:true}, function(err, lecture) {
+            if(err) {
+                return next(err);
+            }
+            if(!lecture) {
+                return res.send({message:'Lecture not found'}, 404);
+            }
+            lecture.timesDone +=1;
+            var questions = lecture.questions;
+            //Check which questions were answered
+            for(var i=0;i<questions.length;i++) {
+                for(var y=0;y<answers.length;y++) {
+                    if(questions[i].question === answers[y].question) {
+                        //Check result
+                        for(var x=0;x<questions[i].answers.length;x++) {
+                            if(questions[i].answers[x].answer === answers[y].answer){
+                                questions[i].answers[x].timesAnswered += 1;
+                                break;
+                            }
+                        }
+                        //Remove answer from array and into result array
+                        answers.splice(y,1);
+                        break;
+                    }
+                }
+            }
+            lecture.save(function(err) {
+                if(err) {
+                    return next(err);
+                }
+                res.send('Success', 200);
+            });
         });
     });
 };

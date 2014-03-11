@@ -20,4 +20,13 @@
         </div>
         <button class="btn btn-lg btn-primary" ng-disabled="loginForm.$invalid" ng-click="login()" ng-hide="usernameError">Login or Register</button>
     </form>
+    <hr>
+    <h3>.. or join a lecture using an access ID</h3>
+    <form name="lectureForm" role="form">
+        <div class="form-group">
+            <input id="accessID" ng-model="accessID" class="form-control input-lg" type="text" placeholder="Lecture Access ID..." required>
+        </div>
+        <div ng-show="lectureError" class="alert alert-danger">{{errorMessage}}</div>
+        <button class="btn btn-lg btn-primary" ng-disabled="lectureForm.$invalid" ng-click="joinLecture()">Join Lecture</button>
+    </form>
 </div>

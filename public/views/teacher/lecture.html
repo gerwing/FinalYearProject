@@ -51,6 +51,24 @@
     </a>
 
     <hr>
+    <!--Lecture Configuration-->
+    <section class="panel panel-info">
+        <div class="panel-heading">Lecture Configuration</div>
+        <div class="panel-body">
+            <p><strong>Allow Access To Lecture Without Registering:</strong></p>
+            <button class="btn btn-default" ng-click="generateID()">
+                <span class="glyphicon glyphicon-flash"></span>
+                Generate Access ID
+            </button>
+            <button class="btn btn-danger" ng-click="removeID()" ng-hide="!lecture.accessID">
+                <span class="glyphicon glyphicon-trash"></span>
+                Remove Access ID
+            </button>
+            <h3 ng-hide="!lecture.accessID"><small>Students can join this lecture using the following ID:</small> {{lecture.accessID}}</h3>
+        </div>
+    </section>
+
+    <hr>
     <!--Statistics-->
     <section>
         <h2>Statistics</h2>

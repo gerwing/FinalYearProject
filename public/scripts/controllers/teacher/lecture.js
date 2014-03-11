@@ -61,4 +61,14 @@ angular.module('voteApp')
                 $scope.lecture.isLive = true;
                 Lecture.update({id:$scope.lecture._id},$scope.lecture);
             };
+            $scope.generateID = function() {
+                Lecture.generateID({id:$scope.lecture._id}, {}, function() {
+                    $scope.lecture = Lecture.get({id: $routeParams.id});
+                });
+            };
+            $scope.removeID = function() {
+                Lecture.removeID({id:$scope.lecture._id}, {}, function() {
+                    $scope.lecture = Lecture.get({id: $routeParams.id});
+                });
+            };
     }]);
