@@ -33,7 +33,7 @@ angular.module('voteApp')
             $scope.$on('$locationChangeStart', function () {
                 //Mark lecture as offline
                 $scope.lecture.isLive = false;
-                Lecture.update({id:$scope.lecture._id}, $scope.lecture,
+                Lecture.update({id:$scope.lecture._id}, {isLive:false},
                     function(){
                         socket.disconnect(); //Disconnect Teacher
                     });
@@ -41,7 +41,7 @@ angular.module('voteApp')
             window.onbeforeunload = function(){
                 //Mark lecture as offline
                 $scope.lecture.isLive = false;
-                Lecture.update({id:$scope.lecture._id}, $scope.lecture);
+                Lecture.update({id:$scope.lecture._id}, {isLive:false});
             }
 
             //Get Lecture Data

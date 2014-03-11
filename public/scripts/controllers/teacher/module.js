@@ -82,4 +82,14 @@ angular.module('voteApp')
                 var homework = $scope.module.homework.splice(index,1);
                 Homework.delete({id:homework[0]._id});
             };
+            $scope.addEmailRestriction = function() {
+                $scope.module.emailRestrictions.push($scope.emailRestriction);
+                delete $scope.emailRestriction;
+                Module.update({id:$scope.module._id},{emailRestrictions:$scope.module.emailRestrictions});
+            }
+            $scope.removeEmailRestriction = function(restriction) {
+                var res = $scope.module.emailRestrictions;
+                res.splice(res.indexOf(restriction),1);
+                Module.update({id:$scope.module._id},{emailRestrictions:$scope.module.emailRestrictions});
+            }
     }]);

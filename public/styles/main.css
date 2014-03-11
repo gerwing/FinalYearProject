@@ -17,3 +17,6 @@
     font-style: italic;
     opacity:0.8;
 }
+.clickable {
+    cursor: pointer;
+}

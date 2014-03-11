@@ -115,6 +115,20 @@ module.exports = function(app) {
             if(!module) {
                 return res.send({message:'Module does not exist'}, 404); //Module not found
             }
+            //Module has email restrictions applied to it, check restrictions
+            var restrictions = module.emailRestrictions;
+            var email = req.user.email;
+            if(restrictions.length > 0) {
+                var allowed = false;
+                for(var i=0;i<restrictions.length;i++) {
+                    if(email.lastIndexOf(restrictions[i]) >= 0) {
+                        allowed = true;
+                    }
+                }
+                if(!allowed) {
+                    return res.send({message:'You are not allowed to join this module'}, 401);
+                }
+            }
             if(!user.subscribedTo) {
                 user.subscribedTo = new Array();
             }

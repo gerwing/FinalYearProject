@@ -21,10 +21,12 @@ var LectureSchema = mongoose.Schema({
         ref: 'Modules',
         required: true
     },
+    timesDone: {type: Number, default: 0},
     questions: [{
         question: String,
         answers: [{
             answer: String,
+            timesAnswered: {type: Number, default:0},
             correct: Boolean
         }]
     }],

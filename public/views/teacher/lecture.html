@@ -50,6 +50,20 @@
         Make Lecture Live
     </a>
 
+    <hr>
+    <!--Statistics-->
+    <section>
+        <h2>Statistics</h2>
+        <p class="lead">Lecture has been completed {{lecture.timesDone}} times</p>
+        <h4>Questions:</h4>
+        <div ng-repeat="question in lecture.questions">
+            <h5>{{question.question}}</h5>
+            <p class="margin-sm" ng-repeat="answer in question.answers" ng-class="{'text-danger':!answer.correct,'text-success':answer.correct}">
+                {{answer.answer}} (answered {{answer.timesAnswered}} times)
+            </p>
+        </div>
+    </section>
+
     <!--Add Question Modal-->
     <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">

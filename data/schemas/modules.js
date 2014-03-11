@@ -15,6 +15,7 @@ var ModuleSchema = mongoose.Schema({
     shortId: {
         type: String
     },
+    emailRestrictions: [String],
     teacher: {
         type: Schema.ObjectId,
         required: true,

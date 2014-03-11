@@ -32,15 +32,7 @@ angular.module('voteApp')
                     refresh();
                 })
                 .error(function(data,status) {
-                    if(status === 404) {  //Module not found
-                        //Set subscribe error
-                        $scope.subscribeError = true;
-                        $timeout(function(){$scope.subscribeError = false;},3000);
-                        //Set error message
-                        $scope.errorMessage = data.message;
-                        $timeout(function(){$scope.errorMessage = null},3000);
-                    }
-                    if(status === 409) {  //Already Subscribed
+                    if(status === 404 || status === 409 || status === 401) {  //Module not found or conflict or not allowed
                         //Set subscribe error
                         $scope.subscribeError = true;
                         $timeout(function(){$scope.subscribeError = false;},3000);
@@ -58,7 +50,7 @@ angular.module('voteApp')
                     Authentication.setCurrentUser(data);
                     refresh();
                 })
-            delete $scope.editing;
+            //delete $scope.editing;
         }
 
         $scope.searchModules = function() {

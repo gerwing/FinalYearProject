@@ -65,12 +65,18 @@ module.exports = function(app) {
         var id = req.params.id;
         var teacher = req.user.id;
         var name = req.body.name;
+        var emailRestrictions = req.body.emailRestrictions;
+        var update = {};
         //Check if name is valid
-        if(!name) {
-            return res.send('Name is required', 406); //Name not found
+        if(name) {
+            update.name = name;
+        }
+        //Check email restrictions
+        if(emailRestrictions) {
+            update.emailRestrictions = emailRestrictions;
         }
         //Update Module in Database
-        Module.update({_id:id, teacher:teacher}, {name:name}, function(err){
+        Module.update({_id:id, teacher:teacher}, update, function(err){
            if(err) {
                return next(err);
            }

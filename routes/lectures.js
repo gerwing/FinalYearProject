@@ -217,14 +217,47 @@ module.exports = function(app) {
     app.post(basePathStudent + '/:id', loggedIn, function(req,res,next) {
         var id = req.params.id;
         var answers = req.body;
-        //Save Lecture Results to Database
-        lSubmissions.create({user:req.user.id,lecture:id,results:answers},
-            function(err,submission) {
-                if(err) {
-                    return next(err);
-                }
-                res.send(submission, 200);
-            });
-
+        async.parallel([
+            function(done) {
+                //Save Lecture Results to Database
+                lSubmissions.create({user:req.user.id,lecture:id,results:answers},done);
+            },
+            function(done) {
+                Lecture.findOne({_id:id}, function(err, lecture) {
+                    lecture.timesDone +=1;
+                    var questions = lecture.questions;
+                    //Check which questions were answered
+                    for(var i=0;i<questions.length;i++) {
+                        for(var y=0;y<answers.length;y++) {
+                            if(questions[i].question === answers[y].question) {
+                                //Check result
+                                for(var x=0;x<questions[i].answers.length;x++) {
+                                    if(questions[i].answers[x].answer === answers[y].answer){
+                                        questions[i].answers[x].timesAnswered += 1;
+                                        break;
+                                    }
+                                }
+                                //Remove answer from array and into result array
+                                answers.splice(y,1);
+                                break;
+                            }
+                        }
+                    }
+                    console.log(lecture);
+                    lecture.save(function(err) {
+                        if(err) {
+                            return done(err);
+                        }
+                        done(null);
+                    });
+                });
+            }
+        ],
+        function(err,results) {
+            if(err) {
+                return next(err);
+            }
+            res.send(results[0], 200); //Send back submission result
+        });
     });
 };
