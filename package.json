@@ -19,6 +19,5 @@
     "shortid": "2.0.0",
     "nodemailer": "0.6.1",
     "node-uuid": "1.4.0"
-
   }
 }
