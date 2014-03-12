@@ -5,7 +5,6 @@ var User = require('../data/models/users'),
     LocalStrategy = require('passport-local').Strategy;
 
 module.exports = function(passport) {
-
     //Local Strategy for Registered Users
     passport.use(new LocalStrategy(
         function(username, password, done) {
@@ -42,5 +41,4 @@ module.exports = function(passport) {
             done(err, user);
         });
     });
-
 };

@@ -1,8 +1,9 @@
 <div>
     <header>
         <h1>{{lecture.name}}</h1>
+        <h2 ng-hide="!lecture.accessID"><small>Join this lecture using this access ID:</small> {{lecture.accessID}}</h2>
         <p class="lead">
-            This lecture is followed by {{participators}} people.
+            This lecture is followed by {{participators}} <span ng-hide="participators==1">people</span><span ng-hide="participators!=1">person</span>.
         </p>
     </header>
 

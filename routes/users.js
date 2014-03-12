@@ -3,10 +3,12 @@
  */
 var User = require('../data/models/users'),
     Module = require('../data/models/modules'),
-    loggedIn = require('../middleware/api/loggedIn');
+    loggedIn = require('../middleware/api/loggedIn'),
+    nodemailer = require('../config/nodemailer'),
+    verificationTokens = require('../data/models/verificationTokens'),
+    ejs = require('ejs');
 
 module.exports = function(app) {
-
     /**TEACHER API*/
     //REGISTER TEACHER
     app.post('/api/teacher/register', function(req,res,next) {
@@ -75,11 +77,17 @@ module.exports = function(app) {
                 }
                 return;
             }
-            //Login student
-            req.login(user, function(err) {
-                if (err) { return next(err); }
-                return res.send(user, 201);
-            });
+            //Send verification email
+            sendVerificationEmail(user,req,res,function(err) {
+                if(err) {
+                    return next(err);
+                }
+                //Login student
+                req.login(user, function(err) {
+                    if (err) { return next(err); }
+                    return res.send(user, 201);
+                });
+            })
         });
     });
 
@@ -158,5 +166,35 @@ module.exports = function(app) {
             res.send(user, 200);
         })
     });
+};
 
+//Email used to send verification email
+function sendVerificationEmail(user, req, res, next) {
+    //Add verificationToken entry for user
+    verificationTokens.create({user:user._id, token:"default"}, function(err,result) {
+        if (err) {
+            return next(err);
+        }
+        //Generate email and text bodies
+        var options = {
+            email: user.email,
+            name: user.name,
+            verifyURL: req.protocol + "://" + req.get('host') + "/api/user/verify/" + result.token
+        };
+        var subject = "Please verify your account";
+        ejs.renderFile("views/verifyEmail-text.ejs", options, function (err, textBody) {
+            if (err) {
+                return next(err);
+            }
+            ejs.renderFile("views/verifyEmail-html.ejs", options, function (err, htmlBody) {
+                if (err) {
+                    return next(err);
+                }
+                //Send confirmation mail
+                nodemailer.sendEmail(user.email, subject, textBody, htmlBody);
+                //Callback
+                next(null);
+            });
+        });
+    });
 };
