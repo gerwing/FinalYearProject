@@ -6,7 +6,8 @@ var User = require('../data/models/users'),
     loggedIn = require('../middleware/api/loggedIn'),
     nodemailer = require('../config/nodemailer'),
     verificationTokens = require('../data/models/verificationTokens'),
-    ejs = require('ejs');
+    ejs = require('ejs'),
+    async = require('async');
 
 module.exports = function(app) {
     /**TEACHER API*/
@@ -32,10 +33,12 @@ module.exports = function(app) {
                 }
                 return;
             }
-            //Login teacher
-            req.login(user, function(err) {
-                if (err) { return next(err); }
-                return res.send(user, 201);
+            //Send verification email
+            sendVerificationEmail(user,req,res, function(err) {
+                if(err) {
+                    return next(err);
+                }
+                res.send(user, 201);
             });
         });
     });
@@ -78,16 +81,12 @@ module.exports = function(app) {
                 return;
             }
             //Send verification email
-            sendVerificationEmail(user,req,res,function(err) {
+            sendVerificationEmail(user,req,res, function(err) {
                 if(err) {
                     return next(err);
                 }
-                //Login student
-                req.login(user, function(err) {
-                    if (err) { return next(err); }
-                    return res.send(user, 201);
-                });
-            })
+                res.send(user, 201);
+            });
         });
     });
 
@@ -166,6 +165,88 @@ module.exports = function(app) {
             res.send(user, 200);
         })
     });
+
+    //RESEND VERIFICATION EMAIL
+    //THIS METHOD MUST BE BEFORE THE VERIFY METHOD IN ORDER TO CATCH THIS FIRST
+    app.post('/api/user/verify/resend', function(req,res,next) {
+        var id = req.body.user;
+        var user = {};
+        async.series([
+            function(done) {
+                //Lookup existing tokens
+                verificationTokens.findOne({user:id}, function(err, result) {
+                    if(err) {
+                        return done(err);
+                    }
+                    //If token was found remove it
+                    if(result) {
+                        result.remove(done);
+                    }
+                    else{
+                        done(null);
+                    };
+                });
+            },
+            function(done) {
+                User.findOne({_id:id}, function(err, result) {
+                    if(err) {
+                        return done(err);
+                    }
+                    if(!result) {
+                        res.send({message:'User could not be found'}, 404);
+                        return done(true);
+                    }
+                    user = result;
+                    done(null);
+                });
+            },
+            function(done) {
+                //Send Verification Email
+                sendVerificationEmail(user,req,res,done);
+            }
+        ],
+        function(err,results) {
+            if(err) {
+                if(err === true) {
+                    return;
+                }
+                return next(err);
+            }
+            res.send('Success', 200);
+        });
+
+    });
+
+    //VERIFY USER ACCOUNT
+    app.post('/api/user/verify/:token', function(req,res,next) {
+        var token = req.params.token;
+        //Lookup Token
+        verificationTokens.findOne({token:token}, function(err, result) {
+            if(err) {
+                return next(err);
+            }
+            if(!result) {
+                return res.send({message:"Token was not found"}, 404);
+            }
+            User.findOne({_id:result.user}, function(err, user) {
+                if(err) {
+                    return next(err);
+                }
+                if(user) {
+                    user.verified = true;
+                    user.save(function(err) {
+                        if(err) {
+                            return next(err);
+                        }
+                        res.send(user, 200);
+                    });
+                }
+                else {
+                    return res.send({message:"User was not found"}, 404);
+                }
+            });
+        });
+    });
 };
 
 //Email used to send verification email
@@ -179,7 +260,7 @@ function sendVerificationEmail(user, req, res, next) {
         var options = {
             email: user.email,
             name: user.name,
-            verifyURL: req.protocol + "://" + req.get('host') + "/api/user/verify/" + result.token
+            verifyURL: req.protocol + "://" + req.get('host') + "/verify/" + result.token
         };
         var subject = "Please verify your account";
         ejs.renderFile("views/verifyEmail-text.ejs", options, function (err, textBody) {

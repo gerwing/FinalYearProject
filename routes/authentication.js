@@ -2,7 +2,9 @@
  * Authentication routes serving Web App
  */
 
-var loggedIn = require('../middleware/web/loggedIn');
+var loggedIn = require('../middleware/web/loggedIn'),
+    User = require('../data/models/users'),
+    verificationTokens = require('../data/models/verificationTokens');
 
 module.exports = function(app, passport) {
 

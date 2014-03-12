@@ -29,10 +29,18 @@ angular.module('voteApp')
                             if(data.problem === 'username') { //wrong username
                                 scope.usernameError = true;
                                 scope.passwordError = false;
+                                scope.verificationError = false;
                             }
                             else if(data.problem === 'password') { //wrong password
                                 scope.usernameError = false;
                                 scope.passwordError = true;
+                                scope.verificationError = false;
+                            }
+                            else if(data.problem === 'verification') { //user not verified
+                                scope.verificationError = true;
+                                scope.user = data.id;
+                                scope.usernameError = false;
+                                scope.passwordError = false;
                             }
                             scope.errorMessage = data.message; //set an error message
                         }
@@ -40,14 +48,9 @@ angular.module('voteApp')
             };
             var register = function(scope,path,data) {
                 $http.post(path, data)
-                    .success(function(data) {
-                        $rootScope.user = data; //Add user to rootscope
-                        if(data.isTeacher){
-                            $location.path('/teacher'); //move to teacher home page
-                        }
-                        else {
-                            $location.path('/student'); //move to student home page
-                        }
+                    .success(function(user) {
+                        scope.registered = true;
+                        scope.registering = false;
                     })
                     .error(function(data, status) {
                         if(status === 409) {  //Username taken

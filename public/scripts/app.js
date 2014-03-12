@@ -54,6 +54,10 @@ var app = angular.module('voteApp', ['ngRoute','ngResource'])
                     templateUrl: 'views/student/homework.html',
                     controller: 'StdHomeworkCtrl'
                 })
+                .when('/verify/:token', {
+                    templateUrl: 'views/verify.html',
+                    controller: 'VerifyCtrl'
+                })
                 .otherwise({
                     redirectTo: '/'
                 });

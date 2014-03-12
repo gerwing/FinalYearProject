@@ -16,6 +16,9 @@ module.exports = function(passport) {
                 if(!user) { //Not a registered user
                     return done(null, false, {message: 'Incorrect Username', problem:'username'});
                 }
+                if(!user.verified) { //User not verified
+                    return done(null, false, {message: 'User is not verified', problem:'verification', id:user._id});
+                }
                 //Check if password is correct
                 user.validPassword(password, function(err, isMatch) {
                     if(err) {

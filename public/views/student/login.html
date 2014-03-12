@@ -1,9 +1,13 @@
 <div>
-    <h1>Student Login</h1>
-    <p class="lead">
+    <h1 ng-hide="registered">Student Login</h1>
+    <p class="lead" ng-hide="registered">
         Please login or register using your email.
     </p>
-    <form name="loginForm" role="form">
+    <h1 ng-show="registered">Thank you for registering!</h1>
+    <p class="lead" ng-show="registered">
+        A confirmation email has been sent to your email address. In order to start using your account, please hit the confirmation link in the email we just sent you.
+    </p>
+    <form name="loginForm" role="form" ng-hide="registered">
         <div class="form-group">
             <label class="control-label" for="email">Email</label>
             <input id="email" ng-model="username" ng-change="reset()" class="form-control input-lg" type="email" placeholder="Email" required>
@@ -12,7 +16,11 @@
             <label class="control-label" for="password">Password</label>
             <input id="password" ng-model="password" class="form-control input-lg" type="password" placeholder="Password" required>
         </div>
-        <div ng-show="passwordError" class="alert alert-danger">{{errorMessage}}</div>
+        <div ng-show="passwordError||verificationError" class="alert alert-danger">
+            {{errorMessage}}
+            <a href="" ng-click="resendVerification()" ng-show="verificationError&&!verificationSent">Resend Verification Email</a>
+            <span class="error" ng-show="verificationSent">A new verification email is on its way!</span>
+        </div>
         <div class="alert alert-info" ng-show="usernameError">
             <h4>You aren't registered yet</h4>
             <p>Would you like to register using the following email address: {{username}}?</p>

@@ -24,6 +24,11 @@ var UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    verified: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
     isTeacher: {
         type: Boolean,
         default: false
