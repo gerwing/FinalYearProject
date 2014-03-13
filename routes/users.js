@@ -114,6 +114,9 @@ module.exports = function(app) {
     app.post('/api/student/subscribe', loggedIn, function(req,res,next) {
         var id = req.body.id;
         var user = req.user;
+        if(!id){ //Make sure ID is initialized
+            id = "";
+        }
         //Lookup module and if it exists, add it to user subscriptions
         Module.findOne({shortId:id}, function(err, module) {
             if(err) {
