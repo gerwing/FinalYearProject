@@ -7,7 +7,7 @@
     </header>
 
     <!--Live Lectures-->
-    <section class="panel panel-primary" ng-show="lectures.available.length>0">
+    <section class="panel panel-primary" ng-show="lectures.available.length>0" ng-cloak>
         <div class="panel-heading" ng-click="toggleLL()">Live Lectures</div>
 
         <div class="list-group" ng-hide="LL">
@@ -19,7 +19,7 @@
     </section>
 
     <!--Completed Lectures-->
-    <section class="panel panel-primary" ng-show="lectures.completed.length>0">
+    <section class="panel panel-primary" ng-show="lectures.completed.length>0" ng-cloak>
         <div class="panel-heading" ng-click="toggleCL()">Completed Lectures</div>
 
         <div class="list-group" ng-hide="CL">
@@ -31,7 +31,7 @@
     </section>
 
     <!--Available Homework-->
-    <section class="panel panel-primary" ng-show="homework.available.length>0">
+    <section class="panel panel-primary" ng-show="homework.available.length>0" ng-cloak>
         <div class="panel-heading" ng-click="toggleAH()">Available Homework</div>
 
         <div class="list-group" ng-hide="AH">
@@ -43,7 +43,7 @@
     </section>
 
     <!--Completed Homework-->
-    <section class="panel panel-primary" ng-show="homework.completed.length>0">
+    <section class="panel panel-primary" ng-show="homework.completed.length>0" ng-cloak>
         <div class="panel-heading" ng-click="toggleCH()">Completed Homework</div>
 
         <div class="list-group" ng-hide="CH">
@@ -55,7 +55,7 @@
     </section>
 
     <!--Subscribed Modules-->
-    <section class="panel panel-info" ng-show="modules.length>0">
+    <section class="panel panel-info" ng-show="modules.length>0" ng-cloak>
         <div class="panel-heading" ng-click="toggleSM()">
             Subscribed Modules
             <a href="" class="pull-right" ng-click="editing=true" ng-hide="editing">Edit</a>

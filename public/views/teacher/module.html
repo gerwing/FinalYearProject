@@ -8,7 +8,7 @@
     </header>
 
     <!--Lectures-->
-    <section class="panel panel-primary" ng-show="module.lectures.length>0">
+    <section class="panel panel-primary" ng-show="module.lectures.length>0" ng-cloak>
         <div class="panel-heading">
             Lectures
             <a href="" class="white pull-right" ng-click="editLectures=true" ng-hide="editLectures">Edit</a>
@@ -59,7 +59,7 @@
     </section>
 
     <!--Homework-->
-    <section class="panel panel-primary" ng-show="module.homework.length>0">
+    <section class="panel panel-primary" ng-show="module.homework.length>0" ng-cloak>
         <div class="panel-heading">
             Homework
             <a href="" class="white pull-right" ng-click="editHomework=true" ng-hide="editHomework">Edit</a>
@@ -110,7 +110,7 @@
     </section>
 
     <!--Module Configuration-->
-    <section class="panel panel-info">
+    <section class="panel panel-info" ng-cloak>
         <div class="panel-heading">Module Configuration</div>
         <div class="panel-body">
             <p><strong>Restrict Module To Following Email Domains:</strong></p>

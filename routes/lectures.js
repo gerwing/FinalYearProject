@@ -107,7 +107,7 @@ module.exports = function(app) {
         })
     });
 
-    //TEACHER GENERATE ACCESS ID
+    //TEACHER REMOVE ACCESS ID
     app.delete(basePathTeacher + '/:id/accessID', loggedInAsTeacher, function(req,res,next) {
         var id = req.params.id;
         var teacher = req.user.id;

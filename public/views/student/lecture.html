@@ -1,10 +1,10 @@
 <div>
-    <header>
+    <header ng-cloak>
         <h1>{{lecture.name}}</h1>
     </header>
 
     <!--Answering Question-->
-    <section ng-hide="finished||resultview||waiting">
+    <section ng-hide="finished||resultview||waiting" ng-cloak>
         <h2>{{question.question}}</h2>
         <h3 ng-repeat="answer in question.answers">
             <input type="radio" name="answer" value="{{answer.answer}}" ng-model="answers[currentQuestion].answer" ng-change="setAnswered()">

@@ -1,11 +1,13 @@
 <div>
-    <header>
+    <header ng-cloak>
         <h1>{{homework.name}}</h1>
         <p class="lead">
             Please solve all the questions.
         </p>
     </header>
-    <section ng-hide="finished">
+
+    <!--Answering Question-->
+    <section ng-hide="finished" ng-cloak>
         <button class="btn btn-default link-lrg" ng-disabled="$index>lastAnswered" ng-class="{'link-active':currentQuestion===$index}" ng-click="gotoQuestion($index)" ng-repeat="question in homework.questions">{{$index+1}}</button>
         <h2>{{question.question}}</h2>
         <h3 ng-repeat="answer in question.answers">
@@ -15,6 +17,8 @@
         <button class="btn btn-primary btn-lg" ng-click="nextQuestion()" ng-hide="currentQuestion===homework.questions.length-1" ng-disabled="!answered[currentQuestion]">Next Question</button>
         <button class="btn btn-success btn-lg" ng-click="submitHomework()" ng-show="currentQuestion===homework.questions.length-1" ng-disabled="!answered[currentQuestion]">Submit Homework</button>
     </section>
+
+    <!--Finished Homework-->
     <section ng-show="finished">
         <h2>Finished!</h2>
         <p>Thank you for solving {{homework.name}}</p>

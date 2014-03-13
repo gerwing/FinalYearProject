@@ -7,7 +7,7 @@
     </header>
 
     <!--Questions-->
-    <section class="panel panel-primary" ng-show="lecture.questions.length>0">
+    <section class="panel panel-primary" ng-show="lecture.questions.length>0" ng-cloak>
         <div class="panel-heading">
             Questions
             <a href="" class="white pull-right" ng-click="editing=true" ng-hide="editing">Edit</a>
@@ -69,8 +69,9 @@
     </section>
 
     <hr>
+
     <!--Statistics-->
-    <section>
+    <section ng-cloak>
         <h2>Statistics</h2>
         <p class="lead">Lecture has been completed {{lecture.timesDone}} times</p>
         <h4>Questions:</h4>
