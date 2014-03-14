@@ -1,8 +1,8 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('TeacherCtrl', ['$scope', 'Module', 'Authentication',
-        function($scope, Module, Authentication) {
+    .controller('TeacherCtrl', ['$scope', '$http', '$rootScope', '$timeout', 'Module', 'Authentication',
+        function($scope,$http,$rootScope,$timeout,Module,Authentication) {
             //Check Whether User is logged in as teacher
             if(!Authentication.verifyTeacher()){
                 return;
@@ -40,4 +40,26 @@ angular.module('voteApp')
                 module[0].$delete();
             }
 
+            //Edit profile
+            $scope.updateTeacher = function() {
+                $http.put('/api/teacher/' + $rootScope.user._id, $rootScope.user)
+                    .success(function() {
+                        $scope.updateSuccess = true;
+                        $timeout(function(){$scope.updateSuccess=false;},3000);
+                    })
+            };
+            $scope.updatePassword = function() {
+                $http.put('/api/user/changePassword/' + $rootScope.user._id, {oldPassword:$scope.oldPassword,newPassword:$scope.newPassword})
+                    .success(function() {
+                        $scope.passwordSuccess = true;
+                        $timeout(function(){$scope.passwordSuccess=false;},3000);
+                    })
+                    .error(function(data,status) {
+                        if(status === 401) {
+                            $scope.errorMessage = data.message;
+                            $scope.passwordError = true;
+                            $timeout(function(){$scope.passwordError=false;},3000);
+                        }
+                    })
+            };
     }]);

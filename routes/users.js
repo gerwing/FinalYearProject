@@ -4,6 +4,7 @@
 var User = require('../data/models/users'),
     Module = require('../data/models/modules'),
     loggedIn = require('../middleware/api/loggedIn'),
+    loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
     nodemailer = require('../config/nodemailer'),
     verificationTokens = require('../data/models/verificationTokens'),
     ejs = require('ejs'),
@@ -44,15 +45,39 @@ module.exports = function(app) {
     });
 
     //UPDATE TEACHER
-    //TODO complete
-    app.put('/api/teacher/:id', function(req,res) {
-        //Update Teacher Account
+    app.put('/api/teacher/:id', loggedInAsTeacher, function(req,res,next) {
+        var id = req.params.id;
+        var body = req.body;
+        var update = {};
+        if(id != req.user.id) {
+            return res.send('You are not logged in', 401);
+        }
+        if(body.name) {
+            update.name = body.name;
+        }
+        if(body.email) {
+            update.email = body.email;
+        }
+        User.update({_id:id}, update, function(err) {
+            if(err) {
+                return next(err);
+            }
+            res.send('Success', 200);
+        });
     });
 
     //DELETE TEACHER
-    //TODO complete
-    app.delete('/api/teacher/:id', function(req,res) {
-        //Delete Teacher Account
+    app.delete('/api/teacher/:id', loggedInAsTeacher, function(req,res,next) {
+        var id = req.params.id;
+        if(id != req.user.id) {
+            return res.send('You are not logged in', 401);
+        }
+        User.remove({_id:id}, function(err) {
+            if(err) {
+                return next(err);
+            }
+            res.send('Success', 200);
+        });
     });
 
     /**STUDENT API*/
@@ -90,10 +115,19 @@ module.exports = function(app) {
         });
     });
 
-    //DELETE Student
-    //TODO complete
-    app.delete('/api/student/:id', function(req,res) {
+    //DELETE STUDENT
+    app.delete('/api/student/:id', loggedIn, function(req,res,next) {
         //Delete Student Account
+        var id = req.params.id;
+        if(id != req.user.id) {
+            return res.send('You are not logged in', 401);
+        }
+        User.remove({_id:id}, function(err) {
+            if(err) {
+                return next(err);
+            }
+            res.send('Success', 200);
+        });
     });
 
     //GET ALL MODULES SUBSCRIBED TO
@@ -167,6 +201,47 @@ module.exports = function(app) {
             }
             res.send(user, 200);
         })
+    });
+
+    /** GENERAL USER API */
+    //Change a users password
+    app.put('/api/user/changePassword/:id', loggedIn, function(req,res,next) {
+        var id = req.params.id;
+        if(id != req.user.id) {
+            return res.send({message:'You are not logged in'}, 401);
+        }
+        var oldPassword = req.body.oldPassword;
+        var newPassword = req.body.newPassword;
+        //Find User
+        User.findOne({_id:id}, function(err,user) {
+            if(err) {
+                return next(err);
+            }
+            //Check Old Password
+            user.validPassword(oldPassword, function(err,isMatch) {
+                if(err) {
+                    return next(err);
+                }
+                if(isMatch) {
+                    //Save New Password after Hasing
+                    user.hashPassword(newPassword, function(err) {
+                        if(err) {
+                            return next(err);
+                        }
+                        user.save(function(err) {
+                            if(err) {
+                                return next(err);
+                            }
+                            res.send('Success', 200);
+                        })
+                    })
+                }
+                //Send error
+                else {
+                    return res.send({message:'Your old password was incorrect'}, 401);
+                }
+            })
+        });
     });
 
     //RESEND VERIFICATION EMAIL

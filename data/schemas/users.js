@@ -55,6 +55,18 @@ UserSchema.pre('save', function(next) {
     });
 });
 
+//Hash New Password
+UserSchema.methods.hashPassword = function(password, done) {
+    var user = this;
+    bcrypt.hash(password, null, null, function(err, hash) {
+        if(err) {
+            return done(err);
+        }
+        user.password = hash;
+        done();
+    });
+};
+
 //Password Hash Verification
 UserSchema.methods.validPassword = function(password, done) {
     var user = this;

@@ -1,8 +1,8 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('StudentCtrl', ['$scope', '$http', '$timeout', 'Authentication', 'Module', 'Homework', 'Lecture',
-    function($scope,$http,$timeout,Authentication,Module,Homework,Lecture){
+    .controller('StudentCtrl', ['$scope', '$http', '$timeout','$rootScope','Authentication', 'Module', 'Homework', 'Lecture',
+    function($scope,$http,$timeout,$rootScope,Authentication,Module,Homework,Lecture){
         //Check Whether User is logged in as teacher
         if(!Authentication.verifyStudent()){
             return;
@@ -62,6 +62,25 @@ angular.module('voteApp')
                 }
             });
         }
+
+        //EDIT PROFILE
+        $scope.updatePassword = function() {
+            $http.put('/api/user/changePassword/' + $rootScope.user._id, {oldPassword:$scope.oldPassword,newPassword:$scope.newPassword})
+                .success(function() {
+                    $scope.passwordSuccess = true;
+                    $timeout(function(){$scope.passwordSuccess=false;},3000);
+                })
+                .error(function(data,status) {
+                    if(status === 401) {
+                        $scope.errorMessage = data.message;
+                        $scope.passwordError = true;
+                        $timeout(function(){
+                            $scope.passwordError=false;
+                            delete $scope.errorMessage;
+                        },3000);
+                    }
+                })
+        };
 
         //TOGGLE FUNCTIONALITY
         $scope.CH = false;

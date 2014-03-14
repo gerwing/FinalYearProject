@@ -1,4 +1,9 @@
 <div>
+    <!--Edit Profile-->
+    <button class="btn btn-success pull-right" data-toggle="modal" data-target="#profileModal">
+        <span class="glyphicon glyphicon-pencil"></span>
+        Edit Profile
+    </button>
     <header>
         <h1>Hello {{user.name}}</h1>
         <p class="lead">
@@ -81,7 +86,7 @@
 
     <!--Subscribe to Module-->
     <section class="panel" ng-class="{'panel-danger':subscribeError, 'panel-info':!subscribeError}">
-        <div class="panel-heading" ng-click="toggleMS()">Subscribe to Module <span class="text-danger error" ng-hide="!errorMessage">- {{errorMessage}}</span></div>
+        <div class="panel-heading" ng-click="toggleMS()">Subscribe to Module <span class="text-danger error" ng-hide="!errorMessage||passwordError">- {{errorMessage}}</span></div>
         <div class="row panel-body" ng-hide="MS">
             <form class="form-inline" role="form" ng-submit="subscribeModule()">
                 <div class="form-group col-md-4">
@@ -122,4 +127,37 @@
             </li>
         </ul>
     </section>
+
+    <!--Edit Profile Modal-->
+    <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Edit Profile</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form name="passwordForm" role="form">
+                        <div class="form-group">
+                            <label class="control-label">Password</label>
+                            <input type="password" class="form-control" placeholder="Current Password..." ng-model="oldPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="New Password..." ng-model="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Confirm Password..." ng-model="confirmPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" ng-click="updatePassword()" ng-disabled="passwordForm.$invalid||newPassword!=confirmPassword">Change password</button>
+                        </div>
+                    </form>
+                    <div ng-show="newPassword!=confirmPassword" class="alert alert-danger">Passwords do not match</div>
+                    <div ng-show="passwordError" class="alert alert-danger">{{errorMessage}}</div>
+                    <div ng-show="passwordSuccess" class="alert alert-success">Password saved successfully</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
