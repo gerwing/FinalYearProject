@@ -76,6 +76,7 @@ module.exports = function(app) {
             if(err) {
                 return next(err);
             }
+            req.logout();
             res.send('Success', 200);
         });
     });
@@ -126,6 +127,7 @@ module.exports = function(app) {
             if(err) {
                 return next(err);
             }
+            req.logout();
             res.send('Success', 200);
         });
     });

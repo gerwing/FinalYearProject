@@ -1,9 +1,15 @@
 <div>
     <!--Edit Profile-->
-    <button class="btn btn-success pull-right" data-toggle="modal" data-target="#profileModal">
-        <span class="glyphicon glyphicon-pencil"></span>
-        Edit Profile
-    </button>
+    <div class="pull-right">
+        <button class="btn btn-success" data-toggle="modal" data-target="#profileModal">
+            <span class="glyphicon glyphicon-pencil"></span>
+            Edit Profile
+        </button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+            <span class="glyphicon glyphicon-trash"></span>
+            Delete Profile
+        </button>
+    </div>
     <header>
         <h1>Hello {{user.name}}</h1>
         <p class="lead">
@@ -156,6 +162,25 @@
                     <div ng-show="newPassword!=confirmPassword" class="alert alert-danger">Passwords do not match</div>
                     <div ng-show="passwordError" class="alert alert-danger">{{errorMessage}}</div>
                     <div ng-show="passwordSuccess" class="alert alert-success">Password saved successfully</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Delete Profile Modal-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel1">Delete Profile</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to remove your profile? This action can not be undone and you will lose all the data associated to your account.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" ng-click="deleteProfile()">Yes, Delete my profile</button>
                 </div>
             </div>
         </div>
