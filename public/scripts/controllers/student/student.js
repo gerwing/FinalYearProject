@@ -1,8 +1,8 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('StudentCtrl', ['$scope', '$http', '$timeout','$rootScope','$location','Authentication', 'Module', 'Homework', 'Lecture',
-    function($scope,$http,$timeout,$rootScope,$location,Authentication,Module,Homework,Lecture){
+    .controller('StudentCtrl', ['$scope', '$http', '$timeout','$rootScope','$window','Authentication', 'Module', 'Homework', 'Lecture',
+    function($scope,$http,$timeout,$rootScope,$window,Authentication,Module,Homework,Lecture){
         //Check Whether User is logged in as teacher
         if(!Authentication.verifyStudent()){
             return;
@@ -84,7 +84,8 @@ angular.module('voteApp')
         $scope.deleteProfile = function() {
             $http.delete('/api/student/'  + $rootScope.user._id, {})
                 .success(function() {
-                    $location('/');
+                    delete $rootScope.user;
+                    $window.location.reload();
                 })
         }
 
