@@ -58,6 +58,14 @@ var app = angular.module('voteApp', ['ngRoute','ngResource'])
                     templateUrl: 'views/verify.html',
                     controller: 'VerifyCtrl'
                 })
+                .when('/resetPassword', {
+                    templateUrl: 'views/passwordSubmit.html',
+                    controller: 'PasswordResetCtrl'
+                })
+                .when('/resetPassword/:token', {
+                    templateUrl: 'views/passwordReset.html',
+                    controller: 'PasswordResetCtrl'
+                })
                 .otherwise({
                     redirectTo: '/'
                 });

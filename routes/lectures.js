@@ -10,12 +10,18 @@ var basePathTeacher = '/api/teacher/lectures',
     lSubmissions = require('../data/models/lSubmissions'),
     loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
     loggedIn = require('../middleware/api/loggedIn'),
-    async = require('async');
+    async = require('async'),
+    verifyID = require('../data/verifyMongoID');
 
 module.exports = function(app) {
 
     //TEACHER GET ONE
     app.get(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var teacher = req.user.id;
         //Get Lecture from DB
@@ -29,19 +35,24 @@ module.exports = function(app) {
 
     //TEACHER POST
     app.post(basePathTeacher, loggedInAsTeacher, function(req, res,next) {
+        //Verify module id exists
+        if(!req.body.module) {
+            return res.send({message:'It is required to include the module ID'}, 406); //no module ID
+        }
+        //Verify ID
+        if(!verifyID(req.body.module)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.body.module;
         var teacher = req.user.id;
-        //Verify module id exists
-        if(!id) {
-            return res.send('It is required to include the module ID', 406); //no module ID
-        }
         //Get Module from DB
         Module.findOne({_id:id, teacher:teacher}, function(err, module) {
             if(err) {
                 return next(err); //Server error
             }
             if(!module) {
-                return res.send('Module does not exist', 404); //Module not found
+                return res.send({message:'Module does not exist'}, 404); //Module not found
             }
             //Check what to insert
             var insert = {};
@@ -70,6 +81,11 @@ module.exports = function(app) {
 
     //TEACHER PUT
     app.put(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var teacher = req.user.id;
         var update = {};
@@ -94,6 +110,11 @@ module.exports = function(app) {
 
     //TEACHER GENERATE ACCESS ID
     app.put(basePathTeacher + '/:id/accessID', loggedInAsTeacher, function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var teacher = req.user.id;
         //Find Lecture
@@ -109,6 +130,11 @@ module.exports = function(app) {
 
     //TEACHER REMOVE ACCESS ID
     app.delete(basePathTeacher + '/:id/accessID', loggedInAsTeacher, function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var teacher = req.user.id;
         //Find Lecture
@@ -124,6 +150,11 @@ module.exports = function(app) {
 
     //TEACHER DELETE
     app.delete(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var teacher = req.user.id;
         //Find Module that contains Lecture
@@ -138,7 +169,7 @@ module.exports = function(app) {
                     return next(err);
                 }
                 if(!module) {
-                    return res.send('Lecture does not exist', 404); //Module not found
+                    return res.send({message:'Lecture does not exist'}, 404); //Module not found
                 }
                 //remove lecture from module
                 var lecture = module.lectures[0];
@@ -213,6 +244,11 @@ module.exports = function(app) {
 
     //STUDENT GET ONE LIVE LECTURE
     app.get(basePathStudent + '/:id', loggedIn, function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         async.parallel([
             function(done) {
@@ -265,6 +301,11 @@ module.exports = function(app) {
 
     //SAVE LECTURE RESULTS
     app.post(basePathStudent + '/:id', loggedIn, function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var answers = req.body;
         async.parallel([

@@ -10,7 +10,8 @@ var basePathTeacher = '/api/teacher/modules',
     Homework = require('../data/models/homework'),
     User = require('../data/models/users'),
     loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
-    loggedIn = require('../middleware/api/loggedIn');
+    loggedIn = require('../middleware/api/loggedIn'),
+    verifyID = require('../data/verifyMongoID');
 
 module.exports = function(app) {
 
@@ -29,6 +30,11 @@ module.exports = function(app) {
 
     //TEACHER GET ONE
     app.get(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var teacher = req.user.id;
         //Get Module from Database
@@ -62,6 +68,11 @@ module.exports = function(app) {
 
     //TEACHER PUT
     app.put(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var teacher = req.user.id;
         var name = req.body.name;
@@ -86,6 +97,11 @@ module.exports = function(app) {
 
     //TEACHER DELETE
     app.delete(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var teacher = req.user.id;
         //Delete Module in database

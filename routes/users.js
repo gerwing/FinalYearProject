@@ -7,8 +7,10 @@ var User = require('../data/models/users'),
     loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
     nodemailer = require('../config/nodemailer'),
     verificationTokens = require('../data/models/verificationTokens'),
+    passwordTokens = require('../data/models/passwordTokens'),
     ejs = require('ejs'),
-    async = require('async');
+    async = require('async'),
+    verifyID = require('../data/verifyMongoID');
 
 module.exports = function(app) {
     /**TEACHER API*/
@@ -22,7 +24,7 @@ module.exports = function(app) {
             if(err) {
                 //Username already taken
                 if(err.code === 11000) {
-                    res.send({message:'Your chosen username is already taken'}, 409);
+                    res.send({message:'Your chosen username or email is already taken'}, 409);
                 }
                 else if(err.name === 'ValidationError') {
                     return res.send(Object.keys(err.errors).map(function(errField){
@@ -46,6 +48,11 @@ module.exports = function(app) {
 
     //UPDATE TEACHER
     app.put('/api/teacher/:id', loggedInAsTeacher, function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         var body = req.body;
         var update = {};
@@ -68,6 +75,11 @@ module.exports = function(app) {
 
     //DELETE TEACHER
     app.delete('/api/teacher/:id', loggedInAsTeacher, function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         if(id != req.user.id) {
             return res.send('You are not logged in', 401);
@@ -118,6 +130,11 @@ module.exports = function(app) {
 
     //DELETE STUDENT
     app.delete('/api/student/:id', loggedIn, function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         //Delete Student Account
         var id = req.params.id;
         if(id != req.user.id) {
@@ -208,6 +225,11 @@ module.exports = function(app) {
     /** GENERAL USER API */
     //Change a users password
     app.put('/api/user/changePassword/:id', loggedIn, function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.params.id;
         if(id != req.user.id) {
             return res.send({message:'You are not logged in'}, 401);
@@ -236,7 +258,7 @@ module.exports = function(app) {
                             }
                             res.send('Success', 200);
                         })
-                    })
+                    });
                 }
                 //Send error
                 else {
@@ -246,9 +268,80 @@ module.exports = function(app) {
         });
     });
 
+    //REQUEST PASSWORD RESET
+    app.post('/api/user/resetPassword', function(req,res,next) {
+        var email = req.body.email;
+        if(!email) {
+            return res.send({message:"Email address missing"}, 400);
+        }
+        User.findOne({email:email}, function(err,user) {
+            if(err) {
+                return next(err);
+            }
+            if(!user) {
+                return res.send({message:"No user is registered with that email address"}, 404);
+            }
+            //Create Password Token
+            sendPasswordEmail(user,req,res, function(err) {
+                if(err) {
+                    return next(err);
+                }
+                res.send('Success', 200);
+            });
+        });
+    });
+
+    //REQUEST PASSWORD RESET
+    app.post('/api/user/resetPassword/:token', function(req,res,next) {
+        var token = req.params.token;
+        var newPassword = req.body.password;
+        //Lookup password token
+        passwordTokens.findOne({token:token}, function(err,result){
+            if(err) {
+                return next(err);
+            }
+            if(!result) {
+                return res.send({message:"Token was not found"}, 404);
+            }
+            User.findOne({_id:result.user}, function(err,user) {
+                if(err) {
+                    return next(err);
+                }
+                if(user) {
+                    //Save New Password after Hasing
+                    user.hashPassword(newPassword, function(err) {
+                        if(err) {
+                            return next(err);
+                        }
+                        user.save(function(err) {
+                            if(err) {
+                                return next(err);
+                            }
+                            //Remove token
+                            result.remove(function(err) {
+                               if(err) {
+                                   return next(err);
+                               }
+                               res.send('Success', 200);
+                            });
+                        })
+                    });
+                }
+                else {
+                    return res.send({message:"User was not found"}, 404);
+                }
+            });
+        });
+    });
+
     //RESEND VERIFICATION EMAIL
     //THIS METHOD MUST BE BEFORE THE VERIFY METHOD IN ORDER TO CATCH THIS FIRST
     app.post('/api/user/verify/resend', function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.body.user)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
         var id = req.body.user;
         var user = {};
         async.series([
@@ -329,7 +422,7 @@ module.exports = function(app) {
     });
 };
 
-//Email used to send verification email
+//Function used to send verification email
 function sendVerificationEmail(user, req, res, next) {
     //Add verificationToken entry for user
     verificationTokens.create({user:user._id, token:"default"}, function(err,result) {
@@ -348,6 +441,37 @@ function sendVerificationEmail(user, req, res, next) {
                 return next(err);
             }
             ejs.renderFile("views/verifyEmail-html.ejs", options, function (err, htmlBody) {
+                if (err) {
+                    return next(err);
+                }
+                //Send confirmation mail
+                nodemailer.sendEmail(user.email, subject, textBody, htmlBody);
+                //Callback
+                next(null);
+            });
+        });
+    });
+};
+
+//Function used to send Password Reset email
+function sendPasswordEmail(user, req, res, next) {
+    //Add passwordToken entry for user
+    passwordTokens.create({user:user._id, token:"default"}, function(err,result) {
+        if (err) {
+            return next(err);
+        }
+        //Generate email and text bodies
+        var options = {
+            email: user.email,
+            name: user.name,
+            verifyURL: req.protocol + "://" + req.get('host') + "/resetPassword/" + result.token
+        };
+        var subject = "Resetting your password";
+        ejs.renderFile("views/passwordEmail-text.ejs", options, function (err, textBody) {
+            if (err) {
+                return next(err);
+            }
+            ejs.renderFile("views/passwordEmail-html.ejs", options, function (err, htmlBody) {
                 if (err) {
                     return next(err);
                 }

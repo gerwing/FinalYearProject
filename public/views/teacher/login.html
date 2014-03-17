@@ -39,8 +39,8 @@
             <label class="control-label" for="name">Full Name</label>
             <input id="name" ng-model="name" class="form-control input-lg" type="text" placeholder="Your Full Name" required>
         </div>
-        <div class="form-group">
-            <label class="control-label" for="email">Username</label>
+        <div class="form-group has-feedback" ng-class="{'has-error':usernameConflict}">
+            <label class="control-label" for="email">Email</label>
             <input id="email" ng-model="email" class="form-control input-lg" type="email" placeholder="Email Address" required>
         </div>
         <div ng-show="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
@@ -48,4 +48,5 @@
     </form>
     <h4><a href="" ng-click="registering=true" ng-hide="registering||registered">I would like to register</a></h4>
     <h4><a href="" ng-click="registering=false" ng-show="registering">I would like to login</a></h4>
+    <h4><a ng-href="/#/resetPassword" ng-hide="registered">I forgot my password</a></h4>
 </div>
