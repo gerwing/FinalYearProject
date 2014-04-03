@@ -59,13 +59,59 @@
     <!--Statistics-->
     <section ng-cloak>
         <h2>Statistics</h2>
-        <p class="lead">Homework has been completed {{homework.timesDone}} times</p>
-        <h4>Questions:</h4>
-        <div ng-repeat="question in homework.questions">
-            <h5>{{question.question}}</h5>
-            <p class="margin-sm" ng-repeat="answer in question.answers" ng-class="{'text-danger':!answer.correct,'text-success':answer.correct}">
-                {{answer.answer}} (answered {{answer.timesAnswered}} times)
-            </p>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Question Statistics</h4>
+                    </div>
+                </div>
+                <div class="row" ng-repeat="question in homework.questions">
+                    <div class="col-md-8">
+                        <h5 class="stat-ans-header">{{question.question}}</h5>
+                        <div class="statistic stat-ans">
+                            <p ng-repeat="answer in question.answers">
+                                <span class="margin-md"  ng-class="{'text-danger':!answer.correct,'text-success':answer.correct}">
+                                    <em>{{answer.answer}}</em>:
+                                </span>
+                                answered {{answer.timesAnswered}} times
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="stat-ans-header text-overflow">Correctness</h5>
+                        <div class="statistic stat-pie">
+                            <canvas tc-chartjs-pie chart-data="question.chartData" width="100" height="100"></canvas>
+                            <div class="pie-legend">
+                                <ul>
+                                    <li class="correct">{{question.rightScore}}% correct</li>
+                                    <li class="wrong">{{question.wrongScore}}% wrong</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Homework Statistics</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="statistic stat-text">
+                            homework completed <span class="stat">{{homework.timesDone}}</span> times
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="statistic stat-text">
+                            <span class="stat">{{understanding}}%</span> overall understanding
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 

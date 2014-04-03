@@ -13,7 +13,43 @@ angular.module('voteApp')
             }
 
             //Get Homework Data
-            $scope.homework = Homework.get({id: $routeParams.id});
+            $scope.homework = Homework.get({id: $routeParams.id}, function() {
+                //Initialize Statistics
+                //Initialize Pie Chart Data and total understanding
+                var totalRight = 0;
+                var totalWrong = 0;
+                for(var i=0;i<$scope.homework.questions.length;i++) {
+                    var q = $scope.homework.questions[i];
+                    q.chartData = [
+                        {
+                            value: q.timesRight,
+                            color: "#55dd55"
+                        },
+                        {
+                            value: q.timesWrong,
+                            color: "#dd5555"
+                        }
+                    ];
+                    //Calculate question score
+                    if(q.timesRight+ q.timesWrong === 0){
+                        q.rightScore = 0;
+                        q.wrongScore = 0;
+                    }
+                    else {
+                        q.rightScore = Math.round((q.timesRight / (q.timesRight+ q.timesWrong)) * 1000)/10;
+                        q.wrongScore = Math.round((q.timesWrong / (q.timesRight+ q.timesWrong)) * 1000)/10;
+                    }
+                    totalRight += q.timesRight;
+                    totalWrong += q.timesWrong;
+                }
+                //Calculate understanding score
+                if(totalRight+totalWrong === 0){
+                    $scope.understanding = 0;
+                }
+                else {
+                    $scope.understanding = Math.round((totalRight / (totalRight+totalWrong)) * 1000)/10;
+                }
+            });
 
             //Variable set when adding new question
             var addingQuestion = false;
