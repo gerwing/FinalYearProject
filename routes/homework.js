@@ -280,9 +280,11 @@ module.exports = function(app) {
                                     if(questions[i].answers[x].answer === answers[y].answer){
                                         if(questions[i].answers[x].correct) {
                                             answers[y].correct = true;
+                                            questions[i].timesRight+=1;
                                         }
                                         else {
                                             answers[y].correct = false;
+                                            questions[i].timesWrong+=1;
                                         }
                                         //Set times answered
                                         questions[i].answers[x].timesAnswered += 1;
