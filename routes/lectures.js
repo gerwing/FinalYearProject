@@ -325,6 +325,12 @@ module.exports = function(app) {
                         for(var y=0;y<answers.length;y++) {
                             if(questions[i].question === answers[y].question) {
                                 //Check result
+                                if(answers[y].correct === true){
+                                    questions[i].timesRight++;
+                                }
+                                else if(answers[y].correct === false) {
+                                    questions[i].timesWrong++;
+                                }
                                 for(var x=0;x<questions[i].answers.length;x++) {
                                     if(questions[i].answers[x].answer === answers[y].answer){
                                         questions[i].answers[x].timesAnswered += 1;
@@ -374,6 +380,12 @@ module.exports = function(app) {
                 for(var y=0;y<answers.length;y++) {
                     if(questions[i].question === answers[y].question) {
                         //Check result
+                        if(answers[y].correct === true){
+                            questions[i].timesRight++;
+                        }
+                        else if(answers[y].correct === false) {
+                            questions[i].timesWrong++;
+                        }
                         for(var x=0;x<questions[i].answers.length;x++) {
                             if(questions[i].answers[x].answer === answers[y].answer){
                                 questions[i].answers[x].timesAnswered += 1;

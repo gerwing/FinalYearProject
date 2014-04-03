@@ -1,7 +1,7 @@
 'use strict';
 
 //Initialize App
-var app = angular.module('voteApp', ['ngRoute','ngResource'])
+var app = angular.module('voteApp', ['ngRoute','ngResource','tc.chartjs'])
     .config(['$routeProvider','$locationProvider',
         function ($routeProvider, $locationProvider) {
             //Set Routes

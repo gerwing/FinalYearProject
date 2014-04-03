@@ -92,29 +92,40 @@
 
     <!--Subscribe to Module-->
     <section class="panel" ng-class="{'panel-danger':subscribeError, 'panel-info':!subscribeError}">
-        <div class="panel-heading" ng-click="toggleMS()">Subscribe to Module <span class="text-danger error" ng-hide="!errorMessage||passwordError">- {{errorMessage}}</span></div>
-        <div class="row panel-body" ng-hide="MS">
-            <form class="form-inline" role="form" ng-submit="subscribeModule()">
-                <div class="form-group col-md-4">
-                    <label class="sr-only" for="subscribeModuleID">Subscribe Module ID Code</label>
-                    <input class="form-control" id="subscribeModuleID" ng-model="module.id" type="text" name="name" placeholder="Module ID Code">
+        <div class="panel-heading" ng-click="toggleMS()">
+            Subscribe to Module <span class="text-danger error" ng-hide="!errorMessage||passwordError">- {{errorMessage}}</span>
+        </div>
+        <div class="panel-body" ng-hide="MS">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <label class="sr-only" for="subscribeModuleID">Subscribe Module ID Code</label>
+                        <input class="form-control" id="subscribeModuleID" ng-model="module.id" type="text" name="name" placeholder="Module ID Code">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="subscribeModule()">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                Subscribe
+                            </button>
+                        </span>
+                    </div>
                 </div>
-                <button class="btn btn-default">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Subscribe
-                </button>
-            </form>
-            <form class="form-inline" role="form" ng-submit="searchModules()">
-                <div class="form-group col-md-4">
-                    <label class="sr-only" for="searchModuleName">Search Modules by Name</label>
-                    <input class="form-control" id="searchModuleName" ng-model="module.name" type="text" name="name" placeholder="Module Name">
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <label class="sr-only" for="searchModuleName">Search Modules by Name</label>
+                        <input class="form-control" id="searchModuleName" ng-model="module.name" type="text" name="name" placeholder="Module Name">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="searchModules()">
+                                <span class="glyphicon glyphicon-search"></span>
+                                Search
+                            </button>
+                        </span>
+                    </div>
+                    <span class="text-info error" ng-hide="!searchError">&nbsp;No search results</span>
                 </div>
-                <button class="btn btn-default">
-                    <span class="glyphicon glyphicon-search"></span>
-                    Search
-                </button>
-                <span class="text-info error" ng-hide="!searchError">&nbsp;No search results</span>
-            </form>
+            </div>
         </div>
     </section>
 

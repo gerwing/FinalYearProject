@@ -35,7 +35,9 @@ angular.module('voteApp')
             //Lecture Finished
             socket.on('finish',function() {
                 //Upload results to server
-                Lecture.submit({id:$scope.lecture._id}, $scope.answers);
+                if(!$scope.finished) {
+                    Lecture.submit({id:$scope.lecture._id}, $scope.answers);
+                }
                 $scope.finished = true;
                 $scope.$apply();
             });

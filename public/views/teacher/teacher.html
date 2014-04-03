@@ -50,17 +50,21 @@
     <!--Add Module-->
     <section class="panel panel-info">
         <div class="panel-heading">Add New Module</div>
-        <div class="row panel-body">
-            <form class="form-inline" role="form" ng-submit="addModule()">
-                <div class="form-group col-md-4">
-                  <label class="sr-only" for="newModuleName">New Module Name</label>
-                  <input class="form-control" id="newModuleName" ng-model="module.name" type="text" name="name" placeholder="Module Name">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <label class="sr-only" for="newModuleName">New Module Name</label>
+                        <input class="form-control" id="newModuleName" ng-model="module.name" type="text" name="name" placeholder="Module Name">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="addModule()">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                Add Module
+                            </button>
+                        </span>
+                    </div>
                 </div>
-                <button class="btn btn-default">
-                  <span class="glyphicon glyphicon-plus"></span>
-                  Add Module
-                </button>
-            </form>
+            </div>
         </div>
     </section>
 

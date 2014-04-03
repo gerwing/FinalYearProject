@@ -31,7 +31,9 @@ angular.module('voteApp')
             //Lecture Finished
             socket.on('finish',function() {
                 //Upload results to server
-                Lecture.submitAccessID({accessID:$routeParams.accessID}, $scope.answers);
+                if(!$scope.finished) {
+                    Lecture.submitAccessID({accessID:$routeParams.accessID}, $scope.answers);
+                }
                 $scope.finished = true;
                 $scope.$apply();
             });

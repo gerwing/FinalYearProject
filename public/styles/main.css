@@ -13,6 +13,13 @@
 .margin-sm {
     margin-left:1em;
 }
+.margin-md {
+    margin-left:1.5em;
+}
+.margin-height-sm {
+    margin-bottom: 4px;
+    margin-top: 4px;
+}
 .error {
     font-style: italic;
     opacity:0.8;
@@ -20,6 +27,71 @@
 .clickable {
     cursor: pointer;
 }
+.text-overflow {
+    text-overflow:ellipsis;
+}
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
 }
+
+/*Statistics Stuff*/
+.stat {
+    font-size: 2em;
+    font-weight: 500;
+    display: block;
+    margin:-10px;
+}
+.statistic {
+    padding-top:15px;
+    padding-bottom:15px;
+    margin-bottom: 10px;
+    background-color: #efefef;
+    color: #444;
+}
+.stat-text {
+    color: #3e545e;
+    background-color: #d5e2e8;
+    text-align: center;
+    font-size: 1.4em;
+    font-weight: 200;
+}
+.stat-ans {
+    text-align: left;
+}
+.stat-pie {
+    text-align: center;
+}
+.stat-ans-header {
+    text-align: center;
+    background: #d0dde3;
+    color: #637b85;
+    padding-top:12px;
+    padding-bottom: 12px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+/*Pie Legend*/
+.pie-legend ul {
+    text-align: left;
+    text-indent: 20px;
+    width:200px;
+    list-style: none;
+    left:50%;
+    position: relative;
+    margin-left:-100px;
+}
+.pie-legend li {
+    position: relative;
+}
+.pie-legend  li:before {
+    display: block;
+    width: 10px;
+    height: 16px;
+    position: absolute;
+    left: 0;
+    top: 3px;
+    content: "";
+}
+.correct:before { background-color: #55dd55; }
+.wrong:before { background-color: #dd5555; }

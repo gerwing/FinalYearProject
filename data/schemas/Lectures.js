@@ -32,7 +32,15 @@ var LectureSchema = mongoose.Schema({
             answer: String,
             timesAnswered: {type: Number, default:0},
             correct: Boolean
-        }]
+        }],
+        timesRight: {
+            type:Number,
+            default:0
+        },
+        timesWrong: {
+            type:Number,
+            default:0
+        }
     }],
     isLive: {
         type: Boolean,

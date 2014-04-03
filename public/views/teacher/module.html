@@ -44,16 +44,18 @@
         <div class="panel-heading">Add New Lecture</div>
         <div class="panel-body">
             <div class="row">
-                <form class="form-inline" role="form" ng-submit="addLecture()">
-                    <div class="form-group col-md-4">
+                <div class="col-md-6">
+                    <div class="input-group">
                         <label class="sr-only" for="newLectureName">New Lecture Name</label>
                         <input class="form-control" id="newLectureName" ng-model="lecture.name" type="text" name="name" placeholder="Lecture Name">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="addLecture()">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                Add Lecture
+                            </button>
+                        </span>
                     </div>
-                    <button class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus"></span>
-                        Add Lecture
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     </section>
@@ -95,16 +97,18 @@
         <div class="panel-heading">Add New Homework</div>
         <div class="panel-body">
             <div class="row">
-                <form class="form-inline" role="form" ng-submit="addHomework()">
-                    <div class="form-group col-md-4">
+                <div class="col-md-6">
+                    <div class="input-group">
                         <label class="sr-only" for="newHomeworkName">New Homework Name</label>
                         <input class="form-control" id="newHomeworkName" ng-model="homework.name" type="text" name="name" placeholder="Homework Name">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="addHomework()">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                Add Homework
+                            </button>
+                        </span>
                     </div>
-                    <button class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus"></span>
-                        Add Homework
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     </section>
@@ -113,28 +117,28 @@
     <section class="panel panel-info" ng-cloak>
         <div class="panel-heading">Module Configuration</div>
         <div class="panel-body">
-            <p><strong>Restrict Module To Following Email Domains:</strong></p>
-            <ul class="list-group">
-                <li class="list-group-item" ng-repeat="restriction in module.emailRestrictions">
-                    @{{restriction}}
-                    <span class="glyphicon glyphicon-remove text-danger clickable" ng-click="removeEmailRestriction(restriction)"></span>
-                </li>
-            </ul>
-            <form class="form-inline" role="form" ng-submit="addEmailRestriction()">
-                <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <p><strong>Restrict Module To Following Email Domains:</strong></p>
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="restriction in module.emailRestrictions">
+                            @{{restriction}}
+                            <span class="glyphicon glyphicon-remove text-danger clickable" ng-click="removeEmailRestriction(restriction)"></span>
+                        </li>
+                    </ul>
                     <div class="input-group">
                         <span class="input-group-addon">@</span>
                         <label class="sr-only" for="emailRestriction">Add Email Domain Restriction</label>
                         <input class="form-control" id="emailRestriction" ng-model="emailRestriction" type="text" name="name" placeholder="Email Domain">
                         <span class="input-group-btn">
-                            <button class="btn btn-default">
+                            <button class="btn btn-default" ng-click="addEmailRestriction()">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 Add Email Domain Restriction
                             </button>
                         </span>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </section>
 </div>
