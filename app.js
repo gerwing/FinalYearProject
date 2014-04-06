@@ -6,7 +6,8 @@ var express = require('express'),
     mongoose = require('mongoose'),
     passport = require('passport'),
     app = express(),
-    config = require('config').Server;
+    config = require('config').Server,
+    folders = require('config').Folders;
 
 /** MongoDB Database Connection */
 // connect to database with Mongoose
@@ -18,7 +19,7 @@ require('./config/passport')(passport);
 
 /** Express Configuration */
 // all environments
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, folders.views));
 app.set('view engine', 'ejs');
 app.use(express.favicon());
 app.use(express.logger('dev'));
@@ -32,7 +33,7 @@ app.use(express.session({ secret: 'christmas hat' }));
 app.use(passport.initialize());
 app.use(passport.session());
 //Stop Middleware needed for Authentication
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, folders.app)));
 app.use(app.router);
 
 // development only

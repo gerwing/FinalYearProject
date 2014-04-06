@@ -1,0 +1,9 @@
+<div class="jumbotron" ng-cloak>
+    <h2>Email Verification</h2>
+    <p class="lead" ng-show="verified">
+        Thank you {{name}} for verifying your email. You will be forwarded to the login page ...
+    </p>
+    <p class="lead" ng-show="!verified">
+        Whoops! Something went wrong or your verification token has expired. You can request a new token by trying to log in.
+    </p>
+</div>

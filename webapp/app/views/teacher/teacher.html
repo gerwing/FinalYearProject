@@ -1,0 +1,137 @@
+<div>
+    <!--Edit Profile-->
+    <div class="pull-right">
+        <button class="btn btn-success" data-toggle="modal" data-target="#profileModal">
+            <span class="glyphicon glyphicon-pencil"></span>
+            Edit Profile
+        </button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+            <span class="glyphicon glyphicon-trash"></span>
+            Delete Profile
+        </button>
+    </div>
+    <header>
+        <h1>Hello {{user.name}}</h1>
+        <p class="lead">
+            You currently have the following modules:
+        </p>
+    </header>
+
+    <!--Modules-->
+    <section class="panel panel-primary" ng-show="modules.length>0" ng-cloak>
+        <div class="panel-heading">
+            Modules
+            <a href="" class="white pull-right" ng-click="editing=true" ng-hide="editing">Edit</a>
+            <a href="" class="white pull-right" ng-click="saveModules()" ng-show="editing">Done</a>
+        </div>
+
+        <div class="list-group" ng-hide="editing">
+            <a class="list-group-item" ng-repeat="module in modules" ng-href="/#/teacher/modules/{{module._id}}">
+                {{module.name}}
+                <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+            </a>
+        </div>
+
+        <ul class="list-group" ng-show="editing">
+            <li class="list-group-item" ng-repeat="module in modules">
+                <div class="input-group">
+                    <input type="text" class="form-control" ng-model="module.name" ng-change="saveModule($index)">
+                    <span class="input-group-btn">
+                        <button class="btn btn-danger" ng-click="removeModule($index)">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            delete
+                        </button>
+                    </span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!--Add Module-->
+    <section class="panel panel-info">
+        <div class="panel-heading">Add New Module</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <label class="sr-only" for="newModuleName">New Module Name</label>
+                        <input class="form-control" id="newModuleName" ng-model="module.name" type="text" name="name" placeholder="Module Name">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" ng-click="addModule()">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                Add Module
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Edit Profile Modal-->
+    <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Edit Profile</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form name="profileForm" role="form">
+                        <div class="form-group">
+                            <label class="control-label">Name</label>
+                            <input type="text" class="form-control" ng-model="user.name">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Email</label>
+                            <input type="text" class="form-control" ng-model="user.email">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="button" ng-click="updateTeacher()">Save changes</button>
+                        </div>
+                    </form>
+                    <div ng-show="updateSuccess" class="alert alert-success">Changes saved successfully</div>
+                    <hr>
+                    <form name="passwordForm" role="form">
+                        <div class="form-group">
+                            <label class="control-label">Password</label>
+                            <input type="password" class="form-control" placeholder="Current Password..." ng-model="oldPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="New Password..." ng-model="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Confirm Password..." ng-model="confirmPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" ng-click="updatePassword()" ng-disabled="passwordForm.$invalid||newPassword!=confirmPassword">Change password</button>
+                        </div>
+                    </form>
+                    <div ng-show="newPassword!=confirmPassword" class="alert alert-danger">Passwords do not match</div>
+                    <div ng-show="passwordError" class="alert alert-danger">{{errorMessage}}</div>
+                    <div ng-show="passwordSuccess" class="alert alert-success">Password saved successfully</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Delete Profile Modal-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel1">Delete Profile</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to remove your profile? This action can not be undone and you will lose all the data associated to your account.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" ng-click="deleteProfile()">Yes, Delete my profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
