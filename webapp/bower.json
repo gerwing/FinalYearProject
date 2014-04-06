@@ -9,7 +9,8 @@
     "bootstrap": "~3.0.3",
     "angular-resource": "1.2.15",
     "angular-route": "1.2.15",
-    "tc-angular-chartjs": "*"
+    "tc-angular-chartjs": "*",
+    "socket.io-client": "0.9.x"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",
