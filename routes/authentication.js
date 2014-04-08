@@ -10,7 +10,7 @@ module.exports = function(app, passport) {
 
     //TODO make safer method or use https
     /**API USER AUTHENTICATION*/
-    //LOGIN USER USING API
+    //LOGIN TEACHER USING API
     app.post('/api/teacher/login', function(req, res, next) {
         passport.authenticate('local', function(err, user, info) {
             if (err) { return next(err) }
@@ -27,7 +27,7 @@ module.exports = function(app, passport) {
         })(req, res, next);
     });
 
-    //LOGIN USER USING API
+    //LOGIN STUDENT USING API
     app.post('/api/student/login', function(req, res, next) {
         passport.authenticate('local', function(err, user, info) {
             if (err) { return next(err) }

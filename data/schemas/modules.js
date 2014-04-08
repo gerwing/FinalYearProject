@@ -13,7 +13,9 @@ var ModuleSchema = mongoose.Schema({
         default:'New Module'
     },
     shortId: {
-        type: String
+        type: String,
+        unique: true,
+        index: true
     },
     emailRestrictions: [String],
     teacher: {
