@@ -23,7 +23,9 @@ var LectureSchema = mongoose.Schema({
         required: true
     },
     accessID: {
-        type: String
+        type: String,
+        unique: true,
+        index: true
     },
     timesDone: {type: Number, default: 0},
     questions: [{

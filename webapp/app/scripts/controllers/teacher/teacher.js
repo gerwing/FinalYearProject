@@ -8,9 +8,11 @@ angular.module('voteApp')
                 return;
             }
 
+            /**INITIALIZE SCOPE*/
             //Get Modules
             $scope.modules = Module.query();
 
+            /**SCOPE METHODS*/
             //Scope Methods
             $scope.addModule = function() {
                 //Save module
@@ -39,7 +41,6 @@ angular.module('voteApp')
                 var module = $scope.modules.splice(index,1);
                 module[0].$delete();
             }
-
             //Edit profile
             $scope.updateTeacher = function() {
                 $http.put('/api/teacher/' + $rootScope.user._id, $rootScope.user)

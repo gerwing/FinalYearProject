@@ -41,6 +41,7 @@ angular.module('voteApp')
                         socket.disconnect(); //Disconnect Teacher
                     });
             });
+            //Close Connection when closing window
             window.onbeforeunload = function(){
                 //Mark lecture as offline
                 $scope.lecture.isLive = false;

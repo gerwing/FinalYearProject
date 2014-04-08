@@ -3,8 +3,11 @@
 angular.module('voteApp')
     .controller('StdLoginCtrl', ['$scope', '$location', '$http', 'Authentication', 'Lecture',
         function($scope,$location,$http,authentication,Lecture) {
+            /**INITIALIZE SCOPE*/
             //Set Default password
             $scope.password = "";
+
+            /**SCOPE METHODS*/
             //Set login function
             $scope.login = function() {
                 //Login

@@ -12,6 +12,7 @@ angular.module('voteApp')
                 return;
             }
 
+            /**INITIALIZE SCOPE*/
             //Get Lecture Data
             $scope.lecture = Lecture.get({id: $routeParams.id}, function() {
                 //Initialize Statistics
@@ -54,6 +55,7 @@ angular.module('voteApp')
             //Variable set when adding new question
             var addingQuestion = false;
 
+            /**SCOPE METHODS*/
             //Set Methods
             $scope.addQuestion = function() {
                 //Set Blank Question

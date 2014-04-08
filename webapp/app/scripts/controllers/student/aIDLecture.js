@@ -3,6 +3,8 @@
 angular.module('voteApp')
     .controller('StdaIDLectureCtrl', ['$scope','$routeParams','Lecture','SocketIO',
         function($scope,$routeParams,Lecture,socket){
+
+            /**INITIALIZE SOCKET.IO*/
             //Reconnect socket in case student had left the lecture
             socket.socket.connect();
 
@@ -42,6 +44,7 @@ angular.module('voteApp')
                 socket.disconnect();
             });
 
+            /**INITIALIZE SCOPE*/
             //Get Lecture Data
             $scope.lecture = Lecture.getAccessIDLecture({accessID:$routeParams.accessID},function() {
                 //Lecture completed
@@ -64,6 +67,8 @@ angular.module('voteApp')
                     socket.emit('join', $scope.lecture._id);
                 }
             });
+
+            /**SCOPE METHODS*/
             $scope.setAnswered = function() {
                 $scope.answered = true;
             }

@@ -3,6 +3,8 @@
 angular.module('voteApp')
     .controller('LoginCtrl', ['$scope', '$http', 'Authentication',
         function($scope,$http,authentication) {
+
+            /**SCOPE METHODS*/
             //Set login function
             $scope.login = function() {
                 authentication.loginTeacher($scope);

@@ -8,9 +8,11 @@ angular.module('voteApp')
                 return;
             }
 
+            /**INITIALIZE SCOPE*/
             //Get Module Data
             $scope.module = Module.get({id: $routeParams.id});
 
+            /**SCOPE METHODS*/
             //Set Scope Methods
             $scope.addLecture = function() {
                 //Assemble data

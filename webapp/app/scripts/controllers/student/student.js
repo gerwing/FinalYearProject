@@ -8,13 +8,11 @@ angular.module('voteApp')
             return;
         }
 
-        var refresh = function() {
-            $scope.homework = Homework.getAllHomework();
-            $scope.lectures = Lecture.getAllLectures();
-            $scope.modules = Module.getSubscribed();
-        }
+        /**INITIALIZE SCOPE*/
         refresh();
 
+        /**SCOPE METHODS*/
+        //Subscribe to a module
         $scope.subscribeModule = function(moduleID) {
             $scope.subscribeError = false; //Set Module error to default (hidden)
             var id;
@@ -43,7 +41,7 @@ angular.module('voteApp')
                 });
             delete $scope.module.id;
         }
-
+        //Unscubscribe a module
         $scope.unsubscribeModule = function(id) {
             $http.post('/api/student/unsubscribe', {id:id})
                 .success(function(data) {
@@ -52,7 +50,7 @@ angular.module('voteApp')
                 })
             //delete $scope.editing;
         }
-
+        //Search for modules by name
         $scope.searchModules = function() {
             $scope.searchError = false;
             $scope.searchResults = Module.search({name:$scope.module.name}, function() {
@@ -62,7 +60,6 @@ angular.module('voteApp')
                 }
             });
         }
-
         //EDIT PROFILE
         $scope.updatePassword = function() {
             $http.put('/api/user/changePassword/' + $rootScope.user._id, {oldPassword:$scope.oldPassword,newPassword:$scope.newPassword})
@@ -89,6 +86,14 @@ angular.module('voteApp')
                 })
         }
 
+        /**OTHER METHODS*/
+        function refresh() {
+            $scope.homework = Homework.getAllHomework();
+            $scope.lectures = Lecture.getAllLectures();
+            $scope.modules = Module.getSubscribed();
+        }
+
+        /**TOGGLE PANELS*/
         //TOGGLE FUNCTIONALITY
         $scope.CH = false;
         $scope.LL = false;

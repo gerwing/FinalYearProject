@@ -3,6 +3,8 @@
 angular.module('voteApp')
     .controller('PasswordResetCtrl', ['$scope','$routeParams', '$location', '$timeout', '$http',
         function ($scope,$routeParams,$location,$timeout,$http) {
+
+            /**SCOPE METHODS*/
             $scope.passwordSubmit = function() {
                 //Request password reset
                 $http.post("/api/user/resetPassword", {email:$scope.email})
@@ -14,7 +16,6 @@ angular.module('voteApp')
                         $scope.errorMessage = data.message;
                     });
             };
-
             $scope.resetPassword = function() {
                 var token = $routeParams.token;
                 //Request password reset

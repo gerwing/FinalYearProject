@@ -7,9 +7,10 @@ angular.module('voteApp')
             if(!Authentication.verifyStudent()){
                 return;
             }
+
+            /**INITIALIZE SOCKET.IO*/
             //Reconnect socket in case student had left the lecture
             socket.socket.connect();
-
             //SOCKETIO
             //Goto given question
             socket.on('gotoQuestion',function(data) {
@@ -46,6 +47,7 @@ angular.module('voteApp')
                 socket.disconnect();
             });
 
+            /**INITIALIZE SCOPE*/
             //Get Lecture Data
             $scope.lecture = Lecture.getLecture({id:$routeParams.id},function() {
                 //Lecture completed
@@ -68,6 +70,8 @@ angular.module('voteApp')
                     socket.emit('join', $routeParams.id);
                 }
             });
+
+            /**SCOPE METHODS*/
             $scope.setAnswered = function() {
                 $scope.answered = true;
             }

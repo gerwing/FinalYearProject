@@ -10,8 +10,9 @@ angular.module('voteApp')
             //Check Whether User is logged in as teacher
             if(!Authentication.verifyTeacher()){
                 return;
-            }
+            };
 
+            /**INITIALIZE SCOPE*/
             //Get Homework Data
             $scope.homework = Homework.get({id: $routeParams.id}, function() {
                 //Initialize Statistics
@@ -54,6 +55,7 @@ angular.module('voteApp')
             //Variable set when adding new question
             var addingQuestion = false;
 
+            /**SCOPE METHODS*/
             //Set Methods
             $scope.addQuestion = function() {
                 //Set Blank Question

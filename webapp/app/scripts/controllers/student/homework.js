@@ -8,6 +8,7 @@ angular.module('voteApp')
             return;
         }
 
+        /**INITIALIZE SCOPE*/
         $scope.homework = Homework.getHomework({id:$routeParams.id},function(){
             //Homework completed
             if($scope.homework.submission) {
@@ -28,6 +29,8 @@ angular.module('voteApp')
             }
         });
 
+        /**SCOPE METHODS*/
+        //goto next question
         $scope.nextQuestion = function() {
             $scope.currentQuestion += 1;
             $scope.question = $scope.homework.questions[$scope.currentQuestion];
@@ -35,21 +38,21 @@ angular.module('voteApp')
                 $scope.lastAnswered = $scope.currentQuestion; //Set new last answered question
             }
         };
-
+        //Final submit homework to server
         $scope.submitHomework = function() {
             //Submit Question
             Homework.submit({id:$scope.homework._id}, $scope.answers ,function(results) {
                 $scope.finished = true;
                 $scope.results = results;
             });
-        }
-
+        };
+        //Mark question as answered
         $scope.setAnswered = function() {
             $scope.answered[$scope.currentQuestion] = true;
-        }
-
+        };
+        //Go to specific Question
         $scope.gotoQuestion = function(index) {
             $scope.currentQuestion = index;
             $scope.question = $scope.homework.questions[$scope.currentQuestion];
-        }
+        };
     }]);
