@@ -20,6 +20,10 @@
     margin-bottom: 4px;
     margin-top: 4px;
 }
+.margin-height-l {
+    margin-bottom: 14px;
+    margin-top: 14px;
+}
 .error {
     font-style: italic;
     opacity:0.8;

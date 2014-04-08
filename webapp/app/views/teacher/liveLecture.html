@@ -9,24 +9,53 @@
 
     <!--Asking Question-->
     <section ng-hide="finished||resultview">
-        <button class="btn btn-default link-lrg" ng-disabled="$index>lastAnswered" ng-class="{'link-active':currentQuestion===$index}" ng-click="gotoQuestion($index)" ng-repeat="question in lecture.questions">{{$index+1}}</button>
-        <h2>{{question.question}}</h2>
-        <h3 ng-repeat="answer in question.answers" class="margin-sm">
-            {{$index+1}}. {{answer.answer}}
-        </h3>
-        <p>{{answered}} answers collected out of {{participators}}</p>
-        <button class="btn btn-primary btn-lg" ng-click="showResults()">See Results</button>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-default link-lrg" ng-disabled="$index>lastAnswered" ng-class="{'link-active':currentQuestion===$index}" ng-click="gotoQuestion($index)" ng-repeat="question in lecture.questions">{{$index+1}}</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h2>{{question.question}}</h2>
+                <h3 ng-repeat="answer in question.answers" class="margin-sm">
+                    {{$index+1}}. {{answer.answer}}
+                </h3>
+                <p>{{answered}} answers collected out of {{participators}}</p>
+                <p>
+                    <button class="btn btn-primary btn-lg" ng-click="showResults()">See Results</button>
+                </p>
+                <p>
+                    <button class="btn btn-default btn-lg" ng-click="showingGraph=true" ng-hide="showingGraph">Show Live Results</button>
+                    <button class="btn btn-danger btn-lg" ng-click="showingGraph=false" ng-hide="!showingGraph">Hide Live Results</button>
+                </p>
+            </div>
+            <div class="col-md-6">
+                <canvas tc-chartjs-bar chart-data="chartData" chart-options="chartOptions" ng-show="showingGraph" height="200px" width="400px" class="margin-height-l"></canvas>
+            </div>
+        </div>
     </section>
 
     <!--Question Results-->
     <section ng-show="resultview&&!finished">
-        <button class="btn btn-default link-lrg" ng-disabled="$index>lastAnswered" ng-class="{'link-active':currentQuestion===$index}" ng-click="gotoQuestion($index)" ng-repeat="question in lecture.questions">{{$index+1}}</button>
-        <h2>{{question.question}}</h2>
-        <h3 ng-repeat="answer in question.answers" class="margin-sm" ng-class="{'text-success':answer.correct,'text-danger':!answer.correct}">
-            {{$index+1}}. {{answer.answer}}
-        </h3>
-        <button class="btn btn-primary btn-lg" ng-click="nextQuestion()" ng-hide="currentQuestion===lecture.questions.length-1">Next Question</button>
-        <button class="btn btn-success btn-lg" ng-click="endLecture()" ng-show="currentQuestion===lecture.questions.length-1">End Lecture</button>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-default link-lrg" ng-disabled="$index>lastAnswered" ng-class="{'link-active':currentQuestion===$index}" ng-click="gotoQuestion($index)" ng-repeat="question in lecture.questions">{{$index+1}}</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h2>{{question.question}}</h2>
+                <h3 ng-repeat="answer in question.answers" class="margin-sm" ng-class="{'text-success':answer.correct,'text-danger':!answer.correct}">
+                    {{$index+1}}. {{answer.answer}}
+                </h3>
+                <button class="btn btn-primary btn-lg" ng-click="nextQuestion()" ng-hide="currentQuestion===lecture.questions.length-1">Next Question</button>
+                <button class="btn btn-success btn-lg" ng-click="endLecture()" ng-show="currentQuestion===lecture.questions.length-1">End Lecture</button>
+            </div>
+            <div class="col-md-6">
+                <canvas tc-chartjs-bar chart-data="chartData" chart-options="chartOptions" height="200px" width="400px" class="margin-height-l"></canvas>
+            </div>
+        </div>
+
     </section>
 
     <!--Lecture Finished-->
