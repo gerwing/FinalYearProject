@@ -1,7 +1,7 @@
 <div>
     <header>
         <h1>{{lecture.name}}</h1>
-        <h2 ng-hide="!lecture.accessID"><small>Join this lecture using this access ID:</small> {{lecture.accessID}}</h2>
+        <h2 ng-hide="!lecture.accessID"><small>Join this lecture using this access ID:</small> <span class="id">{{lecture.accessID}}</span></h2>
         <p class="lead">
             This lecture is followed by {{participators}} <span ng-hide="participators==1">people</span><span ng-hide="participators!=1">person</span>.
         </p>

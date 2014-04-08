@@ -99,3 +99,6 @@
 }
 .correct:before { background-color: #55dd55; }
 .wrong:before { background-color: #dd5555; }
+.id {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
