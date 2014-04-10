@@ -308,15 +308,38 @@ module.exports = function(app) {
 
         var id = req.params.id;
         var answers = req.body;
-        async.parallel([
+        async.series([
+            function(done) {
+                //Check if student has already submitted
+                lSubmissions.findOne({user:req.user.id,lecture:id}, function(err,result){
+                    if(err){
+                        return done(err);
+                    }
+                    if(result) {
+                        return done({message:"You have already submitted this lecture"});
+                    }
+                    done(null);
+                });
+            },
             function(done) {
                 //Save Lecture Results to Database
                 lSubmissions.create({user:req.user.id,lecture:id,results:answers},done);
             },
             function(done) {
+                //Lookup lecture and insert results
                 Lecture.findOne({_id:id}, function(err, lecture) {
                     if(err) {
                         return done(err);
+                    }
+                    //Check if student is subscribed to module from lecture
+                    //If he is not, throw error and remove submission
+                    if(req.user.subscribedTo.indexOf(lecture.module)===-1) {
+                        lSubmissions.remove({user:req.user.id,lecture:id},function(err){
+                            if(err){
+                                return done(err);
+                            }
+                        });
+                        return done({message:"You are not subscribed to this lecture"});
                     }
                     lecture.timesDone +=1;
                     var questions = lecture.questions;
@@ -337,7 +360,7 @@ module.exports = function(app) {
                                         break;
                                     }
                                 }
-                                //Remove answer from array and into result array
+                                //Remove answer from array
                                 answers.splice(y,1);
                                 break;
                             }
@@ -354,9 +377,12 @@ module.exports = function(app) {
         ],
         function(err,results) {
             if(err) {
+                if(err.message) {
+                    res.send(err, 400); //Bad request
+                }
                 return next(err);
             }
-            res.send(results[0], 200); //Send back submission result
+            res.send(results[1], 200); //Send back submission result
         });
     });
 
