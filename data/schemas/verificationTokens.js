@@ -6,7 +6,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     uuid = require('node-uuid');
-;
 
 var verificationTokenSchema = mongoose.Schema({
     user: {

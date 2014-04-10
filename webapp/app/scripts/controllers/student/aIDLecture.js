@@ -47,25 +47,18 @@ angular.module('voteApp')
             /**INITIALIZE SCOPE*/
             //Get Lecture Data
             $scope.lecture = Lecture.getAccessIDLecture({accessID:$routeParams.accessID},function() {
-                //Lecture completed
-                if($scope.lecture.submission) {
-                    $scope.answers = $scope.lecture.submission.results;
-                    $scope.finished = true;
+                //Join Live Lecture
+                $scope.question = $scope.lecture.questions[0];
+                $scope.currentQuestion = 0;
+                $scope.answered = false; //Boolean to check whether question been answered
+                $scope.resultview = false;
+                $scope.answers = []; //Array with final answers
+                //Fill array with 'not answered' and add question to answers array
+                for(var i=0;i<$scope.lecture.questions.length;i++) {
+                    $scope.answers[i] = {question:$scope.lecture.questions[i].question};
                 }
-                //Following Live Lecture
-                else {
-                    $scope.question = $scope.lecture.questions[0];
-                    $scope.currentQuestion = 0;
-                    $scope.answered = false; //Boolean to check whether question been answered
-                    $scope.resultview = false;
-                    $scope.answers = []; //Array with final answers
-                    //Fill array with 'not answered' and add question to answers array
-                    for(var i=0;i<$scope.lecture.questions.length;i++) {
-                        $scope.answers[i] = {question:$scope.lecture.questions[i].question};
-                    }
-                    //Join lecture room
-                    socket.emit('join', $scope.lecture._id);
-                }
+                //Join lecture room
+                socket.emit('joinStudent', $scope.lecture._id);
             });
 
             /**SCOPE METHODS*/

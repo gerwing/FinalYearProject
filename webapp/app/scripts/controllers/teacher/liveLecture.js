@@ -12,7 +12,7 @@ angular.module('voteApp')
             //Reconnect socket in case teacher had left the lecture
             socket.socket.connect();
             //Join lecture room
-            socket.emit('join', $routeParams.id);
+            socket.emit('joinTeacher', $routeParams.id);
             //SOCKET IO
             $scope.participators = 0;
             $scope.answered = 0;

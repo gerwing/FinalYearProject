@@ -6,8 +6,12 @@ var express = require('express'),
     mongoose = require('mongoose'),
     passport = require('passport'),
     app = express(),
+    redis = require('redis'),
+    RedisStore = require('connect-redis')(express),
     config = require('config').Server,
-    folders = require('config').Folders;
+    folders = require('config').Folders,
+    redisConfig = require('config').Redis,
+    sessionConfig = require('config').Session;
 
 /** MongoDB Database Connection */
 // connect to database with Mongoose
@@ -16,6 +20,11 @@ var db = mongoose.connect(dbUrl);
 
 /** Passport Configuration */
 require('./config/passport')(passport);
+
+/** Redis Session Store Configuration*/
+var client = redis.createClient(redisConfig.port, redisConfig.host);
+client.auth(redisConfig.password, function (err) { if (err) throw err; });
+var store = new RedisStore({client:client});
 
 /** Express Configuration */
 // all environments
@@ -29,7 +38,10 @@ app.use(express.methodOverride());
 //Start Middleware needed for Authentication
 app.use(express.cookieParser());
 app.use(express.bodyParser());
-app.use(express.session({ secret: 'christmas hat' }));
+app.use(express.session({
+    store: store,
+    secret: sessionConfig.secret
+})); //REDIS SESSION
 app.use(passport.initialize());
 app.use(passport.session());
 //Stop Middleware needed for Authentication
@@ -58,4 +70,4 @@ var server = app.listen(config.port,config.host,function() {
 
 /** SOCKET IO Lecture API and Configuration*/
 var io = require('socket.io').listen(server);
-require('./config/socketio')(io);
+require('./config/socketio')(io,store,passport);

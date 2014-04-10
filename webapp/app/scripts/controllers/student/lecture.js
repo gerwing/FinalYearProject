@@ -42,6 +42,11 @@ angular.module('voteApp')
                 $scope.finished = true;
                 $scope.$apply();
             });
+            //User is already attending lecture
+            socket.on('conflict',function(){
+                $scope.conflict = true;
+                $scope.$apply();
+            });
             //Close Connection when leaving page
             $scope.$on('$locationChangeStart', function () {
                 socket.disconnect();
@@ -67,7 +72,7 @@ angular.module('voteApp')
                         $scope.answers[i] = {question:$scope.lecture.questions[i].question};
                     }
                     //Join lecture room
-                    socket.emit('join', $routeParams.id);
+                    socket.emit('joinStudent', $routeParams.id);
                 }
             });
 

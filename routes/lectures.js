@@ -183,13 +183,13 @@ module.exports = function(app) {
     });
 
     /**STUDENT API*/
-    //STUDENT GET ALL LIVE LECTURES
+    //STUDENT GET ALL LIVE AND COMPLETED LECTURES
     app.get(basePathStudent, loggedIn, function(req,res,next) {
         var submissions;
         var subscribed;
         async.series([
             function(done) {
-                //Find Submitted Homework
+                //Find Submitted Lectures
                 lSubmissions
                     .find({user:req.user.id})
                     .distinct('lecture')
@@ -242,7 +242,7 @@ module.exports = function(app) {
         });
     });
 
-    //STUDENT GET ONE LIVE LECTURE
+    //STUDENT GET ONE LECTURE
     app.get(basePathStudent + '/:id', loggedIn, function(req,res,next) {
         //Verify ID
         if(!verifyID(req.params.id)){
@@ -261,7 +261,7 @@ module.exports = function(app) {
                     .exec(done);
             },
             function(done) {
-                //Lookup whether this homework has already been submitted by the student
+                //Lookup whether this lecture has already been submitted by the student
                 lSubmissions.findOne({lecture:id,user:req.user.id}, done);
             }
         ],

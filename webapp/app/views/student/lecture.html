@@ -4,7 +4,7 @@
     </header>
 
     <!--Answering Question-->
-    <section ng-hide="finished||resultview||waiting" ng-cloak>
+    <section ng-hide="finished||resultview||waiting||conflict" ng-cloak>
         <h2>{{question.question}}</h2>
         <h3 ng-repeat="answer in question.answers">
             <input type="radio" name="answer" value="{{answer.answer}}" ng-model="answers[currentQuestion].answer" ng-change="setAnswered()">
@@ -38,5 +38,10 @@
             </p>
         </div>
         <a class="btn btn-primary btn-lg" ng-href="/#/student">Back to home</a>
+    </section>
+
+    <!--Lecture already open-->
+    <section ng-show="conflict">
+        <h3>You are already attending this lecture in another window, please close this window first before opening a new one.</h3>
     </section>
 </div>
