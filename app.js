@@ -45,7 +45,7 @@ app.use(express.session({
 app.use(passport.initialize());
 app.use(passport.session());
 //Stop Middleware needed for Authentication
-app.use(express.static(path.join(__dirname, folders.app)));
+app.use(express.static(path.join(__dirname, folders.app),{maxAge:86400}));
 app.use(app.router);
 
 // development only
