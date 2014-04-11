@@ -270,6 +270,11 @@ module.exports = function(app) {
                     if(err) {
                         return done(err);
                     }
+                    //Check if student is subscribed to module from homework
+                    //If he is not, throw error and remove submission
+                    if(req.user.subscribedTo.indexOf(homework.module)===-1) {
+                        return done(400);
+                    }
                     var questions = homework.questions; //questions array
                     //Check which questions were correct and which were false
                     for(var i=0;i<questions.length;i++) {
@@ -312,10 +317,13 @@ module.exports = function(app) {
             if(err === 409) {
                 return res.send({message:'Homework has already been submitted'}, 409);
             }
+            else if(err === 400) {
+                return res.send({message:'You are not subscribed to this homework'}, 400);
+            }
             else if(err) {
                 return next(err);
             }
-            res.send(resultList);
+            res.send(results[1], 200); //send submission
         });
     });
 };

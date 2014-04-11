@@ -308,22 +308,19 @@ module.exports = function(app) {
 
         var id = req.params.id;
         var answers = req.body;
+        var resultList = [];
         async.series([
             function(done) {
-                //Check if student has already submitted
-                lSubmissions.findOne({user:req.user.id,lecture:id}, function(err,result){
+                //Check if student has already submitted lecture
+                lSubmissions.findOne({user:req.user.id,lecture:id}, function(err,submission){
                     if(err){
                         return done(err);
                     }
-                    if(result) {
-                        return done({message:"You have already submitted this lecture"});
+                    if(submission) {
+                        return done(409);
                     }
                     done(null);
                 });
-            },
-            function(done) {
-                //Save Lecture Results to Database
-                lSubmissions.create({user:req.user.id,lecture:id,results:answers},done);
             },
             function(done) {
                 //Lookup lecture and insert results
@@ -334,14 +331,8 @@ module.exports = function(app) {
                     //Check if student is subscribed to module from lecture
                     //If he is not, throw error and remove submission
                     if(req.user.subscribedTo.indexOf(lecture.module)===-1) {
-                        lSubmissions.remove({user:req.user.id,lecture:id},function(err){
-                            if(err){
-                                return done(err);
-                            }
-                        });
-                        return done({message:"You are not subscribed to this lecture"});
+                        return done(400);
                     }
-                    lecture.timesDone +=1;
                     var questions = lecture.questions;
                     //Check which questions were answered
                     for(var i=0;i<questions.length;i++) {
@@ -361,25 +352,30 @@ module.exports = function(app) {
                                     }
                                 }
                                 //Remove answer from array
-                                answers.splice(y,1);
+                                resultList.push(answers.splice(y,1)[0]);
                                 break;
                             }
                         }
                     }
+                    lecture.timesDone +=1;
                     lecture.save(function(err) {
                         if(err) {
                             return done(err);
                         }
-                        done(null);
+                        //Save Lecture Results to Database
+                        lSubmissions.create({user:req.user.id,lecture:id,results:resultList},done);
                     });
                 });
             }
         ],
         function(err,results) {
-            if(err) {
-                if(err.message) {
-                    res.send(err, 400); //Bad request
-                }
+            if(err === 409) {
+                return res.send({message:'Lecture has already been submitted'}, 409);
+            }
+            else if(err === 400) {
+                return res.send({message:'You are not subscribed to this lecture'}, 400);
+            }
+            else if(err) {
                 return next(err);
             }
             res.send(results[1], 200); //Send back submission result

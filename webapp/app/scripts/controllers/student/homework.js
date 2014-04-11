@@ -41,9 +41,9 @@ angular.module('voteApp')
         //Final submit homework to server
         $scope.submitHomework = function() {
             //Submit Question
-            Homework.submit({id:$scope.homework._id}, $scope.answers ,function(results) {
+            Homework.submit({id:$scope.homework._id}, $scope.answers ,function(submission) {
                 $scope.finished = true;
-                $scope.results = results;
+                $scope.results = submission.results;
             });
         };
         //Mark question as answered
