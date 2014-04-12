@@ -109,7 +109,7 @@ module.exports = function(app) {
     });
 
     //TEACHER GENERATE ACCESS ID
-    app.put(basePathTeacher + '/:id/accessID', loggedInAsTeacher, function(req,res,next) {
+    app.post(basePathTeacher + '/:id/accessID', loggedInAsTeacher, function(req,res,next) {
         //Verify ID
         if(!verifyID(req.params.id)){
             return res.send({message:"The ID you entered is not a valid ID"}, 400);
@@ -123,7 +123,7 @@ module.exports = function(app) {
                 return next(err);
             }
             lecture.generateAccessID(function() {
-                res.send('Success',200);
+                res.send(lecture,200); //Return lecture
             });
         })
     });
@@ -143,7 +143,7 @@ module.exports = function(app) {
                 return next(err);
             }
             lecture.removeAccessID(function() {
-                res.send('Success',200);
+                res.send(lecture,200); //Return lecture
             });
         })
     });

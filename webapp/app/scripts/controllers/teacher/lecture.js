@@ -100,13 +100,13 @@ angular.module('voteApp')
                 Lecture.update({id:$scope.lecture._id},$scope.lecture);
             };
             $scope.generateID = function() {
-                Lecture.generateID({id:$scope.lecture._id}, {}, function() {
-                    $scope.lecture = Lecture.get({id: $routeParams.id});
+                Lecture.generateID({id:$scope.lecture._id}, {}, function(lecture) {
+                    $scope.lecture = lecture;
                 });
             };
             $scope.removeID = function() {
-                Lecture.removeID({id:$scope.lecture._id}, {}, function() {
-                    $scope.lecture = Lecture.get({id: $routeParams.id});
+                Lecture.removeID({id:$scope.lecture._id}, {}, function(lecture) {
+                    $scope.lecture = lecture;
                 });
             };
     }]);
