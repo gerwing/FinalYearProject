@@ -72,7 +72,7 @@ module.exports = function(app) {
                     if(err) {
                         return next(err);
                     }
-                    res.send(lecture);
+                    res.send(lecture, 201);
                 })
             })
         });
@@ -378,7 +378,7 @@ module.exports = function(app) {
             else if(err) {
                 return next(err);
             }
-            res.send(results[1], 200); //Send back submission result
+            res.send(results[1], 201); //Send back submission result
         });
     });
 
@@ -424,7 +424,7 @@ module.exports = function(app) {
                 if(err) {
                     return next(err);
                 }
-                res.send('Success', 200);
+                res.send('Success', 201);
             });
         });
     });

@@ -272,7 +272,7 @@ module.exports = function(app) {
     app.post('/api/user/resetPassword', function(req,res,next) {
         var email = req.body.email;
         if(!email) {
-            return res.send({message:"Email address missing"}, 400);
+            return res.send({message:"Email address missing"}, 406);
         }
         User.findOne({email:email}, function(err,user) {
             if(err) {

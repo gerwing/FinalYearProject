@@ -323,7 +323,7 @@ module.exports = function(app) {
             else if(err) {
                 return next(err);
             }
-            res.send(results[1], 200); //send submission
+            res.send(results[1], 201); //send submission
         });
     });
 };
