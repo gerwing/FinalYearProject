@@ -100,6 +100,7 @@ module.exports = function(io, sessionStore, passport) {
                     socket.join(room); //join the lectue
                     client.set('q'+room, 0);  //set current question to 0 if not set yet
                     client.set('t'+room,socket.id); //set socket id as teacher in redis
+                    client.set('l'+room,JSON.stringify({accessID:result.accessID,module:result.module})); //Save Lecture aid and module id in redis
                     //Set room name on socket
                     socket.set('room',room,function(err) {
                         if(err) {
@@ -116,49 +117,63 @@ module.exports = function(io, sessionStore, passport) {
             //User is logged in
             if(socket.handshake.user.logged_in) {
                 var id = socket.handshake.user.id;
-                client.get("u"+id, function(err,res){
-                    if(err){
+                //Verify Student is subscribed to module
+                client.get('l'+room, function(err,res) {
+                    if(err) {
                         throw err;
                     }
-                    if(res) { //Student already checked in
-                        console.log("Student connection refused");
-                        socket.emit('conflict');
+                    var lecture = JSON.parse(res);
+                    if(socket.handshake.user.subscribedTo.indexOf(lecture.module)===-1) { //Student is not subscribed to module
                         return;
                     }
-                    client.set("u"+id,"checked"); //Checkin student
-                    client.expire("u"+id, 60*30); //Set TTL to half hour
-
-                    socket.join(room); //join the lecture
-                    //Get lecture status
-                    client.get('q'+room, function(err,question){  //Get current question for lecture
-                        client.get('t'+room, function(err,teacher){ //get teacher from redis
-                            io.sockets.socket(teacher).emit('studentConnect'); //Send connect notice to lecturer
-                            socket.emit('gotoQuestion', question); //Send student to current question
+                    //Verify Student is not following lecture yet
+                    client.get("u"+id, function(err,res){
+                        if(err){
+                            throw err;
+                        }
+                        if(res) { //Student already checked in
+                            console.log("Student connection refused");
+                            socket.emit('conflict');
+                            return;
+                        }
+                        //Add Student to lecture
+                        client.set("u"+id,"checked"); //Checkin student
+                        client.expire("u"+id, 60*30); //Set TTL to half hour
+                        socket.join(room); //join the lecture
+                        //Get lecture status
+                        client.get('q'+room, function(err,question){  //Get current question for lecture
+                            client.get('t'+room, function(err,teacher){ //get teacher from redis
+                                io.sockets.socket(teacher).emit('studentConnect'); //Send connect notice to lecturer
+                                socket.emit('gotoQuestion', question); //Send student to current question
+                            });
+                        });
+                        //Set room name on socket
+                        socket.set('room',room,function(err) {
+                            if(err) {
+                                throw err;
+                            }
+                            console.log('Student joined lecture ' + room);
+                        });
+                        //Set user ID on socket
+                        socket.set('user',id,function(err) {
+                            if(err) {
+                                throw err;
+                            }
                         });
                     });
-                    //Set room name on socket
-                    socket.set('room',room,function(err) {
-                        if(err) {
-                            throw err;
-                        }
-                        console.log('Student joined lecture ' + room);
-                    });
-                    //Set user ID on socket
-                    socket.set('user',id,function(err) {
-                        if(err) {
-                            throw err;
-                        }
-                    });
                 });
+
             }
 
             //User is not logged in => aID lecture
             else {
-                Lecture.findOne({_id:room,isLive:true}, function(err,result){
+                //Verify Lecture is aID Lecture
+                client.get('l'+room, function(err,result){
                     if(err) {
                         throw err;
                     }
-                    if(!result.accessID) { //Check if lecture has accessid
+                    var lecture = JSON.parse(result); //Parse JSON string into object
+                    if(!lecture.accessID) { //Check if lecture has accessid
                         return;
                     }
                     socket.join(room); //join the lecture
@@ -193,6 +208,7 @@ module.exports = function(io, sessionStore, passport) {
                     if(socket.id === teacher) { //teacher disconnects
                         client.del('t'+room); //Clear teacher for lecture
                         client.del('q'+room); //Clear currentQuestion for lecture
+                        client.del('l'+room); //Clear lecture data
                     }
                     else { //student disconnects
                         //Checkout user
