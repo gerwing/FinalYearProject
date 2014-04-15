@@ -8,6 +8,7 @@ var basePathTeacher = '/api/teacher/lectures',
     Lecture = require('../data/models/lectures'),
     Module = require('../data/models/modules'),
     lSubmissions = require('../data/models/lSubmissions'),
+    lStudentIDLists = require('../data/models/lStudentIDLists'),
     loggedInAsTeacher = require('../middleware/api/loggedInAsTeacher'),
     loggedIn = require('../middleware/api/loggedIn'),
     async = require('async'),
@@ -108,6 +109,40 @@ module.exports = function(app) {
         });
     });
 
+    //TEACHER DELETE
+    app.delete(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
+        var id = req.params.id;
+        var teacher = req.user.id;
+        //Find Module that contains Lecture
+        Module
+            .findOne({lectures:id, teacher:teacher})
+            .populate({
+                path: 'lectures',
+                match: { _id: id}
+            })
+            .exec( function(err, module) {
+                if(err) {
+                    return next(err);
+                }
+                if(!module) {
+                    return res.send({message:'Lecture does not exist'}, 404); //Module not found
+                }
+                //remove lecture from module
+                var lecture = module.lectures[0];
+                lecture.remove(function(err) {
+                    if(err) {
+                        return next(err);
+                    }
+                    res.send('Success', 200);
+                })
+            });
+    });
+
     //TEACHER GENERATE ACCESS ID
     app.post(basePathTeacher + '/:id/accessID', loggedInAsTeacher, function(req,res,next) {
         //Verify ID
@@ -148,38 +183,81 @@ module.exports = function(app) {
         })
     });
 
-    //TEACHER DELETE
-    app.delete(basePathTeacher + '/:id', loggedInAsTeacher, function(req, res, next) {
+    //TEACHER GET sID LIST
+    app.get(basePathTeacher + '/:id/sIDList', loggedInAsTeacher, function(req,res,next){
         //Verify ID
         if(!verifyID(req.params.id)){
             return res.send({message:"The ID you entered is not a valid ID"}, 400);
         };
 
         var id = req.params.id;
-        var teacher = req.user.id;
-        //Find Module that contains Lecture
-        Module
-            .findOne({lectures:id, teacher:teacher})
-            .populate({
-                path: 'lectures',
-                match: { _id: id}
-            })
-            .exec( function(err, module) {
+        //Find sIDList and send result
+        lStudentIDLists.findOne({teacher:req.user.id,lecture:id}, function(err,result){
+            if(err) {
+                return next(err);
+            }
+            if(!result) {
+                return res.send({message:"No Student ID List was saved for this lecture"}, 404);
+            }
+            res.send(result.idList);
+        });
+    });
+
+    //TEACHER GENERATE sID LIST
+    app.post(basePathTeacher + '/:id/sIDList', loggedInAsTeacher, function(req,res,next){
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
+        var id = req.params.id;
+        async.parallel([
+            function(done) {
+                //Lookup if lecture belongs to teacher
+                Lecture.findOne({_id:id,teacher:req.user.id}, done);
+            },
+            function(done) {
+                //Check for existing sIDLists
+                lStudentIDLists.findOne({lecture:id,teacher:req.user.id}, done);
+            }
+        ],
+        function(err,results){
+            if(err) {
+                return next(err);
+            }
+            //Check if lecture belongs to teacher
+            if(!results[0]) {
+                return res.send({message:"You are not the owner of this lecture"}, 401);
+            }
+            //Check if no sIDList is already in the database
+            if(results[1]) {
+                return res.send({message:"You already have a Student ID List for this lecture"}, 400);
+            }
+            //All ok, generate sIDList
+            lStudentIDLists.create({teacher:req.user.id,lecture:id}, function(err,result){
                 if(err) {
                     return next(err);
                 }
-                if(!module) {
-                    return res.send({message:'Lecture does not exist'}, 404); //Module not found
-                }
-                //remove lecture from module
-                var lecture = module.lectures[0];
-                lecture.remove(function(err) {
-                    if(err) {
-                        return next(err);
-                    }
-                    res.send('Success', 200);
-                })
+                res.send(result.idList, 201);
             });
+        });
+    });
+
+    //TEACHER DELETE sID LIST
+    app.delete(basePathTeacher + '/:id/sIDList', loggedInAsTeacher, function(req,res,next){
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+        var id = req.params.id;
+
+        //Remove sIDList entry from database
+        lStudentIDLists.remove({teacher:req.user.id,lecture:id}, function(err){
+            if(err) {
+                return next(err);
+            }
+            res.send('Success', 200);
+        });
     });
 
     /**STUDENT API*/
