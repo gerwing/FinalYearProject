@@ -17,7 +17,9 @@ var lStudentIDListSchema = mongoose.Schema({
         ref: 'Users',
         required: true
     },
-    idList: [String],
+    idList: [{
+        sid: String
+    }],
     timeAdded: {
         type: Date,
         default: Date.now
@@ -32,7 +34,7 @@ lStudentIDListSchema.pre('save', function(next) {
     var lStudentIDList = this;
     for(var i=0;i<100;i++) {
         var id = shortId.generate();
-        lStudentIDList.idList.push(id);
+        lStudentIDList.idList.push({sid:id});
     }
     next();
 });

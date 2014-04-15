@@ -51,6 +51,11 @@ angular.module('voteApp')
                     $scope.understanding = Math.round((totalRight / (totalRight+totalWrong)) * 1000)/10;
                 }
             });
+            Lecture.getStudentIDs({id: $routeParams.id}, function(data){
+                if(data.length>0) {
+                    $scope.sIDList = data;
+                }
+            });
 
             //Variable set when adding new question
             var addingQuestion = false;
@@ -107,6 +112,16 @@ angular.module('voteApp')
             $scope.removeID = function() {
                 Lecture.removeID({id:$scope.lecture._id}, {}, function(lecture) {
                     $scope.lecture = lecture;
+                });
+            };
+            $scope.generateStudentIDs = function() {
+                Lecture.generateStudentIDs({id:$scope.lecture._id}, {}, function(idList){
+                    $scope.sIDList = idList;
+                });
+            };
+            $scope.removeStudentIDs = function() {
+                Lecture.removeStudentIDs({id:$scope.lecture._id}, {}, function(){
+                    delete $scope.sIDList;
                 });
             };
     }]);

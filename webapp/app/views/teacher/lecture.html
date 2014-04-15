@@ -56,8 +56,8 @@
     <section class="panel panel-info">
         <div class="panel-heading">Lecture Configuration</div>
         <div class="panel-body">
-            <p><strong>Allow Access To Lecture Without Registering:</strong></p>
-            <button class="btn btn-default margin-height-sm" ng-click="generateID()">
+            <p><strong>Allow access to lecture without registering:</strong></p>
+            <button class="btn btn-default margin-height-sm" ng-click="generateID()" ng-hide="lecture.accessID">
                 <span class="glyphicon glyphicon-flash"></span>
                 Generate Access ID
             </button>
@@ -65,7 +65,24 @@
                 <span class="glyphicon glyphicon-trash"></span>
                 Remove Access ID
             </button>
-            <h3 ng-hide="!lecture.accessID"><small>Students can join this lecture using the following ID:</small> <span class="id">{{lecture.accessID}}</span></h3>
+            <h3 ng-hide="!lecture.accessID" class="no-margin-top"><small>Students can join this lecture using the following ID:</small> <span class="id">{{lecture.accessID}}</span></h3>
+            <div ng-show="lecture.accessID">
+                <hr>
+                <h5>Restrict access to students who know the Access ID and have a unique Student ID:</h5>
+                <button class="btn btn-default margin-height-sm" ng-click="generateStudentIDs()" ng-hide="sIDList">
+                    <span class="glyphicon glyphicon-flash"></span>
+                    Generate Student IDs
+                </button>
+                <button class="btn btn-danger margin-height-sm" ng-click="removeStudentIDs()" ng-hide="!sIDList">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Remove Student IDs
+                </button>
+                <button class="btn btn-default margin-height-sm" data-toggle="modal" data-target="#sIDListModal" ng-hide="!sIDList">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                    View List - {{sIDList.length}} IDs left
+                </button>
+                <h3 class="text-success no-margin-top" ng-hide="!sIDList"><small>Access Restricted </small><span class="glyphicon glyphicon-ok"></span></h3>
+            </div>
         </div>
     </section>
 
@@ -174,6 +191,38 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" ng-click="saveQuestion()" ng-disabled="questionForm.$invalid">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Student ID List Modal-->
+    <div class="modal fade" id="sIDListModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel1">Student ID List</h4>
+                </div>
+                <div class="modal-body">
+                    Each ID can be used once to join this lecture.
+                    <div class="row">
+                        <div class="col-sm-3 col-xs-6">
+                            <p ng-repeat="id in sIDList.slice(0,25)" class="id">{{id.sid}}</p>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <p ng-repeat="id in sIDList.slice(25,50)" class="id">{{id.sid}}</p>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <p ng-repeat="id in sIDList.slice(50,75)" class="id">{{id.sid}}</p>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <p ng-repeat="id in sIDList.slice(75,100)" class="id">{{id.sid}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

@@ -24,6 +24,9 @@
     margin-bottom: 14px;
     margin-top: 14px;
 }
+.no-margin-top {
+    margin-top: 0px;
+}
 .error {
     font-style: italic;
     opacity:0.8;

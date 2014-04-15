@@ -197,7 +197,7 @@ module.exports = function(app) {
                 return next(err);
             }
             if(!result) {
-                return res.send({message:"No Student ID List was saved for this lecture"}, 404);
+                return res.send(result, 200);
             }
             res.send(result.idList);
         });
