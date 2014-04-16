@@ -191,8 +191,9 @@ module.exports = function(app) {
         };
 
         var id = req.params.id;
+        var teacher = req.user.id;
         //Find sIDList and send result
-        lStudentIDLists.findOne({teacher:req.user.id,lecture:id}, function(err,result){
+        lStudentIDLists.findOne({teacher:teacher,lecture:id}, function(err,result){
             if(err) {
                 return next(err);
             }
@@ -211,14 +212,15 @@ module.exports = function(app) {
         };
 
         var id = req.params.id;
+        var teacher = req.user.id;
         async.parallel([
             function(done) {
                 //Lookup if lecture belongs to teacher
-                Lecture.findOne({_id:id,teacher:req.user.id}, done);
+                Lecture.findOne({_id:id,teacher:teacher}, done);
             },
             function(done) {
                 //Check for existing sIDLists
-                lStudentIDLists.findOne({lecture:id,teacher:req.user.id}, done);
+                lStudentIDLists.findOne({lecture:id,teacher:teacher}, done);
             }
         ],
         function(err,results){
@@ -234,7 +236,7 @@ module.exports = function(app) {
                 return res.send({message:"You already have a Student ID List for this lecture"}, 400);
             }
             //All ok, generate sIDList
-            lStudentIDLists.create({teacher:req.user.id,lecture:id}, function(err,result){
+            lStudentIDLists.create({teacher:teacher,lecture:id,accessID:results[0].accessID}, function(err,result){
                 if(err) {
                     return next(err);
                 }
@@ -249,10 +251,11 @@ module.exports = function(app) {
         if(!verifyID(req.params.id)){
             return res.send({message:"The ID you entered is not a valid ID"}, 400);
         };
-        var id = req.params.id;
 
+        var id = req.params.id;
+        var teacher = req.user.id;
         //Remove sIDList entry from database
-        lStudentIDLists.remove({teacher:req.user.id,lecture:id}, function(err){
+        lStudentIDLists.remove({teacher:teacher,lecture:id}, function(err){
             if(err) {
                 return next(err);
             }
@@ -357,6 +360,68 @@ module.exports = function(app) {
         });
     });
 
+    //SAVE LECTURE RESULTS
+    app.post(basePathStudent + '/:id', loggedIn, function(req,res,next) {
+        //Verify ID
+        if(!verifyID(req.params.id)){
+            return res.send({message:"The ID you entered is not a valid ID"}, 400);
+        };
+
+        var id = req.params.id;
+        var answers = req.body;
+        async.series([
+            function(done) {
+                //Check if student has already submitted lecture
+                lSubmissions.findOne({user:req.user.id,lecture:id}, function(err,submission){
+                    if(err){
+                        return done(err);
+                    }
+                    if(submission) { //Lecture already submitted
+                        return done(409);
+                    }
+                    done();
+                });
+            },
+            function(done) {
+                //Lookup lecture and insert results
+                Lecture.findOne({_id:id}, function(err, lecture) {
+                    if(err) {
+                        return done(err);
+                    }
+                    if(!lecture) {
+                        return done(404); //Lecture not found
+                    }
+                    //Check if student is subscribed to module from lecture
+                    //If he is not, throw error and remove submission
+                    if(req.user.subscribedTo.indexOf(lecture.module)===-1) {
+                        return done(400);
+                    }
+                    //Save Lecture Statistics
+                    saveLectureStatistics(lecture,answers,done);
+                });
+            },
+            function(done) {
+                //Save Lecture Results to Database
+                lSubmissions.create({user:req.user.id,lecture:id,results:answers},done);
+            }
+        ],
+        function(err,results) {
+            if(err === 409) {
+                return res.send({message:'Lecture has already been submitted'}, 409);
+            }
+            else if(err === 404) {
+                return res.send({message:'Lecture was not found'}, 404);
+            }
+            else if(err === 400) {
+                return res.send({message:'You are not subscribed to this lecture'}, 400);
+            }
+            else if(err) {
+                return next(err);
+            }
+            res.send(results[2], 201); //Send back submission result
+        });
+    });
+
     //STUDENT GET A LIVE LECTURE USING ACCESS ID
     app.get(basePathStudent + '/aid/:id', function(req,res,next) {
         var id = req.params.id;
@@ -373,91 +438,17 @@ module.exports = function(app) {
                 if(!lecture) {
                     return res.send({message: 'The lecture you were trying to find does not exist'}, 404);
                 }
-                res.send(lecture);
-            });
-    });
-
-    //SAVE LECTURE RESULTS
-    app.post(basePathStudent + '/:id', loggedIn, function(req,res,next) {
-        //Verify ID
-        if(!verifyID(req.params.id)){
-            return res.send({message:"The ID you entered is not a valid ID"}, 400);
-        };
-
-        var id = req.params.id;
-        var answers = req.body;
-        var resultList = [];
-        async.series([
-            function(done) {
-                //Check if student has already submitted lecture
-                lSubmissions.findOne({user:req.user.id,lecture:id}, function(err,submission){
-                    if(err){
-                        return done(err);
-                    }
-                    if(submission) {
-                        return done(409);
-                    }
-                    done(null);
-                });
-            },
-            function(done) {
-                //Lookup lecture and insert results
-                Lecture.findOne({_id:id}, function(err, lecture) {
+                //Verify if lecture does not require sID access
+                lStudentIDLists.findOne({lecture:lecture.id}, function(err,result){
                     if(err) {
-                        return done(err);
+                        return next(err);
                     }
-                    //Check if student is subscribed to module from lecture
-                    //If he is not, throw error and remove submission
-                    if(req.user.subscribedTo.indexOf(lecture.module)===-1) {
-                        return done(400);
+                    if(result) { //Lecture requires sID access
+                        return res.send({message:"This lecture requires a Student ID"}, 401);
                     }
-                    var questions = lecture.questions;
-                    //Check which questions were answered
-                    for(var i=0;i<questions.length;i++) {
-                        for(var y=0;y<answers.length;y++) {
-                            if(questions[i].question === answers[y].question) {
-                                //Check result
-                                if(answers[y].correct === true){
-                                    questions[i].timesRight++;
-                                }
-                                else if(answers[y].correct === false) {
-                                    questions[i].timesWrong++;
-                                }
-                                for(var x=0;x<questions[i].answers.length;x++) {
-                                    if(questions[i].answers[x].answer === answers[y].answer){
-                                        questions[i].answers[x].timesAnswered += 1;
-                                        break;
-                                    }
-                                }
-                                //Remove answer from array
-                                resultList.push(answers.splice(y,1)[0]);
-                                break;
-                            }
-                        }
-                    }
-                    lecture.timesDone +=1;
-                    lecture.save(function(err) {
-                        if(err) {
-                            return done(err);
-                        }
-                        //Save Lecture Results to Database
-                        lSubmissions.create({user:req.user.id,lecture:id,results:resultList},done);
-                    });
+                    res.send(lecture);
                 });
-            }
-        ],
-        function(err,results) {
-            if(err === 409) {
-                return res.send({message:'Lecture has already been submitted'}, 409);
-            }
-            else if(err === 400) {
-                return res.send({message:'You are not subscribed to this lecture'}, 400);
-            }
-            else if(err) {
-                return next(err);
-            }
-            res.send(results[1], 201); //Send back submission result
-        });
+            });
     });
 
     //SAVE LECTURE RESULTS USING ACCESS ID
@@ -466,44 +457,204 @@ module.exports = function(app) {
         var answers = req.body;
         //Lookup lecture and add results
         //Only allow live lectures to be updated
-        Lecture.findOne({accessID:id,isLive:true}, function(err, lecture) {
-            if(err) {
+        async.series([
+            function(done){
+                //Check whether Lecture does not require Student ID
+                lStudentIDLists.findOne({accessID:id}, function(err,result){
+                    if(err) {
+                        return done(err);
+                    }
+                    if(result) { //Lecture requires Student ID
+                        return done(401);
+                    }
+                    done();
+                });
+            },
+            function(done){
+                Lecture.findOne({accessID:id,isLive:true}, function(err, lecture) {
+                    if(err) {
+                        return done(err);
+                    }
+                    if(!lecture) {
+                        return done(404); //Lecture not found
+                    }
+                    //Save Lecture Statistics
+                    saveLectureStatistics(lecture,answers,done);
+                });
+            }
+        ],
+        function(err){
+            if(err === 401) {
+                return res.send({message:'Lecture requires a Student ID'}, 401);
+            }
+            else if(err === 404) {
+                return res.send({message:'Lecture was not found'}, 404);
+            }
+            else if(err) {
                 return next(err);
             }
-            if(!lecture) {
-                return res.send({message:'Lecture not found'}, 404);
-            }
-            lecture.timesDone +=1;
-            var questions = lecture.questions;
-            //Check which questions were answered
-            for(var i=0;i<questions.length;i++) {
-                for(var y=0;y<answers.length;y++) {
-                    if(questions[i].question === answers[y].question) {
-                        //Check result
-                        if(answers[y].correct === true){
-                            questions[i].timesRight++;
-                        }
-                        else if(answers[y].correct === false) {
-                            questions[i].timesWrong++;
-                        }
-                        for(var x=0;x<questions[i].answers.length;x++) {
-                            if(questions[i].answers[x].answer === answers[y].answer){
-                                questions[i].answers[x].timesAnswered += 1;
-                                break;
-                            }
-                        }
-                        //Remove answer from array and into result array
-                        answers.splice(y,1);
-                        break;
-                    }
-                }
-            }
-            lecture.save(function(err) {
+            //Everything Successful
+            res.send('Success', 201);
+        });
+    });
+
+    //STUDENT VERIFY ACCESS ID AND STUDENT ID COMBO
+    app.get(basePathStudent + '/aid/:aid/:sid/verify', function(req,res,next) {
+        var aid = req.params.aid;
+        var sid = req.params.sid;
+        //Lookup lecture
+        Lecture
+            .findOne({accessID:aid, isLive:true})
+            .exec(function(err, lecture) {
                 if(err) {
                     return next(err);
                 }
+                if(!lecture) {
+                    return res.send({message: 'The lecture you were trying to find does not exist'}, 404);
+                }
+                //Verify Student ID
+                lStudentIDLists.findOne({lecture:lecture.id, 'idList.sid':sid}, function(err,result){
+                    if(err) {
+                        return next(err);
+                    }
+                    if(!result) {
+                        return res.send({message:'The Student ID you tried was not found for this lecture'}, 401);
+                    }
+                    res.send('Success',200);
+                });
+            });
+    });
+
+    //STUDENT GET A LIVE LECTURE USING ACCESS ID AND STUDENT ID
+    app.get(basePathStudent + '/aid/:aid/:sid', function(req,res,next) {
+        var aid = req.params.aid;
+        var sid = req.params.sid;
+        //Lookup lecture
+        Lecture
+            .findOne({accessID:aid, isLive:true})
+            .populate('teacher', 'name')
+            .populate('module', 'name')
+            .select('module teacher questions.question questions.answers.answer name') //Avoid sending correct answer info
+            .exec(function(err, lecture) {
+                if(err) {
+                    return next(err);
+                }
+                if(!lecture) {
+                    return res.send({message: 'The lecture you were trying to find does not exist'}, 404);
+                }
+                //Verify Student ID
+                lStudentIDLists.findOne({lecture:lecture.id, 'idList.sid':sid}, {'idList.$':1}, function(err,result){
+                    if(err) {
+                        return next(err);
+                    }
+                    //SID was not found
+                    if(!result) {
+                        return res.send({message:'The Student ID you tried was not found for this lecture'}, 401);
+                    }
+                    if(result.idList[0].used) {
+                        return res.send({message:'You already used this Student ID'}, 401);
+                    }
+                    result.idList[0].used = true;
+                    //save
+                    result.save(function(err){
+                        if(err) {
+                            return next(err);
+                        }
+                        //Send Lecture
+                        res.send(lecture);
+                    });
+
+                });
+            });
+    });
+
+    //SAVE LECTURE RESULTS USING ACCESS ID AND STUDENT ID
+    app.post(basePathStudent + '/aid/:aid/:sid', function(req,res,next) {
+        var aid = req.params.aid;
+        var sid = req.params.sid;
+        var answers = req.body;
+        //Lookup lecture and add results
+        //Only allow live lectures to be updated
+        async.series([
+            function(done){
+                //Check whether Lecture does not require Student ID by trying to remove Student ID
+                lStudentIDLists.update({accessID:aid},{$pull: { idList: {sid:sid} } }, function(err,res){
+                    if(err) {
+                        return done(err);
+                    }
+                    if(res===1){  //Student ID was valid and got removed
+                        done();
+                    }
+                    else  {  //Student ID was not valid
+                        return done(401);
+                    }
+                });
+            },
+            function(done){
+                Lecture.findOne({accessID:aid,isLive:true}, function(err, lecture) {
+                    if(err) {
+                        return done(err);
+                    }
+                    if(!lecture) {
+                        return done(404); //Lecture not found
+                    }
+                    //Save Lecture Statistics
+                    saveLectureStatistics(lecture,answers,done);
+                });
+            }
+        ],
+            function(err){
+                if(err === 401) {
+                    return res.send({message:'The Student ID you entered is not valid'}, 401);
+                }
+                else if(err === 404) {
+                    return res.send({message:'Lecture not found'}, 404);
+                }
+                else if(err) {
+                    return next(err);
+                }
+                //Everything Successful
                 res.send('Success', 201);
             });
-        });
     });
+};
+
+/**
+ *  OTHER METHODS
+ */
+//Save Statistics
+var saveLectureStatistics = function(lecture,answers,callback) {
+    //Get Lecture ID
+    var id = lecture.id;
+
+    //Update Lecture statistics
+    for(var i=0;i<answers.length;i++) {
+        //Update times right or wrong
+        if(answers[i].correct === true) {
+            Lecture.update(
+                {_id:id, 'questions.question':answers[i].question},
+                {$inc: {'questions.$.timesRight':1} }
+            ).exec();
+        }
+        else if(answers[i].correct === false) {
+            Lecture.update(
+                {_id:id, 'questions.question':answers[i].question},
+                {$inc: {'questions.$.timesWrong':1} }
+            ).exec();
+        }
+        //Update times question was answered
+        var data = {};
+        data['questions.'+i+'.answers.$.timesAnswered'] = 1;
+        var data1 = {};
+        data1['questions.'+i+'.answers.answer'] = answers[i].answer;
+        data1['_id'] = id;
+        Lecture.update(
+            data1,
+            {$inc: data}
+        ).exec();
+    }
+    //Update times lecture was done
+    Lecture.update({_id:id},{$inc: {'timesDone':1} }).exec();
+    //Callback with no errors
+    callback(null);
 };

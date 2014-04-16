@@ -34,6 +34,7 @@
     <form name="lectureForm" role="form">
         <div class="form-group">
             <input id="accessID" ng-model="accessID" class="form-control input-lg" type="text" placeholder="Lecture Access ID..." required>
+            <input id="studentID" ng-if="sIDLecture" ng-model="$parent.studentID" class="form-control input-lg margin-height-l" type="text" placeholder="Enter your Student ID..." required>
         </div>
         <div ng-show="lectureError" class="alert alert-danger">{{errorMessage}}</div>
         <button class="btn btn-lg btn-primary" ng-disabled="lectureForm.$invalid" ng-click="joinLecture()">Join Lecture</button>

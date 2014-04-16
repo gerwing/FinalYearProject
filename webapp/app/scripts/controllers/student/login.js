@@ -24,12 +24,31 @@ angular.module('voteApp')
             }
             $scope.joinLecture = function() {
                 $scope.lectureError = false;
-                $scope.aidLecture = Lecture.getAccessIDLecture({accessID:$scope.accessID}, function() {
-                    $location.path('/student/joinLecture/' + $scope.accessID);
-                }, function(result) {
-                    $scope.lectureError = true;
-                    $scope.errorMessage = result.data.message;
-                });
+                if($scope.sIDLecture) {
+                    Lecture.verifyStudentIDLecture({accessID:$scope.accessID,sID:$scope.studentID},
+                        function() {
+                            $location.path('/student/joinLecture/' + $scope.accessID + '/' + $scope.studentID);
+                        },
+                        function(result) {
+                            $scope.lectureError = true;
+                            $scope.errorMessage = result.data.message;
+                        }
+                    );
+                }
+                else {
+                    Lecture.getAccessIDLecture({accessID:$scope.accessID},
+                        function() {
+                        $location.path('/student/joinLecture/' + $scope.accessID);
+                        },
+                        function(result) {
+                            $scope.lectureError = true;
+                            $scope.errorMessage = result.data.message;
+                            if(result.status === 401) {
+                                $scope.sIDLecture = true;
+                            }
+                        }
+                    );
+                }
             }
             //Resend Verification Email
             $scope.resendVerification = function() {

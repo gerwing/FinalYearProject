@@ -208,16 +208,16 @@
                     Each ID can be used once to join this lecture.
                     <div class="row">
                         <div class="col-sm-3 col-xs-6">
-                            <p ng-repeat="id in sIDList.slice(0,25)" class="id">{{id.sid}}</p>
+                            <p ng-repeat="id in sIDList.slice(0,sIDList.length/4)" class="id">{{id.sid}}</p>
                         </div>
                         <div class="col-sm-3 col-xs-6">
-                            <p ng-repeat="id in sIDList.slice(25,50)" class="id">{{id.sid}}</p>
+                            <p ng-repeat="id in sIDList.slice(sIDList.length/4,sIDList.length/2)" class="id">{{id.sid}}</p>
                         </div>
                         <div class="col-sm-3 col-xs-6">
-                            <p ng-repeat="id in sIDList.slice(50,75)" class="id">{{id.sid}}</p>
+                            <p ng-repeat="id in sIDList.slice(sIDList.length/2,(sIDList.length/4)*3)" class="id">{{id.sid}}</p>
                         </div>
                         <div class="col-sm-3 col-xs-6">
-                            <p ng-repeat="id in sIDList.slice(75,100)" class="id">{{id.sid}}</p>
+                            <p ng-repeat="id in sIDList.slice((sIDList.length/4)*3,sIDList.length)" class="id">{{id.sid}}</p>
                         </div>
                     </div>
                 </div>

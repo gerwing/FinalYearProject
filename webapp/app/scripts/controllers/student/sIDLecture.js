@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('voteApp')
-    .controller('StdaIDLectureCtrl', ['$scope','$routeParams','Lecture','SocketIO',
+    .controller('StdsIDLectureCtrl', ['$scope','$routeParams','Lecture','SocketIO',
         function($scope,$routeParams,Lecture,socket){
             /**INITIALIZE SOCKET.IO*/
             //Reconnect socket in case student had left the lecture
@@ -33,7 +33,7 @@ angular.module('voteApp')
             socket.on('finish',function() {
                 //Upload results to server
                 if(!$scope.finished) {
-                    Lecture.submitAccessID({accessID:$routeParams.accessID}, $scope.answers);
+                    Lecture.submitStudentIDLecture({accessID:$routeParams.accessID,sID:$routeParams.studentID}, $scope.answers);
                 }
                 $scope.finished = true;
                 $scope.$apply();
@@ -45,7 +45,7 @@ angular.module('voteApp')
 
             /**INITIALIZE SCOPE*/
             //Get Lecture Data
-            $scope.lecture = Lecture.getAccessIDLecture({accessID:$routeParams.accessID},function() {
+            $scope.lecture = Lecture.getStudentIDLecture({accessID:$routeParams.accessID,sID:$routeParams.studentID},function() {
                 //Join Live Lecture
                 $scope.question = $scope.lecture.questions[0];
                 $scope.currentQuestion = 0;

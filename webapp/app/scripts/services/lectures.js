@@ -17,7 +17,11 @@ angular.module('voteApp')
                   "removeID" : {method:"DELETE", url:"/api/teacher/lectures/:id/accessID"},
                   "generateStudentIDs" : {method:"POST", url:"/api/teacher/lectures/:id/sIDList", isArray:true},
                   "getStudentIDs" : {method:"GET", url:"/api/teacher/lectures/:id/sIDList", isArray:true},
-                  "removeStudentIDs" : {method:"DELETE", url:"/api/teacher/lectures/:id/sIDList"}
+                  "removeStudentIDs" : {method:"DELETE", url:"/api/teacher/lectures/:id/sIDList"},
+                  "verifyStudentIDLecture": {method:"GET", url:"/api/student/lectures/aid/:accessID/:sID/verify"},
+                  "getStudentIDLecture": {method:"GET", url:"/api/student/lectures/aid/:accessID/:sID"},
+                  "submitStudentIDLecture" : {method:"POST", url:"/api/student/lectures/aid/:accessID/:sID"}
+
               }
           );
         }

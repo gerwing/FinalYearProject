@@ -88,9 +88,15 @@ angular.module('voteApp')
 
         /**OTHER METHODS*/
         function refresh() {
-            $scope.homework = Homework.getAllHomework();
-            $scope.lectures = Lecture.getAllLectures();
-            $scope.modules = Module.getSubscribed();
+            Homework.getAllHomework(function(result){
+                $scope.homework = result;
+            });
+            Lecture.getAllLectures(function(result){
+                $scope.lectures = result;
+            });
+            Module.getSubscribed(function(result){
+                $scope.modules = result;
+            });
         }
 
         /**TOGGLE PANELS*/

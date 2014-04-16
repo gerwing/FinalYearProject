@@ -17,8 +17,20 @@ var lStudentIDListSchema = mongoose.Schema({
         ref: 'Users',
         required: true
     },
+    accessID: {
+        type: String,
+        unique: true,
+        required:true,
+        index: true
+    },
     idList: [{
-        sid: String
+        sid: {
+            type:String
+        },
+        used: {
+            type:Boolean,
+            default: false
+        }
     }],
     timeAdded: {
         type: Date,
