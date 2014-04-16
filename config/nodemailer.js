@@ -15,8 +15,8 @@ module.exports = (function() {
 
     //setup e-mail data with unicode symbols
     var confirmMailOptions = {
-        from: "Student App " + config.user, // sender address
-        subject: "New email from Student Application"
+        from: "Oplah " + config.user, // sender address
+        subject: "New email from Oplah"
     }
 
     //Return function to send emails
