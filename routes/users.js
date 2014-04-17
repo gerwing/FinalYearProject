@@ -184,7 +184,7 @@ module.exports = function(app) {
             if(restrictions.length > 0) {
                 var allowed = false;
                 for(var i=0;i<restrictions.length;i++) {
-                    if(email.lastIndexOf(restrictions[i]) >= 0) {
+                    if(email.lastIndexOf("@"+restrictions[i]) >= 0) {
                         allowed = true;
                     }
                 }
