@@ -59,9 +59,23 @@ module.exports = function(io, sessionStore, passport) {
                 if(err) {
                     throw err;
                 }
-                client.set('q'+room,data); //Set current question in redis
-                socket.broadcast.to(room).emit('gotoQuestion', data); //Send question number to students
-                console.log('Go to question ' + data);
+                //Make sure request was sent by teacher
+                socket.get('user',function(err,user){ //Get socket user id
+                    if(err) {
+                        throw err;
+                    }
+                    client.get('t'+room, function(err,teacher){ //Get teacher id for lecture
+                        if(err) {
+                            throw err;
+                        }
+                        if(!(user===teacher)){ //Event was not send by teacher
+                            return;
+                        }
+                        client.set('q'+room,data); //Set current question in redis
+                        socket.broadcast.to(room).emit('gotoQuestion', data); //Send question number to students
+                        console.log('Go to question ' + data);
+                    })
+                });
             });
         });
         //Lecture shows results
@@ -70,8 +84,22 @@ module.exports = function(io, sessionStore, passport) {
                 if(err) {
                     throw err;
                 }
-                socket.broadcast.to(room).emit('showResults', data); //Send right answer to students
-                console.log('Answer is ' + data);
+                //Make sure request was sent by teacher
+                socket.get('user',function(err,user){ //Get socket user id
+                    if(err) {
+                        throw err;
+                    }
+                    client.get('t'+room, function(err,teacher){ //Get teacher id for lecture
+                        if(err) {
+                            throw err;
+                        }
+                        if(!(user===teacher)){ //Event was not send by teacher
+                            return;
+                        }
+                        socket.broadcast.to(room).emit('showResults', data); //Send right answer to students
+                        console.log('Answer is ' + data);
+                    })
+                });
             });
         });
         //Lecture has finished
@@ -80,8 +108,22 @@ module.exports = function(io, sessionStore, passport) {
                 if(err) {
                     throw err;
                 }
-                socket.broadcast.to(room).emit('finish');
-                console.log('Lecture Finished');
+                //Make sure request was sent by teacher
+                socket.get('user',function(err,user){ //Get socket user id
+                    if(err) {
+                        throw err;
+                    }
+                    client.get('t'+room, function(err,teacher){ //Get teacher id for lecture
+                        if(err) {
+                            throw err;
+                        }
+                        if(!(user===teacher)){ //Event was not send by teacher
+                            return;
+                        }
+                        socket.broadcast.to(room).emit('finish');
+                        console.log('Lecture Finished');
+                    })
+                });
             });
         });
 
@@ -108,6 +150,12 @@ module.exports = function(io, sessionStore, passport) {
                         }
                         console.log('Teacher joined lecture ' + room);
                     });
+                    //Set socket ID on socket, has to be same as id used to verify teacher
+                    socket.set('user',socket.id,function(err) {
+                        if(err) {
+                            throw err;
+                        }
+                    });
                 }
             });
         });
@@ -121,6 +169,9 @@ module.exports = function(io, sessionStore, passport) {
                 client.get('l'+room, function(err,res) {
                     if(err) {
                         throw err;
+                    }
+                    if(!res) { //No lecture found
+                        return;
                     }
                     var lecture = JSON.parse(res);
                     if(socket.handshake.user.subscribedTo.indexOf(lecture.module)===-1) { //Student is not subscribed to module
@@ -171,6 +222,9 @@ module.exports = function(io, sessionStore, passport) {
                 client.get('l'+room, function(err,result){
                     if(err) {
                         throw err;
+                    }
+                    if(!result) { //No lecture found
+                        return;
                     }
                     var lecture = JSON.parse(result); //Parse JSON string into object
                     if(!lecture.accessID) { //Check if lecture has accessid

@@ -1,2 +1,6 @@
 */default.js
 */production.js
+.idea/
+node_modules/
+
+
