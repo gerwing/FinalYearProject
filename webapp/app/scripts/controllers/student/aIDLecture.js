@@ -14,6 +14,7 @@ angular.module('voteApp')
                 $scope.currentQuestion = data;
                 $scope.resultview = false;
                 $scope.waiting = false;
+                $scope.answered = false;
                 $scope.$apply();
             });
             //Results for one question
