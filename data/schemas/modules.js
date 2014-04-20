@@ -14,7 +14,6 @@ var ModuleSchema = mongoose.Schema({
     },
     shortId: {
         type: String,
-        unique: true,
         index: true
     },
     emailRestrictions: [String],
