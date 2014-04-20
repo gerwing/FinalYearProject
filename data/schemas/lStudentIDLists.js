@@ -19,7 +19,6 @@ var lStudentIDListSchema = mongoose.Schema({
     },
     accessID: {
         type: String,
-        unique: true,
         required:true,
         index: true
     },
