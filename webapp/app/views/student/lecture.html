@@ -6,10 +6,12 @@
     <!--Answering Question-->
     <section ng-hide="finished||resultview||waiting||conflict" ng-cloak>
         <h2>{{question.question}}</h2>
-        <h3 ng-repeat="answer in question.answers">
-            <input type="radio" name="answer" value="{{answer.answer}}" ng-model="answers[currentQuestion].answer" ng-change="setAnswered()">
-            {{answer.answer}}
-        </h3>
+        <div class="radio input-lg" ng-repeat="answer in question.answers">
+            <label>
+                <input type="radio" name="answer" value="{{answer.answer}}" ng-model="answers[currentQuestion].answer" ng-change="setAnswered()">
+                <span class="h3">{{answer.answer}}</span>
+            </label>
+        </div>
         <button class="btn btn-primary btn-lg" ng-click="answerQuestion()" ng-disabled="!answered">Answer Question</button>
     </section>
 

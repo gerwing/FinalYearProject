@@ -47,6 +47,11 @@ angular.module('voteApp')
                 $scope.conflict = true;
                 $scope.$apply();
             });
+            //Reconnect for mobile devices on standby or other disconnections
+            socket.on('reconnect', function(){
+                //Join lecture room
+                socket.emit('joinStudent', $scope.lecture._id);
+            });
             //Close Connection when leaving page
             $scope.$on('$locationChangeStart', function () {
                 socket.disconnect();
