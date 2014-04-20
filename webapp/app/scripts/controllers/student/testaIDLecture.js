@@ -16,7 +16,7 @@ angular.module('voteApp')
                 $scope.waiting = false;
                 $scope.$apply();
                 //AUTOMATICALLY ANSWER AFTER RANDOM GIVEN TIME
-                var random = Math.floor((Math.random()*100)+1); //random between 1 and 100
+                var random = Math.floor((Math.random()*150)+1); //random between 1 and 150
                 var seconds = random * 100;
                 setTimeout(function(){
                     //CLICK BUTTON
@@ -78,7 +78,7 @@ angular.module('voteApp')
             }
             $scope.answerQuestion = function() {
                 //ADD RANDOM ANSWER
-                var random = Math.floor((Math.random()*($scope.question.answers.length-1)));
+                var random = Math.floor((Math.random()*($scope.question.answers.length)));
                 $scope.answers[$scope.currentQuestion].answer = $scope.question.answers[random].answer;
                 socket.emit('answer', $scope.answers[$scope.currentQuestion].answer);
                 $scope.waiting = true;
